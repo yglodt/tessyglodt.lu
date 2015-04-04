@@ -1,0 +1,11 @@
+[Unit]
+Description=www.tessyglodt.lu
+
+[Service]
+User=ubuntu
+# The configuration file application.properties should be here:
+WorkingDirectory=/data 
+ExecStart=/usr/bin/java -jar tessyglodt.war
+
+[Install]
+WantedBy=multi-user.target
