@@ -6,6 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="slg" uri="http://github.com/slugify"%>
+<jsp:useBean id="now" class="java.util.Date" scope="page" />
 <!DOCTYPE html>
 <html lang="lb">
 <head>
