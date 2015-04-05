@@ -11,9 +11,9 @@
 		<p>Ënner dem Titel ‚Kierchtuermspromenaden’ ass hei elo d’Suite um Internet disponibel. De Choix vun dëse ‘Promenaden‘ ass op Uertschafte gefall wou grad Kiermes war, aus deenen d’Radios-Mass koum oder vun deene bal ni geschwat gëtt.</p>
 		<p>Dës perséinlech Websäit proposéiert "eng breet Panoplie vu Geschichtlechem, Anekdoteschem, Kontemplativem a Remarquabelem aus dem Gemengeliewen an der Volleksreligiositéit" (Georges Hellinghausen - ‘Warte‘ 26.06.2008 - zu de ‚Kierchtuerms-Causerien‘.) Eist klengt Land huet nämlech charakteristesch Bräich an eng no Regioun ënnerschiddlech Mentalitéit opweises... Vermëscht mat engem Hauch Folklore ergëtt dëst zesummen, d’Leit, d‘Landschaft, d‘Duerfgeschicht an d’Kierch ee Ganzt.</p>
 		<p>Di kleng Radiosbäiträg komme säit 2003 sonndesmuerges um DNR; hir Zeilen adresséiere sech un Interessente vun eisem Patrimoine an u jiddereen dee Loscht huet a Gedanken an eisem Land op Entdeckung ze goen!</p>
-		<h3>&nbsp;Quellen</h3>
+		<h3>Quellen</h3>
 		<ul>
-			<li>Das alte Luxemburg&nbsp; heute, Krantz/Quintus</li>
+			<li>Das alte Luxemburg heute, Krantz/Quintus</li>
 			<li>Luxemburg so wie es war, Mersch</li>
 			<li>Wegführer zu Luxemburgischen Kirchen und Kapellen, M. Schmitt</li>
 			<li>Greeff, Walin/Thill</li>
@@ -39,15 +39,17 @@
 			<li>Merian Luxemburg, divers Auteuren</li>
 			<li>Kirchen d. Gemeinde Wintger, C. Fandel</li>
 			<li>Schueberfouer 1340-1990 (CLUDEM)</li>
-			<li>Engelmann.uni.lu</li>
+			<li><a target="_blank" href="http://engelmann.uni.lu/">Engelmann.uni.lu</a></li>
 			<li>Les Sentinelles de l'Histoire, R. Bour</li>
 			<li>The Castles of Luxembourg, V. Merckx</li>
 			<li>'Ons Stad'</li>
 			<li>Archiv Luxemburger Wort</li>
 			<li>Série 'une commune et son histoire', La Voix )</li>
-			<li>www.Forschungsstelle Glasmalerei</li>
-			<li>a vill mëndlech Témoignagen<i><br> </i></li>
+			<li><a target="_blank" href="http://www.glasmalerei-ev.net/">Forschungsstelle Glasmalerei</a></li>
+			<li>A vill mëndlech Témoignagen<i><br> </i></li>
 		</ul>
+		<p><em>De Sourcecode vun dësem Internetsite ass op <a target="_blank" href="https://github.com/yglodt/tessyglodt.lu">GitHub</a> verëffentlecht.
+		</em></p>
 	</div>
 
 	<div class="col-md-3">
