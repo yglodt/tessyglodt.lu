@@ -8,6 +8,7 @@ import lu.tessyglodt.site.service.PageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,11 @@ public class WebController {
 
 	@Autowired
 	private DistrictService		districtService;
+	
+	@Value("${spring.datasource.driverClassName}")
+	private String			driverClassName;
+
+	
 
 	@RequestMapping(value = { "/", "/index.html" }, method = RequestMethod.GET)
 	public String getIndex(final Model model) {
@@ -91,7 +97,16 @@ public class WebController {
 
 		if (!StringUtils.isEmpty(q)) {
 			logger.debug("Searching for \"" + q + "\"");
-			model.addAttribute("pages", pageService.getSearch(q));
+			
+			switch (driverClassName) {
+			case "org.h2.Driver":
+				model.addAttribute("pages", pageService.getSearchH2(q));
+				break;
+			case "org.postgresql.Driver":
+				model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
+				break;
+			}
+			
 		}
 
 		return "search";

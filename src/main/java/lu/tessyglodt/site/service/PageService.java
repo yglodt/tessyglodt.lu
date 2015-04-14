@@ -135,7 +135,7 @@ public class PageService {
 		return o;
 	}
 
-	public List<Page> getSearch(final String q) {
+	public List<Page> getSearchH2(final String q) {
 		final String sql = "SELECT * FROM FT_SEARCH_DATA(?, 0, 0)";
 
 		final List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { q });
@@ -160,6 +160,27 @@ public class PageService {
 		} else {
 			return null;
 		}
+
+	}
+	
+
+	public List<Map<String, Object>> getSearchPostgreSQL(final String q) {
+		/*
+		 * 
+		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-enough/
+		 * 
+		 * http://stackoverflow.com/questions/10027996/postgres-fulltext-index
+		 * 
+		 */
+		final String sql = "select "
+				+ "id, name, title "
+				+ "from (select "
+				+ "p.id as id, p.name as name, p.title as title, to_tsvector(unaccent(p.content)) "
+				+ "as document "
+				+ "from page p) p_search "
+				+ "where p_search.document @@ to_tsquery(unaccent(?))";
+
+		return jdbcTemplate.queryForList(sql, new Object[] { q });
 
 	}
 

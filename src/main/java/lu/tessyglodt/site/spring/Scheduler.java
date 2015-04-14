@@ -24,6 +24,10 @@ public class Scheduler {
 	@Autowired
 	private PageService		pageService;
 
+	@Value("${spring.datasource.driverClassName}")
+	private String			driverClassName;
+
+	
 	@Value("${spring.datasource.url}")
 	private String			datasourceUrl;
 
@@ -37,8 +41,8 @@ public class Scheduler {
 	private String			databaseBackupPath;
 
 	// @Scheduled(cron = "0 * * * * ?")
-	@Scheduled(cron = "0 0 1 * * ?")
-	public void backupDatabase() {
+	//@Scheduled(cron = "0 0 1 * * ?")
+	public void backupH2Database() {
 
 		new File(databaseBackupPath).mkdirs();
 
