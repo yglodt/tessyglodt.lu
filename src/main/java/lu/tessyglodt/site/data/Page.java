@@ -23,39 +23,39 @@ public class Page {
 
 	// private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-	public static final int	TYPE_KIERCHTUERMS­PROMENADEN_ARTICLE	= 0;
-	public static final int	TYPE_KIERCHTUERMS­PROMENADEN_PAGE		= 1;
+	public static final int TYPE_KIERCHTUERMS­PROMENADEN_ARTICLE = 0;
+	public static final int TYPE_KIERCHTUERMS­PROMENADEN_PAGE = 1;
 
-	public static final int	SITE_KIERCHTUERMS­PROMENADEN			= 0;
+	public static final int SITE_KIERCHTUERMS­PROMENADEN = 0;
 
-	private String			id;
+	private String id;
 
-	private String			name;
+	private String name;
 
-	private String			title;
+	private String title;
 
-	private String			content;
+	private String content;
 
-	private Municipality	municipality;
+	private Municipality municipality;
 
-	private BigDecimal		latitude;
+	private BigDecimal latitude;
 
-	private BigDecimal		longitude;
+	private BigDecimal longitude;
 
 	// private Integer/BigDecimal fotoWindow in metres ideally
 	// http://stackoverflow.com/questions/7477003/calculating-new-longtitude-latitude-from-old-n-meters
 
-	private Integer			viewCount;
+	private Integer viewCount;
 
-	private boolean			published								= true;
+	private boolean published = true;
 
-	private Date			dateCreated;
-	private Date			dateModified;
-	private Date			datePublished;
-	private Date			dateLastView;
+	private Date dateCreated;
+	private Date dateModified;
+	private Date datePublished;
+	private Date dateLastView;
 
-	private Integer			site									= 0;
-	private Integer			type									= 0;
+	private Integer site = 0;
+	private Integer type = 0;
 
 	public Page() {
 	}
@@ -194,7 +194,13 @@ public class Page {
 
 	@Override
 	public String toString() {
-		return "Page [name=" + name + ", title=" + title + ", latitude=" + latitude + ", longitude=" + longitude + ", datePublished=" + datePublished + "]";
+		return "Page [name=" + name + ", title=" + title + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", datePublished="
+				+ datePublished + "]";
+	}
+
+	public String getUrl() {
+		return "http://www.tessyglodt.lu/page/" + name;
 	}
 
 }

@@ -105,24 +105,18 @@
 			<version>2.4</version>
 		</dependency>
 
-<!--
-
-Add this dep to enable full text indexing in h2
-
-http://stackoverflow.com/questions/6641737/how-to-use-full-text-search-in-h2-database
-
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>3.6.2</version>
+			<groupId>com.rometools</groupId>
+			<artifactId>rome</artifactId>
+			<version>1.5.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers</artifactId>
-			<version>3.6.2</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
 		</dependency>
--->
+
 	</dependencies>
 
 	<!-- Package as an executable JAR -->

@@ -51,6 +51,7 @@
 		})();
 	</script>
 </c:if>
+<link href="<c:url value='/feed/nei.xml' />" title="Nei Texter" type="application/atom+xml" rel="alternate" />
 </head>
 <body>
 	<%-- Facebook SDK (for "like" button) --%>
