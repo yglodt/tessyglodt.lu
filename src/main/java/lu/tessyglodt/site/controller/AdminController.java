@@ -220,13 +220,6 @@ public class AdminController {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/admin/backup", method = RequestMethod.GET)
-	public String getBackup(final Model model) {
-
-		pageService.backup();
-		return "redirect:/";
-	}
-
 	@RequestMapping(value = "/admin/udf", method = RequestMethod.GET)
 	public String getRegisterUserDefinedFunctions(final Model model) {
 		pageService.registerUserDefinedFunctions();

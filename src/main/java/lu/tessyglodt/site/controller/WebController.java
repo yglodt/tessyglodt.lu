@@ -34,22 +34,22 @@ import com.rometools.rome.io.SyndFeedOutput;
 @EnableAutoConfiguration
 public class WebController {
 
-	final static Logger logger = LoggerFactory.getLogger(WebController.class);
+	final static Logger			logger	= LoggerFactory.getLogger(WebController.class);
 
 	@Autowired
-	private PageService pageService;
+	private PageService			pageService;
 
 	@Autowired
-	private MunicipalityService municipalityService;
+	private MunicipalityService	municipalityService;
 
 	@Autowired
-	private CantonService cantonService;
+	private CantonService		cantonService;
 
 	@Autowired
-	private DistrictService districtService;
+	private DistrictService		districtService;
 
 	@Value("${spring.datasource.driverClassName}")
-	private String driverClassName;
+	private String				driverClassName;
 
 	@RequestMapping(value = { "/", "/index.html" }, method = RequestMethod.GET)
 	public String getIndex(final Model model) {
@@ -58,7 +58,7 @@ public class WebController {
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("randomPage", pageService.getRandomPage());
-		model.addAttribute("newestPages", pageService.getNewestPages(5));
+		model.addAttribute("newestPages", pageService.getNewestPages(5, false));
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
 
@@ -66,8 +66,7 @@ public class WebController {
 	}
 
 	@RequestMapping(value = { "/page/{name}", "/page/{name}.html" }, method = RequestMethod.GET)
-	public String getPage(@PathVariable("name") final String name,
-			final Model model) {
+	public String getPage(@PathVariable("name") final String name, final Model model) {
 
 		pageService.updateViewCount(name);
 		model.addAttribute("page", pageService.getPage("name", name));
@@ -104,19 +103,18 @@ public class WebController {
 	}
 
 	@RequestMapping(value = "/sich", method = RequestMethod.GET)
-	public String getSearch(final Model model,
-			@RequestParam(value = "q", required = false) final String q) {
+	public String getSearch(final Model model, @RequestParam(value = "q", required = false) final String q) {
 
 		if (!StringUtils.isEmpty(q)) {
 			logger.debug("Searching for \"" + q + "\"");
 
 			switch (driverClassName) {
-			case "org.h2.Driver":
-				model.addAttribute("pages", pageService.getSearchH2(q));
-				break;
-			case "org.postgresql.Driver":
-				model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
-				break;
+				case "org.h2.Driver":
+					model.addAttribute("pages", pageService.getSearchH2(q));
+					break;
+				case "org.postgresql.Driver":
+					model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
+					break;
 			}
 
 		}
@@ -125,8 +123,7 @@ public class WebController {
 	}
 
 	@RequestMapping(value = "/canton/{name}", method = RequestMethod.GET)
-	public String getByCanton(final Model model,
-			@PathVariable(value = "name") final String name) {
+	public String getByCanton(final Model model, @PathVariable(value = "name") final String name) {
 
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
@@ -153,9 +150,7 @@ public class WebController {
 
 	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String getStats(final Model model) {
-
 		model.addAttribute("pages", pageService.getStats());
-
 		return "stats";
 	}
 
@@ -163,7 +158,7 @@ public class WebController {
 	@RequestMapping(value = "/feed/nei.xml", method = RequestMethod.GET)
 	public void getFeedNewestPages(HttpServletResponse response) throws IOException, FeedException {
 
-		List<Page> pages = pageService.getNewestPages(10);
+		List<Page> pages = pageService.getNewestPages(10, true);
 		SyndFeed feed = Utils.createFeed("Nei Texter", pages);
 
 		response.setContentType("application/atom+xml");
@@ -176,7 +171,8 @@ public class WebController {
 	@RequestMapping(value = "/feed/alles.xml", method = RequestMethod.GET)
 	public void getFeedAllPages(HttpServletResponse response) throws IOException, FeedException {
 
-		List<Page> pages = pageService.getPagesInfo();
+		List<Page> pages = pageService.getPages();
+
 		SyndFeed feed = Utils.createFeed("All d'Texter", pages);
 
 		response.setContentType("application/atom+xml");
@@ -184,6 +180,5 @@ public class WebController {
 		SyndFeedOutput output = new SyndFeedOutput();
 		output.output(feed, response.getWriter());
 	}
-
 
 }

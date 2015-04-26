@@ -5,14 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import lu.tessyglodt.site.data.Page;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.web.util.HtmlUtils;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndContentImpl;
@@ -53,7 +52,6 @@ public class Utils {
 		return randomNum;
 	}
 
-
 	public static SyndFeed createFeed(String name, List<Page> pages) {
 
 		SyndFeed feed = new SyndFeedImpl();
@@ -62,6 +60,7 @@ public class Utils {
 		 * atom_0.3, or atom_1.0
 		 */
 		feed.setFeedType("atom_1.0");
+		// feed.setFeedType("rss_2.0");
 
 		feed.setTitle("Kierchtuerms­promenaden");
 		feed.setDescription(name);
@@ -79,10 +78,10 @@ public class Utils {
 			entry.setAuthor("Tessy Glodt");
 
 			SyndContent content = new SyndContentImpl();
-			content.setType("text/html");
-			content.setValue(StringEscapeUtils.unescapeHtml4(page.getContent()));
+			// content.setType("text/plain");
+			content.setValue(HtmlUtils.htmlUnescape(page.getContent()));
 
-			entry.setContents(Collections.singletonList(content));
+			// entry.setContents(Collections.singletonList(content));
 			entries.add(entry);
 		}
 

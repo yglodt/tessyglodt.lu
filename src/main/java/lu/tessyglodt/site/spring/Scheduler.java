@@ -1,20 +1,11 @@
 package lu.tessyglodt.site.spring;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import lu.tessyglodt.site.service.PageService;
 
 import org.apache.log4j.Logger;
-import org.h2.tools.Script;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class Scheduler {
@@ -27,7 +18,6 @@ public class Scheduler {
 	@Value("${spring.datasource.driverClassName}")
 	private String			driverClassName;
 
-	
 	@Value("${spring.datasource.url}")
 	private String			datasourceUrl;
 
@@ -41,31 +31,28 @@ public class Scheduler {
 	private String			databaseBackupPath;
 
 	// @Scheduled(cron = "0 * * * * ?")
-	//@Scheduled(cron = "0 0 1 * * ?")
+	// @Scheduled(cron = "0 0 1 * * ?")
 	public void backupH2Database() {
-
-		new File(databaseBackupPath).mkdirs();
-
-		final String backupName = (StringUtils.isEmpty(databaseBackupPath) ? "/tmp" : databaseBackupPath) + "/backup-db-tessyglodt_lu-" + new SimpleDateFormat("dd").format(new Date()) + ".sql";
-
-		logger.debug("Backing up database to file " + backupName);
-
-		try {
-			Script.process(datasourceUrl, datasourceUsername, datasourcePassword, backupName, "", "");
-		} catch (final SQLException e) {
-			logger.error(e.getMessage());
-		}
-
-		logger.debug("Compressing database backup");
-
-		try {
-			final String[] commande = { "bzip2", "--best", backupName };
-			final Process p = Runtime.getRuntime().exec(commande);
-			p.waitFor();
-		} catch (final IOException | InterruptedException e) {
-			logger.error(e.getMessage());
-		}
-
+		/*
+		 * new File(databaseBackupPath).mkdirs();
+		 * 
+		 * final String backupName = (StringUtils.isEmpty(databaseBackupPath) ?
+		 * "/tmp" : databaseBackupPath) + "/backup-db-tessyglodt_lu-" + new
+		 * SimpleDateFormat("dd").format(new Date()) + ".sql";
+		 * 
+		 * logger.debug("Backing up database to file " + backupName);
+		 * 
+		 * try { Script.process(datasourceUrl, datasourceUsername,
+		 * datasourcePassword, backupName, "", ""); } catch (final SQLException
+		 * e) { logger.error(e.getMessage()); }
+		 * 
+		 * logger.debug("Compressing database backup");
+		 * 
+		 * try { final String[] commande = { "bzip2", "--best", backupName };
+		 * final Process p = Runtime.getRuntime().exec(commande); p.waitFor(); }
+		 * catch (final IOException | InterruptedException e) {
+		 * logger.error(e.getMessage()); }
+		 */
 	}
 
 }
