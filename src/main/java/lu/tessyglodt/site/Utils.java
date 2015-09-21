@@ -1,16 +1,11 @@
 package lu.tessyglodt.site;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import lu.tessyglodt.site.data.Page;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import com.rometools.rome.feed.synd.SyndContent;
@@ -30,14 +25,12 @@ public class Utils {
 		}
 	}
 
-	public static File stream2file(final InputStream in) throws IOException {
-		final File tempFile = File.createTempFile("stream2file", ".tmp");
-		tempFile.deleteOnExit();
-		try (FileOutputStream out = new FileOutputStream(tempFile)) {
-			IOUtils.copy(in, out);
-		}
-		return tempFile;
-	}
+	/*
+	 * public static File stream2file(final InputStream in) throws IOException {
+	 * final File tempFile = File.createTempFile("stream2file", ".tmp");
+	 * tempFile.deleteOnExit(); try (FileOutputStream out = new
+	 * FileOutputStream(tempFile)) { IOUtils.copy(in, out); } return tempFile; }
+	 */
 
 	public static int randInt(final int min, final int max) {
 
