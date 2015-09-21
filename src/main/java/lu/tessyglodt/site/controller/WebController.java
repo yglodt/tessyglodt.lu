@@ -3,6 +3,7 @@ package lu.tessyglodt.site.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lu.tessyglodt.site.Utils;
@@ -66,9 +67,17 @@ public class WebController {
 	}
 
 	@RequestMapping(value = { "/page/{name}", "/page/{name}.html" }, method = RequestMethod.GET)
-	public String getPage(@PathVariable("name") final String name, final Model model) {
+	public String getPage(@PathVariable("name") final String name, final Model model, HttpServletRequest request) {
 
-		pageService.updateViewCount(name);
+		String ua = request.getHeader("user-agent");
+
+		if (ua != null) {
+			ua = ua.toLowerCase();
+			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp"))) {
+				pageService.updateViewCount(name);
+			}
+		}
+
 		model.addAttribute("page", pageService.getPage("name", name));
 
 		return "page";
