@@ -5,10 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import lu.tessyglodt.site.Utils;
-import lu.tessyglodt.site.data.Page;
-import lu.tessyglodt.site.data.PageMapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +12,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Page;
+import lu.tessyglodt.site.data.PageMapper;
 
 @Component
 public class PageService {
@@ -57,7 +57,7 @@ public class PageService {
 	public Map<String, Object> getRandomPage() {
 		final String sql = "select count(*) from page";
 
-		final Integer rowCount = jdbcTemplate.queryForInt(sql);
+		final Integer rowCount = jdbcTemplate.queryForObject(sql, Integer.class);
 
 		return jdbcTemplate.queryForList("select title, name, content from page order by id limit 1 offset ?", new Object[] { Utils.randInt(1, rowCount) }).get(0);
 	}
@@ -139,10 +139,10 @@ public class PageService {
 
 	public List<Map<String, Object>> getSearchPostgreSQL(final String q) {
 		/*
-		 * 
-		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-enough
-		 * /
-		 * 
+		 *
+		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-
+		 * enough /
+		 *
 		 * http://stackoverflow.com/questions/10027996/postgres-fulltext-index
 		 */
 		final String sql = "select "
@@ -166,7 +166,8 @@ public class PageService {
 		return getPagesWithWhere(
 				"left join municipality m on m.id = p.municipality "
 						+ "left join canton c on c.id = m.canton "
-						+ "where slugify(c.name) = ? order by title asc", new Object[] { cantonName }, false);
+						+ "where slugify(c.name) = ? order by title asc",
+				new Object[] { cantonName }, false);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
@@ -216,8 +217,10 @@ public class PageService {
 	}
 
 	public void registerUserDefinedFunctions() {
-		// this.jdbcTemplate.update("create alias if not exists slugify for \"lu.tessyglodt.site.H2Functions.slugify\";");
-		// this.jdbcTemplate.update("create alias if not exists ft_init for \"org.h2.fulltext.fulltext.init\";");
+		// this.jdbcTemplate.update("create alias if not exists slugify for
+		// \"lu.tessyglodt.site.H2Functions.slugify\";");
+		// this.jdbcTemplate.update("create alias if not exists ft_init for
+		// \"org.h2.fulltext.fulltext.init\";");
 	}
 
 	/*
@@ -226,14 +229,14 @@ public class PageService {
 	 * "/data/database-backup-" + new
 	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".sql", "", "");
 	 * } catch (final SQLException e) { logger.error(e.getMessage()); } }
-	 * 
+	 *
 	 * public void restore() { // java -cp //
 	 * "$dir/h2-1.3.174.jar:$dir/slugify-2.1.2.jar:$dir/lu/tessyglodt/site/:$H2DRIVERS:$CLASSPATH"
 	 * // org.h2.tools.RunScript -url jdbc:h2:/tmp/test2 -user sa -script //
 	 * /tmp/db.sql
-	 * 
+	 *
 	 * // http://www.h2database.com/javadoc/org/h2/tools/RunScript.html
-	 * 
+	 *
 	 * try { RunScript.execute( "jdbc:h2:/data/restore-" + new
 	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), "sa", "",
 	 * "/data/file_to_restore.sql", null, false); } catch (final SQLException e)
