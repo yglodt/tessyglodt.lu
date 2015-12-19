@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>lu.tessyglodt.site</artifactId>
 
-	<!-- Inherit defaults from Spring Boot -->
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.3.0.RELEASE</version>
+		<version>1.3.1.RELEASE</version>
 	</parent>
 
 	<packaging>war</packaging>
@@ -40,12 +39,8 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
--->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -79,7 +74,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1203-jdbc42</version>
 		</dependency>
 
 		<dependency>
@@ -93,13 +87,7 @@
 			<artifactId>slugify-integration-jstl</artifactId>
 			<version>2.1.3</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
--->
+
 		<dependency>
 			<groupId>com.rometools</groupId>
 			<artifactId>rome</artifactId>
@@ -108,10 +96,10 @@
 
 	</dependencies>
 
-	<!-- Package as an executable JAR -->
 	<build>
 		<finalName>tessyglodt</finalName>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -157,11 +145,8 @@
 							<jsSourceDir>resources/js</jsSourceDir>
 							<jsSourceFiles>
 								<jsSourceFile>bootstrap-without-jquery.js</jsSourceFile>
-								<!--
-								<jsSourceFile>jquery.js</jsSourceFile>
-								<jsSourceFile>bootstrap.js</jsSourceFile>
-								<jsSourceFile>script.js</jsSourceFile>
-								-->
+								<!-- <jsSourceFile>jquery.js</jsSourceFile> <jsSourceFile>bootstrap.js</jsSourceFile> 
+									<jsSourceFile>script.js</jsSourceFile> -->
 							</jsSourceFiles>
 							<jsTargetDir>resources/js</jsTargetDir>
 							<jsFinalFile>${timestamp}.js</jsFinalFile>
@@ -169,7 +154,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -191,7 +175,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>replacer</artifactId>
