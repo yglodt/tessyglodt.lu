@@ -73,7 +73,7 @@ public class WebController {
 
 		if (ua != null) {
 			ua = ua.toLowerCase();
-			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("bingbot"))) {
+			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("bingbot")) && (!ua.contains("facebookexternalhit"))) {
 				pageService.updateViewCount(name);
 			} else {
 				logger.debug("Do not update viewCount for " + name + " since client looks like a bot: " + ua);
