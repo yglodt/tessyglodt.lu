@@ -70,17 +70,19 @@ public class WebController {
 	public String getPage(@PathVariable("name") final String name, final Model model, HttpServletRequest request) {
 
 		String ua = request.getHeader("user-agent");
+		boolean log = true;
 
 		if (ua != null) {
 			ua = ua.toLowerCase();
-			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("bingbot")) && (!ua.contains("facebookexternalhit"))) {
+			if ((!ua.contains("bot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("facebookexternalhit"))) {
 				pageService.updateViewCount(name);
 			} else {
-				logger.debug("Do not update viewCount for " + name + " since client looks like a bot: " + ua);
+				logger.debug("Not updating viewCount for " + name + " since client is a bot: " + ua);
+				log = false;
 			}
 		}
 
-		model.addAttribute("page", pageService.getPage("name", name));
+		model.addAttribute("page", pageService.getPage("name", name, log));
 
 		return "page";
 	}

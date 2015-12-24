@@ -94,7 +94,7 @@ public class PageService {
 
 	@CacheEvict(value = "accessInfo", allEntries = true)
 	@Cacheable(value = "page", key = "#root.methodName + #p0 + #p1")
-	public Page getPage(final String key, final String value) {
+	public Page getPage(final String key, final String value, boolean log) {
 		final String sql = "select p.*, d.id as dist_id, "
 				+ "d.name as dist_name, c.id as can_id, "
 				+ "c.name as can_name, m.id as mun_id, "
@@ -103,7 +103,9 @@ public class PageService {
 				+ "left join canton c on c.id = m.canton "
 				+ "left join district d on d.id = c.district where p." + key
 				+ " = ?";
-		logger.debug("key: " + key + ", value: " + value);
+		if (log) {
+			logger.debug("key: " + key + ", value: " + value);
+		}
 		final Page o = jdbcTemplate.queryForObject(sql, new Object[] { value }, new PageMapper());
 		return o;
 	}

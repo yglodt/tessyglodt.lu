@@ -8,15 +8,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 
-import lu.tessyglodt.site.data.Canton;
-import lu.tessyglodt.site.data.District;
-import lu.tessyglodt.site.data.Municipality;
-import lu.tessyglodt.site.data.Page;
-import lu.tessyglodt.site.service.CantonService;
-import lu.tessyglodt.site.service.DistrictService;
-import lu.tessyglodt.site.service.MunicipalityService;
-import lu.tessyglodt.site.service.PageService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +25,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.xml.sax.SAXException;
+
+import lu.tessyglodt.site.data.Canton;
+import lu.tessyglodt.site.data.District;
+import lu.tessyglodt.site.data.Municipality;
+import lu.tessyglodt.site.data.Page;
+import lu.tessyglodt.site.service.CantonService;
+import lu.tessyglodt.site.service.DistrictService;
+import lu.tessyglodt.site.service.MunicipalityService;
+import lu.tessyglodt.site.service.PageService;
 
 @Controller
 @EnableAutoConfiguration
@@ -56,7 +56,7 @@ public class AdminController {
 	@RequestMapping(value = "/admin/pageform", method = RequestMethod.GET)
 	public String getPageForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
 
-		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPage("id", id));
+		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPage("id", id, false));
 
 		model.addAttribute("municipalities", municipalityService.getMunicipalities());
 		model.addAttribute("cantons", cantonService.getCantons());
@@ -88,12 +88,15 @@ public class AdminController {
 			if (StringUtils.isEmpty(page.getId())) {
 				pageService.insert(page);
 
+				logger.debug("Inserted " + page);
+
 				// POST to Facebook:
 				// http://stackoverflow.com/questions/8487126/spring-social-facebook-publish-post-api-details
 
 				return "redirect:/";
 			} else {
 				pageService.update(page);
+				logger.debug("Updated " + page);
 				return "redirect:/page/" + page.getName();
 			}
 
@@ -212,9 +215,9 @@ public class AdminController {
 	public String getImport(final Model model) throws ParserConfigurationException, SAXException, IOException {
 		/*
 		 * this.pageService.deleteAllPages();
-		 * 
+		 *
 		 * final List<Page> pages = Import.doImport();
-		 * 
+		 *
 		 * for (final Page page : pages) { this.pageService.insert(page); }
 		 */
 		return "redirect:/";
