@@ -6,13 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lu.tessyglodt.site.Utils;
-import lu.tessyglodt.site.data.Page;
-import lu.tessyglodt.site.service.CantonService;
-import lu.tessyglodt.site.service.DistrictService;
-import lu.tessyglodt.site.service.MunicipalityService;
-import lu.tessyglodt.site.service.PageService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
+
+import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Page;
+import lu.tessyglodt.site.service.CantonService;
+import lu.tessyglodt.site.service.DistrictService;
+import lu.tessyglodt.site.service.MunicipalityService;
+import lu.tessyglodt.site.service.PageService;
 
 @Controller
 @EnableAutoConfiguration
@@ -73,8 +73,10 @@ public class WebController {
 
 		if (ua != null) {
 			ua = ua.toLowerCase();
-			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp"))) {
+			if ((!ua.contains("googlebot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("bingbot"))) {
 				pageService.updateViewCount(name);
+			} else {
+				logger.debug("Do not update viewCount for " + name + " since client looks like a bot: " + ua);
 			}
 		}
 
