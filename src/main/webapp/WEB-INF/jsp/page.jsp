@@ -2,7 +2,7 @@
 
 <%@ include file="_header.jsp"%>
 
-<script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1"></script>
+<script type="text/javascript" src="https://ssl.panoramio.com/wapi/wapi.js?v=1"></script>
 
 <div class="row">
 
