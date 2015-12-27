@@ -24,15 +24,15 @@
 			center : center,
 			mapTypeId : google.maps.MapTypeId.ROADMAP,
 			draggable : true,
-			scrollwheel : false,
+			scrollwheel : true,
 			disableDoubleClickZoom : true
 		};
 
-		var map = new google.maps.Map(document.getElementById("bigmap"), myOptions);
+		var n = new google.maps.Map(document.getElementById("bigmap"), myOptions);
 
 		//<c:forEach items="${pageInfos}" var="page"><c:if test="${not empty page.latitude and not empty page.longitude}">
-		var myLatlng = new google.maps.LatLng("${page.latitude}","${page.longitude}"); var marker = new google.maps.Marker({position:myLatlng,title:"${page.title}"});
-		google.maps.event.addListener(marker, 'click', function() {window.location.href = "<c:url value='/page/' />${page.name}";}); marker.setMap(map);
+		var l = new google.maps.LatLng("<fmt:formatNumber maxIntegerDigits='2' value='${page.latitude}' maxFractionDigits='6' />","<fmt:formatNumber maxIntegerDigits='2' value='${page.longitude}' maxFractionDigits='6' />"); var m = new google.maps.Marker({position:l,title:"${page.title}"});
+		google.maps.event.addListener(m, 'click', function() {window.location.href = "<c:url value='/page/' />${page.name}";}); m.setMap(n);
 		//</c:if></c:forEach>
 
 	}
