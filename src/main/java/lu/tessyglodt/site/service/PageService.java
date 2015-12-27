@@ -3,6 +3,7 @@ package lu.tessyglodt.site.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -20,7 +21,9 @@ import lu.tessyglodt.site.data.PageMapper;
 @Component
 public class PageService {
 
-	final static Logger		logger	= LoggerFactory.getLogger(PageService.class);
+	final static Logger		logger			= LoggerFactory.getLogger(PageService.class);
+
+	private final Random	randomGenerator	= new Random();
 
 	@Autowired
 	private JdbcTemplate	jdbcTemplate;
@@ -54,12 +57,10 @@ public class PageService {
 		return rows;
 	}
 
-	public Map<String, Object> getRandomPage() {
-		final String sql = "select count(*) from page";
-
-		final Integer rowCount = jdbcTemplate.queryForObject(sql, Integer.class);
-
-		return jdbcTemplate.queryForList("select title, name, content from page order by id limit 1 offset ?", new Object[] { Utils.randInt(1, rowCount) }).get(0);
+	public Page getRandomPage() {
+		List<Page> allPages = getPagesInfo();
+		Page randomPage = allPages.get(randomGenerator.nextInt(allPages.size()));
+		return getPage("name", randomPage.getName(), false);
 	}
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")

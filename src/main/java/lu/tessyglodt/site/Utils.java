@@ -2,9 +2,6 @@ package lu.tessyglodt.site;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import lu.tessyglodt.site.data.Page;
 
 import org.springframework.web.util.HtmlUtils;
 
@@ -14,6 +11,8 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndEntryImpl;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.feed.synd.SyndFeedImpl;
+
+import lu.tessyglodt.site.data.Page;
 
 public class Utils {
 
@@ -31,19 +30,6 @@ public class Utils {
 	 * tempFile.deleteOnExit(); try (FileOutputStream out = new
 	 * FileOutputStream(tempFile)) { IOUtils.copy(in, out); } return tempFile; }
 	 */
-
-	public static int randInt(final int min, final int max) {
-
-		// NOTE: Usually this should be a field rather than a method
-		// variable so that it is not re-seeded every call.
-		final Random rand = new Random();
-
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
-		final int randomNum = rand.nextInt((max - min) + 1) + min;
-
-		return randomNum;
-	}
 
 	public static SyndFeed createFeed(String name, List<Page> pages) {
 
