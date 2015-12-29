@@ -100,16 +100,11 @@
 							<li><a href="<c:url value='/admin/listmcd' />">Konfig</a></li>
 							<li><a href="<c:url value='/logout' />">Log out</a></li>
 						</sec:authorize>
-						<%--
-					<sec:authorize access="not isAuthenticated()">
-						<li><a href="<c:url value='/login' />">Login</a></li>
-					</sec:authorize>
-					--%>
 					</ul>
 
-					<form class="navbar-form navbar-left" role="search" action="${pageContext.request.contextPath}/sich">
+					<form class="navbar-form navbar-right" role="search" action="${pageContext.request.contextPath}/sich">
 						<div class="form-group">
-							<input type="text" name="q" class="form-control input-sm" placeholder="Sichbegrëff" value="${param.q}">
+							<input type="text" name="q" class="form-control input-sm" placeholder="Sichbegrëff" value="${param.q}" size="10">&nbsp;
 						</div>
 						<button type="submit" class="btn btn-default btn-sm">Sichen</button>
 					</form>
