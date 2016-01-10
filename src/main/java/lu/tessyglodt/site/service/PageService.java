@@ -60,7 +60,7 @@ public class PageService {
 	public Page getRandomPage() {
 		List<Page> allPages = getPagesInfo();
 		Page randomPage = allPages.get(randomGenerator.nextInt(allPages.size()));
-		return getPage("name", randomPage.getName(), false);
+		return getPageByProperty("name", randomPage.getName(), false);
 	}
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")
@@ -95,17 +95,17 @@ public class PageService {
 
 	@CacheEvict(value = "accessInfo", allEntries = true)
 	@Cacheable(value = "page", key = "#root.methodName + #p0 + #p1")
-	public Page getPage(final String key, final String value, boolean log) {
+	public Page getPageByProperty(final String property, final String value, boolean log) {
 		final String sql = "select p.*, d.id as dist_id, "
 				+ "d.name as dist_name, c.id as can_id, "
 				+ "c.name as can_name, m.id as mun_id, "
 				+ "m.name as mun_name from page p "
 				+ "left join municipality m on m.id = p.municipality "
 				+ "left join canton c on c.id = m.canton "
-				+ "left join district d on d.id = c.district where p." + key
+				+ "left join district d on d.id = c.district where p." + property
 				+ " = ?";
 		if (log) {
-			logger.debug("key: " + key + ", value: " + value);
+			logger.debug("key: " + property + ", value: " + value);
 		}
 		final Page o = jdbcTemplate.queryForObject(sql, new Object[] { value }, new PageMapper());
 		return o;

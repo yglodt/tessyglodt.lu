@@ -56,7 +56,7 @@ public class AdminController {
 	@RequestMapping(value = "/admin/pageform", method = RequestMethod.GET)
 	public String getPageForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
 
-		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPage("id", id, false));
+		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPageByProperty("id", id, false));
 
 		model.addAttribute("municipalities", municipalityService.getMunicipalities());
 		model.addAttribute("cantons", cantonService.getCantons());

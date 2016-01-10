@@ -77,12 +77,13 @@ public class WebController {
 			if ((!ua.contains("bot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("facebookexternalhit"))) {
 				pageService.updateViewCount(name);
 			} else {
-				logger.debug("Not updating viewCount for " + name + " since client is a bot: " + ua);
+				// logger.debug("Not updating viewCount for " + name + " since
+				// client is a bot: " + ua);
 				log = false;
 			}
 		}
 
-		model.addAttribute("page", pageService.getPage("name", name, log));
+		model.addAttribute("page", pageService.getPageByProperty("name", name, log));
 
 		return "page";
 	}
