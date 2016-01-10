@@ -195,4 +195,10 @@ public class WebController {
 		output.output(feed, response.getWriter());
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
+	public String getRobots() {
+		return "";
+	}
+
 }
