@@ -45,5 +45,4 @@ public class ConfigWebMvc extends WebMvcConfigurerAdapter {
 	public CacheManager cacheManager() {
 		return new ConcurrentMapCacheManager("page", "accessInfo");
 	}
-
 }

@@ -1,52 +1,55 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 
 <%@ include file="_header.jsp"%>
-
+<%--
 <script type="text/javascript" src="https://ssl.panoramio.com/wapi/wapi.js?v=1"></script>
+--%>
+<div class="cont main">
 
-<div class="row">
-
-	<div class="col-md-9 text">
-		<h3>${page.title}</h3> ${page.content}
-	</div>
-
-	<div class="col-md-3">
-
-		<sec:authorize access="isAuthenticated()">
-			<p><a class="btn btn-warning" href="<c:url value='/admin/pageform' />?id=${page.id}">Änneren</a></p>
-		</sec:authorize>
-
-		<h4>Informatiounen zu ${page.title}</h4>
-
-		<table class="table">
-
-			<tbody>
-				<tr>
-					<th>Gemeng</th>
-					<td>${page.municipality.name}</td>
-				</tr>
-				<tr>
-					<th>Kanton</th>
-					<td>${page.municipality.canton.name}</td>
-				</tr>
-				<tr>
-					<th>Distrikt</th>
-					<td>${page.municipality.canton.district.name}</td>
-				</tr>
-				<tr>
-					<th>Publizéiert den</th>
-					<td><fmt:formatDate pattern="dd.MM.yyyy" value="${page.datePublished}" /></td>
-				</tr>
-			</tbody>
-		</table>
-
-		<h4>Op der Landkaart</h4>
-		<div id="map"></div>
-
-		<h4>Fotoen aus der Ëmgéigend</h4>
-		<div id="photos"></div>
-
-	</div>
+	<article class="text">
+		<h3>${page.title}</h3>
+		${page.content}
+	</article>
+	<aside>
+		<div class="fitem">
+			<sec:authorize access="isAuthenticated()">
+				<p>
+					<a style="color: darkred; font-weight: bold;" href="<c:url value='/admin/pageform' />?id=${page.id}">Änneren</a>
+				</p>
+			</sec:authorize>
+			<h4>Informatiounen zu ${page.title}</h4>
+			<table class="table">
+				<tbody>
+					<tr>
+						<th>Gemeng</th>
+						<td>${page.municipality.name}</td>
+					</tr>
+					<tr>
+						<th>Kanton</th>
+						<td>${page.municipality.canton.name}</td>
+					</tr>
+					<tr>
+						<th>Distrikt</th>
+						<td>${page.municipality.canton.district.name}</td>
+					</tr>
+					<tr>
+						<th>Publizéiert den</th>
+						<td><fmt:formatDate pattern="dd.MM.yyyy" value="${page.datePublished}" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="fitem">
+			<h4>Op der Landkaart</h4>
+			<div id="map"></div>
+		</div>
+		<%--
+		<div class="fitem">
+			<h4>Fotoen aus der Ëmgéigend</h4>
+			<div id="photos"></div>
+		</div>
+		--%>
+	</aside>
 
 </div>
 
@@ -82,7 +85,7 @@
 		// To add the marker to the map, call setMap();
 		marker.setMap(map);
 
-		showPhotos();
+		//showPhotos();
 	}
 <%-- http://gis.stackexchange.com/questions/33238/how-do-you-get-the-coordinates-from-a-click-or-drag-event-in-the-google-maps-api --%>
 	function showPhotos() {
@@ -101,8 +104,8 @@
 		};
 
 		var myOptions = {
-			'width' : '100%',
-			'height' : 200,
+			'width' : 285,
+			'height' : 285,
 			croppedPhotos : false
 		};
 

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import com.github.slugify.Slugify;
 
 public class Page {
@@ -200,7 +203,16 @@ public class Page {
 	}
 
 	public String getUrl() {
-		return "http://www.tessyglodt.lu/page/" + name;
+		return "https://www.tessyglodt.lu/page/" + name;
+	}
+
+	public String getTweet() {
+		// https://support.twitter.com/articles/78124
+		Document content = Jsoup.parse(getContent());
+		String contentAsText = content.text().trim();
+		String lengthIndicator = " 12345678901234567890123 #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
+		String suffix = " " + getUrl() + " #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
+		return "\"" + contentAsText.substring(0, 137 - lengthIndicator.length()) + "…\"" + suffix;
 	}
 
 }

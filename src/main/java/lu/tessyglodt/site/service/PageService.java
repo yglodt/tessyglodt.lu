@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.social.twitter.api.TweetData;
+import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Component;
 
+import lu.tessyglodt.site.TwitterTemplateCreator;
 import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
@@ -21,12 +24,15 @@ import lu.tessyglodt.site.data.PageMapper;
 @Component
 public class PageService {
 
-	final static Logger		logger			= LoggerFactory.getLogger(PageService.class);
+	final static Logger				logger			= LoggerFactory.getLogger(PageService.class);
 
-	private final Random	randomGenerator	= new Random();
+	private final Random			randomGenerator	= new Random();
 
 	@Autowired
-	private JdbcTemplate	jdbcTemplate;
+	private JdbcTemplate			jdbcTemplate;
+
+	@Autowired
+	private TwitterTemplateCreator	twitterCreator;
 
 	@Cacheable(value = "page", key = "#root.methodName")
 	public Long countPages() {
@@ -63,6 +69,19 @@ public class PageService {
 		return getPageByProperty("name", randomPage.getName(), false);
 	}
 
+	private List<Page> getPagesWithWhere(final String clause, final Object[] params, boolean fullContent) {
+		final String sql = "select p.id, p.name, " + "p.title, "
+				+ "0 as latitude, " + "0 as longitude, "
+				+ ((fullContent) ? "p.content, " : "'' as content, ")
+				+ "0 as dist_id, '' as dist_name, "
+				+ "0 as can_id, '' as can_name, 0 as mun_id, "
+				+ "'' as mun_name, p.date_published, p.published, "
+				+ "p.site, p.type from page p " + clause;
+		final List<Page> rows = jdbcTemplate.query(sql, params, new PageMapper());
+		return rows;
+
+	}
+
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")
 	public List<Page> getLastReadPages(final int i) {
 		return getPagesWithWhere("order by date_last_view desc limit ?", new Object[] { i }, false);
@@ -78,19 +97,6 @@ public class PageService {
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")
 	public List<Page> getMostReadPages(final int i) {
 		return getPagesWithWhere("order by view_count desc limit ?", new Object[] { i }, false);
-	}
-
-	private List<Page> getPagesWithWhere(final String clause, final Object[] params, boolean fullContent) {
-		final String sql = "select p.id, p.name, " + "p.title, "
-				+ "0 as latitude, " + "0 as longitude, "
-				+ ((fullContent) ? "p.content, " : "'' as content, ")
-				+ "0 as dist_id, '' as dist_name, "
-				+ "0 as can_id, '' as can_name, 0 as mun_id, "
-				+ "'' as mun_name, p.date_published, p.published, "
-				+ "p.site, p.type from page p " + clause;
-		final List<Page> rows = jdbcTemplate.query(sql, params, new PageMapper());
-		return rows;
-
 	}
 
 	@CacheEvict(value = "accessInfo", allEntries = true)
@@ -256,6 +262,12 @@ public class PageService {
 	public List<Map<String, Object>> getStats() {
 		final String sql = "select name, title, view_count, date_last_view from page order by view_count desc";
 		return jdbcTemplate.queryForList(sql);
+	}
+
+	public void tweetPage(Page page) {
+		logger.debug("Tweeting " + page.getTweet());
+		Twitter tt = twitterCreator.getTwitterTemplate();
+		tt.timelineOperations().updateStatus(new TweetData(page.getTweet()).atLocation(page.getLongitude().floatValue(), page.getLatitude().floatValue()));
 	}
 
 }

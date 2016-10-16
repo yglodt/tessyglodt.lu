@@ -2,15 +2,13 @@
 
 <%@ include file="_header.jsp"%>
 
-<h4>Iwwert des Säit</h4>
-
-<div class="row">
-
-	<div class="col-md-9 text">
+<div class="cont main">
+	<article>
+		<h4>Iwwert des Säit</h4>
 		<p>Radio Texter héiert ee normalerweis just eemol. Presentéiere se lëtzebuerger Uertschaften a Kierchen mat mol lokalen a folkloristeschen mol historeschen ’Trouvaillen‘, sinn dës no e puer Minutte verflunn!&nbsp;Ausgangspunkt zu de Stad- an Duerfporträiten ware Commentairen zur Plaz vun där d’Sonndesmass iwwerdroe gouf. Een Deel dovun gouf an engem Buch veréiwegt (…vun deem et just nach wéineg Exempläre gëtt.)</p>
 		<p>Ënner dem Titel ‚Kierchtuermspromenaden’ ass hei elo d’Suite um Internet disponibel. De Choix vun dëse ‘Promenaden‘ ass op Uertschafte gefall wou grad Kiermes war, aus deenen d’Radios-Mass koum oder vun deene bal ni geschwat gëtt.</p>
 		<p>Dës perséinlech Websäit proposéiert "eng breet Panoplie vu Geschichtlechem, Anekdoteschem, Kontemplativem a Remarquabelem aus dem Gemengeliewen an der Volleksreligiositéit" (Georges Hellinghausen - ‘Warte‘ 26.06.2008 - zu de ‚Kierchtuerms-Causerien‘.) Eist klengt Land huet nämlech charakteristesch Bräich an eng no Regioun ënnerschiddlech Mentalitéit opweises... Vermëscht mat engem Hauch Folklore ergëtt dëst zesummen, d’Leit, d‘Landschaft, d‘Duerfgeschicht an d’Kierch ee Ganzt.</p>
-		<p>Di kleng Radiosbäiträg komme säit 2003 sonndesmuerges um DNR; hir Zeilen adresséiere sech un Interessente vun eisem Patrimoine an u jiddereen dee Loscht huet a Gedanken an eisem Land op Entdeckung ze goen!</p>
+		<p>Di kleng Radiosbäiträg koume säit 2003 sonndesmuerges um DNR; hir Zeilen adresséiere sech un Interessente vun eisem Patrimoine an u jiddereen dee Loscht huet a Gedanken an eisem Land op Entdeckung ze goen!</p>
 		<h3>Quellen</h3>
 		<ul>
 			<li>Das alte Luxemburg heute, Krantz/Quintus</li>
@@ -46,13 +44,15 @@
 			<li>Archiv Luxemburger Wort</li>
 			<li>Série 'une commune et son histoire', La Voix )</li>
 			<li><a target="_blank" href="http://www.glasmalerei-ev.net/">Forschungsstelle Glasmalerei</a></li>
-			<li>A vill mëndlech Témoignagen<i><br> </i></li>
+			<li>A vill mëndlech Témoignagen</li>
 		</ul>
-		<p><em>De Sourcecode vun dësem Internetsite ass op <a target="_blank" href="https://github.com/yglodt/tessyglodt.lu">GitHub</a> verëffentlecht.
-		</em></p>
-	</div>
+		<p>
+			<em>De Sourcecode vun dësem Internetsite ass op <a target="_blank" href="https://github.com/yglodt/tessyglodt.lu">GitHub</a> verëffentlecht.
+			</em>
+		</p>
+	</article>
 
-	<div class="col-md-3">
+	<aside>
 		<%
 			pageContext.setAttribute("chars", 250);
 		%>
@@ -62,7 +62,7 @@
 
 		<%@ include file="_mostReadPages.jsp"%>
 
-	</div>
+	</aside>
 
 </div>
 

@@ -54,7 +54,6 @@ public class WebController {
 
 	@RequestMapping(value = { "/", "/index.html" }, method = RequestMethod.GET)
 	public String getIndex(final Model model) {
-
 		model.addAttribute("pages", pageService.getPagesInfo());
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
@@ -62,7 +61,6 @@ public class WebController {
 		model.addAttribute("newestPages", pageService.getNewestPages(5, false));
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
-
 		return "index";
 	}
 
@@ -74,7 +72,13 @@ public class WebController {
 
 		if (ua != null) {
 			ua = ua.toLowerCase();
-			if ((!ua.contains("bot")) && (!ua.contains("spider")) && (!ua.contains("slurp")) && (!ua.contains("facebookexternalhit"))) {
+			if ((!ua.contains("bot")) &&
+					(!ua.contains("spider")) &&
+					(!ua.contains("slurp")) &&
+					(!ua.contains("scrap")) &&
+					(!ua.contains("netcraft")) &&
+					(!ua.contains("crawl")) &&
+					(!ua.contains("facebookexternalhit"))) {
 				pageService.updateViewCount(name);
 			} else {
 				// logger.debug("Not updating viewCount for " + name + " since
@@ -83,36 +87,35 @@ public class WebController {
 			}
 		}
 
-		model.addAttribute("page", pageService.getPageByProperty("name", name, log));
+		Page page = pageService.getPageByProperty("name", name, log);
+
+		model.addAttribute("page", page);
+
+		// logger.debug(page.getTweet());
+		// pageService.tweetPage(page);
 
 		return "page";
 	}
 
 	@RequestMapping(value = { "/kaart", "/kaart.html" }, method = RequestMethod.GET)
 	public String getMap(final Model model) {
-
 		model.addAttribute("pageInfos", pageService.getPagesInfo());
-
 		return "map";
 	}
 
 	@RequestMapping(value = { "/apropos", "/apropos.html" }, method = RequestMethod.GET)
 	public String getAbout(final Model model) {
-
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
 		model.addAttribute("randomPage", pageService.getRandomPage());
-
 		return "about";
 	}
 
 	@RequestMapping(value = { "/auteur", "/auteur.html" }, method = RequestMethod.GET)
 	public String getAuthor(final Model model) {
-
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
 		model.addAttribute("randomPage", pageService.getRandomPage());
-
 		return "author";
 	}
 
@@ -138,27 +141,21 @@ public class WebController {
 
 	@RequestMapping(value = "/canton/{name}", method = RequestMethod.GET)
 	public String getByCanton(final Model model, @PathVariable(value = "name") final String name) {
-
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("pages", pageService.getPagesByCanton(name));
-		model.addAttribute("name", cantonService.getCantonBySlugifiedName(name)
-				.getName());
+		model.addAttribute("name", cantonService.getCantonBySlugifiedName(name).getName());
 		model.addAttribute("title", "Kanton");
-
 		return "pagelistbymcd";
 	}
 
 	@RequestMapping(value = "/district/{name}", method = RequestMethod.GET)
 	public String getByDistrict(final Model model, @PathVariable(value = "name") final String name) {
-
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("pages", pageService.getPagesByDistrict(name));
-		model.addAttribute("name",
-				districtService.getDistrictBySlugifiedName(name).getName());
+		model.addAttribute("name", districtService.getDistrictBySlugifiedName(name).getName());
 		model.addAttribute("title", "Distrikt");
-
 		return "pagelistbymcd";
 	}
 
