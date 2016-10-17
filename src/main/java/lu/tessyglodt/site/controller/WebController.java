@@ -14,9 +14,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,31 +27,27 @@ import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
-import lu.tessyglodt.site.service.MunicipalityService;
 import lu.tessyglodt.site.service.PageService;
 
 @Controller
 @EnableAutoConfiguration
 public class WebController {
 
-	final static Logger			logger	= LoggerFactory.getLogger(WebController.class);
+	final static Logger		logger	= LoggerFactory.getLogger(WebController.class);
 
 	@Autowired
-	private PageService			pageService;
+	private PageService		pageService;
 
 	@Autowired
-	private MunicipalityService	municipalityService;
+	private CantonService	cantonService;
 
 	@Autowired
-	private CantonService		cantonService;
-
-	@Autowired
-	private DistrictService		districtService;
+	private DistrictService	districtService;
 
 	@Value("${spring.datasource.driverClassName}")
-	private String				driverClassName;
+	private String			driverClassName;
 
-	@RequestMapping(value = { "/", "/index.html" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/", "/index.html" })
 	public String getIndex(final Model model) {
 		model.addAttribute("pages", pageService.getPagesInfo());
 		model.addAttribute("cantons", cantonService.getCantons());
@@ -64,7 +59,7 @@ public class WebController {
 		return "index";
 	}
 
-	@RequestMapping(value = { "/page/{name}", "/page/{name}.html" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/page/{name}", "/page/{name}.html" })
 	public String getPage(@PathVariable("name") final String name, final Model model, HttpServletRequest request) {
 
 		String ua = request.getHeader("user-agent");
@@ -97,13 +92,13 @@ public class WebController {
 		return "page";
 	}
 
-	@RequestMapping(value = { "/kaart", "/kaart.html" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/kaart", "/kaart.html" })
 	public String getMap(final Model model) {
 		model.addAttribute("pageInfos", pageService.getPagesInfo());
 		return "map";
 	}
 
-	@RequestMapping(value = { "/apropos", "/apropos.html" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/apropos", "/apropos.html" })
 	public String getAbout(final Model model) {
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
@@ -111,7 +106,7 @@ public class WebController {
 		return "about";
 	}
 
-	@RequestMapping(value = { "/auteur", "/auteur.html" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/auteur", "/auteur.html" })
 	public String getAuthor(final Model model) {
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
@@ -119,7 +114,7 @@ public class WebController {
 		return "author";
 	}
 
-	@RequestMapping(value = "/sich", method = RequestMethod.GET)
+	@GetMapping(value = "/sich")
 	public String getSearch(final Model model, @RequestParam(value = "q", required = false) final String q) {
 
 		if (!StringUtils.isEmpty(q)) {
@@ -139,7 +134,7 @@ public class WebController {
 		return "search";
 	}
 
-	@RequestMapping(value = "/canton/{name}", method = RequestMethod.GET)
+	@GetMapping(value = "/canton/{name}")
 	public String getByCanton(final Model model, @PathVariable(value = "name") final String name) {
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
@@ -149,7 +144,7 @@ public class WebController {
 		return "pagelistbymcd";
 	}
 
-	@RequestMapping(value = "/district/{name}", method = RequestMethod.GET)
+	@GetMapping(value = "/district/{name}")
 	public String getByDistrict(final Model model, @PathVariable(value = "name") final String name) {
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
@@ -159,14 +154,14 @@ public class WebController {
 		return "pagelistbymcd";
 	}
 
-	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	@GetMapping(value = "/stats")
 	public String getStats(final Model model) {
 		model.addAttribute("pages", pageService.getStats());
 		return "stats";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/feed/nei.xml", method = RequestMethod.GET)
+	@GetMapping(value = "/feed/nei.xml")
 	public void getFeedNewestPages(HttpServletResponse response) throws IOException, FeedException {
 
 		List<Page> pages = pageService.getNewestPages(10, true);
@@ -179,7 +174,7 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/feed/alles.xml", method = RequestMethod.GET)
+	@GetMapping(value = "/feed/alles.xml")
 	public void getFeedAllPages(HttpServletResponse response) throws IOException, FeedException {
 
 		List<Page> pages = pageService.getPages();
@@ -193,7 +188,7 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
+	@GetMapping(value = "/robots.txt")
 	public String getRobots() {
 		return "";
 	}
