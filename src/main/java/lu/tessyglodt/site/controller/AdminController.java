@@ -13,17 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.xml.sax.SAXException;
 
 import lu.tessyglodt.site.data.Canton;
@@ -53,7 +55,7 @@ public class AdminController {
 	@Autowired
 	private DistrictService		districtService;
 
-	@RequestMapping(value = "/admin/pageform", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/pageform")
 	public String getPageForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
 
 		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPageByProperty("id", id, false));
@@ -65,7 +67,7 @@ public class AdminController {
 		return "admin/pageform";
 	}
 
-	@RequestMapping(value = "/admin/pageform", method = RequestMethod.POST)
+	@PostMapping(value = "/admin/pageform")
 	public String postPageForm(@ModelAttribute final Page page, final BindingResult result, final Model model) {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(result, "title", "title");
@@ -103,7 +105,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/listmcd", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/listmcd")
 	public String getListMCD(final Model model) {
 
 		model.addAttribute("municipalities", municipalityService.getMunicipalities());
@@ -113,7 +115,7 @@ public class AdminController {
 		return "admin/listmcd";
 	}
 
-	@RequestMapping(value = "/admin/municipalityform", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/municipalityform")
 	public String getMunicipalityForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
 
 		model.addAttribute("municipality", StringUtils.isEmpty(id) ? new Municipality() : municipalityService.getMunicipality(id));
@@ -122,7 +124,7 @@ public class AdminController {
 		return "admin/municipalityform";
 	}
 
-	@RequestMapping(value = "/admin/municipalityform", method = RequestMethod.POST)
+	@PostMapping(value = "/admin/municipalityform")
 	public String postMunicipalityForm(@ModelAttribute final Municipality municipality, final BindingResult result, final Model model) {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(result, "name", "name");
@@ -147,7 +149,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/cantonform", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/cantonform")
 	public String getCantonForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
 
 		model.addAttribute("canton", StringUtils.isEmpty(id) ? new Canton() : cantonService.getCanton(id));
@@ -156,7 +158,7 @@ public class AdminController {
 		return "admin/cantonform";
 	}
 
-	@RequestMapping(value = "/admin/cantonform", method = RequestMethod.POST)
+	@PostMapping(value = "/admin/cantonform")
 	public String postCantonForm(@ModelAttribute final Canton canton, final BindingResult result, final Model model) {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(result, "name", "name");
@@ -181,13 +183,13 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/districtform", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/districtform")
 	public String getDistrictForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
 		model.addAttribute("district", StringUtils.isEmpty(id) ? new District() : districtService.getDistrict(id));
 		return "admin/districtform";
 	}
 
-	@RequestMapping(value = "/admin/districtform", method = RequestMethod.POST)
+	@PostMapping(value = "/admin/districtform")
 	public String postDistrictForm(@ModelAttribute final District district, final BindingResult result, final Model model) {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(result, "name", "name");
@@ -211,7 +213,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/import", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/import")
 	public String getImport(final Model model) throws ParserConfigurationException, SAXException, IOException {
 		/*
 		 * this.pageService.deleteAllPages();
@@ -223,7 +225,7 @@ public class AdminController {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/admin/udf", method = RequestMethod.GET)
+	@GetMapping(value = "/admin/udf")
 	public String getRegisterUserDefinedFunctions(final Model model) {
 		pageService.registerUserDefinedFunctions();
 		return "redirect:/";
@@ -275,4 +277,10 @@ public class AdminController {
 
 	}
 
+	@ResponseBody
+	@PostMapping(value = "/admin/tweet")
+	public Tweet postTweetPage(@RequestParam(value = "id", required = false) final String id) {
+		Page page = pageService.getPageByProperty("id", id, false);
+		return pageService.tweetPage(page);
+	}
 }

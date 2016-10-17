@@ -16,6 +16,9 @@
 				<p>
 					<a style="color: darkred; font-weight: bold;" href="<c:url value='/admin/pageform' />?id=${page.id}">Änneren</a>
 				</p>
+				<p>
+					<a style="color: darkred; font-weight: bold;" href="#" id="tweet" onclick data-id="${page.id}">Tweeten</a>
+				</p>
 			</sec:authorize>
 			<h4>Informatiounen zu ${page.title}</h4>
 			<table class="table">
@@ -134,6 +137,35 @@
 	}
 
 	window.onload = loadScript;
+
+	// <sec:authorize access="isAuthenticated()">
+	
+	document.getElementById("tweet").onclick = function() {
+
+		var id = this.getAttribute("data-id");
+
+		var request = new XMLHttpRequest();
+		request.open("POST", "/admin/tweet", true);
+		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		request.send("id=" + id + "&${_csrf.parameterName}=${_csrf.token}");
+		
+		request.onreadystatechange = function() {
+			if (request.readyState == XMLHttpRequest.DONE ) {
+				if (request.status == 200) {
+					var json = JSON.parse(request.responseText);
+					alert("Tweet.createdAt: " + json.createdAt);
+					//document.getElementById("myDiv").innerHTML = request.responseText;
+				} else if (request.status == 400) {
+					//alert('There was an error 400');
+				} else {
+					//alert('something else other than 200 was returned');
+	           }
+	        }
+	    };
+	};
+
+	// </sec:authorize>
+
 </script>
 
 <%@ include file="_footer.jsp"%>

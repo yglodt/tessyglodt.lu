@@ -142,6 +142,7 @@
 							<cssFinalFile>${timestamp}.css</cssFinalFile>
 						</configuration>
 					</execution>
+<!--
 					<execution>
 						<id>minify-js</id>
 						<phase>process-resources</phase>
@@ -153,13 +154,12 @@
 							<jsSourceDir>resources/js</jsSourceDir>
 							<jsSourceFiles>
 								<jsSourceFile>script.js</jsSourceFile>
-								<!-- <jsSourceFile>jquery.js</jsSourceFile> <jsSourceFile>bootstrap.js</jsSourceFile> 
-									<jsSourceFile>script.js</jsSourceFile> -->
 							</jsSourceFiles>
 							<jsTargetDir>resources/js</jsTargetDir>
 							<jsFinalFile>${timestamp}.js</jsFinalFile>
 						</configuration>
 					</execution>
+-->
 				</executions>
 			</plugin>
 			<plugin>

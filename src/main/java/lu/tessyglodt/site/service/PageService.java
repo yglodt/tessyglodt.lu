@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.TweetData;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Component;
@@ -264,10 +265,10 @@ public class PageService {
 		return jdbcTemplate.queryForList(sql);
 	}
 
-	public void tweetPage(Page page) {
+	public Tweet tweetPage(Page page) {
 		logger.debug("Tweeting " + page.getTweet());
 		Twitter tt = twitterCreator.getTwitterTemplate();
-		tt.timelineOperations().updateStatus(new TweetData(page.getTweet()).atLocation(page.getLongitude().floatValue(), page.getLatitude().floatValue()));
+		return tt.timelineOperations().updateStatus(new TweetData(page.getTweet()).atLocation(page.getLongitude().floatValue(), page.getLatitude().floatValue()));
 	}
 
 }

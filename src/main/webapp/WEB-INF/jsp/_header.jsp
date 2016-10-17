@@ -25,11 +25,11 @@
 <c:choose>
 	<c:when test="${fn:contains(pageContext.request.serverName, 'tessyglodt.lu') and empty param.nocombine}">
 		<link href="<c:url value='/resources/css/$dynamicResourceNamePart$.min.css' />" rel="stylesheet" type="text/css" />
-		<script src="<c:url value='/resources/js/$dynamicResourceNamePart$.min.js' />" type="text/javascript"></script>
+		<%--<script src="<c:url value='/resources/js/$dynamicResourceNamePart$.min.js' />" type="text/javascript"></script>--%>
 	</c:when>
 	<c:otherwise>
 		<link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
-		<script type="text/javascript" src="<c:url value='/resources/js/script.js' />"></script>
+		<%--<script type="text/javascript" src="<c:url value='/resources/js/script.js' />"></script>--%>
 	</c:otherwise>
 </c:choose>
 <link rel="icon" type="image/png" href="<c:url value='/resources/img/favicon.png' />" sizes="64x64">
@@ -64,9 +64,11 @@
 			<h1>Kierchtuerms&shy;promenaden</h1>
 			<h2 class="subtitle">En Tour duerch d&nbsp;'Lëtzebuerger Land mam Tessy Glodt</h2>
 		</header>
-		<c:if test="${pageContext.request.requestURI == '/WEB-INF/jsp/index.jsp'}">
-			<div style="position:fixed; top:15px; right:20px;" class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
-		</c:if>	
+		<c:if test="${pageContext.request.requestURI == '/WEB-INF/jsp/index.jsp'}"></c:if>
+		<div style="position:absolute; top:15px; right:20px;" class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
+		<div style="position:absolute; top:50px; right:20px;">
+			<a href="https://twitter.com/Kierchtuermspro" class="twitter-follow-button" data-show-count="false">Follow @Kierchtuermspromenaden</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+		</div>
 	</div>
 
 	<nav class="main">
