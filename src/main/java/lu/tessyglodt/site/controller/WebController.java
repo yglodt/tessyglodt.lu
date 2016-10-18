@@ -1,8 +1,10 @@
 package lu.tessyglodt.site.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,9 +28,11 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
 
 import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Order;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
+import lu.tessyglodt.site.service.OrderService;
 import lu.tessyglodt.site.service.PageService;
 
 @Controller
@@ -43,6 +49,9 @@ public class WebController {
 
 	@Autowired
 	private DistrictService	districtService;
+
+	@Autowired
+	private OrderService	orderService;
 
 	@Value("${spring.datasource.driverClassName}")
 	private String			driverClassName;
@@ -193,4 +202,21 @@ public class WebController {
 		return "";
 	}
 
+	@GetMapping(value = "/blizzy")
+	public String getOrderForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
+		model.addAttribute("order", new Order());
+		return "blizzy";
+	}
+
+	@PostMapping(value = "/blizzy")
+	public String postOrderForm(@ModelAttribute final Order order) {
+		orderService.insert(order);
+		try {
+			orderService.sendConfirmationEmail(order);
+		} catch (UnsupportedEncodingException | MessagingException e) {
+			logger.error("Error sending Mail: " + e.getMessage());
+		}
+		logger.debug("Inserted " + order);
+		return "redirect:/blizzy?c=ok";
+	}
 }

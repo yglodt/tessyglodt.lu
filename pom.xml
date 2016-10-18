@@ -39,8 +39,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> 
-			</dependency> -->
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -142,24 +146,11 @@
 							<cssFinalFile>${timestamp}.css</cssFinalFile>
 						</configuration>
 					</execution>
-<!--
-					<execution>
-						<id>minify-js</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>minify</goal>
-						</goals>
-						<configuration>
-							<linebreak>-1</linebreak>
-							<jsSourceDir>resources/js</jsSourceDir>
-							<jsSourceFiles>
-								<jsSourceFile>script.js</jsSourceFile>
-							</jsSourceFiles>
-							<jsTargetDir>resources/js</jsTargetDir>
-							<jsFinalFile>${timestamp}.js</jsFinalFile>
-						</configuration>
-					</execution>
--->
+					<!-- <execution> <id>minify-js</id> <phase>process-resources</phase> 
+						<goals> <goal>minify</goal> </goals> <configuration> <linebreak>-1</linebreak> 
+						<jsSourceDir>resources/js</jsSourceDir> <jsSourceFiles> <jsSourceFile>script.js</jsSourceFile> 
+						</jsSourceFiles> <jsTargetDir>resources/js</jsTargetDir> <jsFinalFile>${timestamp}.js</jsFinalFile> 
+						</configuration> </execution> -->
 				</executions>
 			</plugin>
 			<plugin>

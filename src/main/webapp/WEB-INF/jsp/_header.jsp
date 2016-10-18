@@ -66,9 +66,11 @@
 		</header>
 		<c:if test="${pageContext.request.requestURI == '/WEB-INF/jsp/index.jsp'}"></c:if>
 		<div style="position:absolute; top:15px; right:20px;" class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
+		<%--
 		<div style="position:absolute; top:50px; right:20px;">
 			<a href="https://twitter.com/Kierchtuermspro" class="twitter-follow-button" data-show-count="false">Follow @Kierchtuermspromenaden</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 		</div>
+		--%>
 	</div>
 
 	<nav class="main">
