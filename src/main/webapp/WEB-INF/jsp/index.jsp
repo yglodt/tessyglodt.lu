@@ -6,7 +6,7 @@
 	<div class="fitem">
 		<h4 style="text-align: center;">Kaart</h4>
 		<a href="<c:url value='/kaart' />">
-			<img id="index_mapimage" src="<c:url value='/resources/b/kaart.jpg' />" width="300" height="164">
+			<img id="index_mapimage" src="<c:url value='/resources/img/kaart.jpg' />" width="300" height="164">
 		</a>
 	</div>
 	<div class="fitem blizzy">
