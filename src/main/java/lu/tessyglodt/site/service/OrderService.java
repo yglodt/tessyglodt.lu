@@ -125,7 +125,8 @@ public class OrderService {
 
 		helper.setTo(new InternetAddress(order.getEmail(), order.getLastName() + " " + order.getFirstName()));
 		helper.setFrom(new InternetAddress("tessy.glodt@gmx.net", "Blizzy"));
-		helper.setBcc("tanyv@mind.lu");
+		helper.addBcc("tanyv@mind.lu");
+		helper.addBcc("tessyglodt@gmx.net");
 		// helper.setReplyTo(replyTo, personal);
 
 		StringBuilder body = new StringBuilder();

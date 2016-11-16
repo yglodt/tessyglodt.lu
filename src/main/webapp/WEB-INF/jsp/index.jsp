@@ -10,7 +10,7 @@
 		</a>
 	</div>
 	<div class="fitem blizzy">
-		<h4>Eppes neies...</h4>
+		<h4 style="text-align: center;">Eppes neies...</h4>
 		<div id="text blizzy">
 			<a href="<c:url value='/blizzy' />">
 				<img id="bimage" src="<c:url value='/resources/b/ad-lb.jpg' />" width="300" height="162">
