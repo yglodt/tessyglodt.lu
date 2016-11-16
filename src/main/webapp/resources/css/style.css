@@ -33,7 +33,7 @@ nav a {
 	padding-bottom: 7px;
 }
 
-#index_mapimage {
+#index_mapimage, #bimage {
 	display: block;
 	margin: 0 auto;
 }
@@ -46,9 +46,7 @@ div.cont {
 }
 
 article {
-	/*
-	display: flex;
-	*/
+	/* display: flex; */
 	flex-wrap: wrap;
 	flex: 8;
 	justify-content: flex-start;
@@ -139,7 +137,7 @@ ul, ol {
 	border: 1px solid #ccc;
 }
 
-#index_mapimage {
+#index_mapimage, #bimage {
 	border: 1px solid #aaa;
 }
 

@@ -10,15 +10,27 @@
 <title>Blizzy</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="theme-color" content="green">
+<meta name="theme-color" content="#018667">
 <link rel="stylesheet" href="<c:url value='/resources/css/bootstrap.css' />">
 <link rel="stylesheet" href="<c:url value='/resources/css/bootstrap-theme.css' />">
+<link rel="stylesheet" href="<c:url value='/resources/css/unslider.css' />">
+<link rel="stylesheet" href="<c:url value='/resources/css/unslider-dots.css' />">
 <script type="text/javascript" src="<c:url value='/resources/js/jquery.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/jquery.validate.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/unslider-min.js' />"></script>
 <style type="text/css">
 .errors {
 	border-color: red;
 	background-color: #f9dede
+}
+
+h3 {
+	color: #065949;
+}
+
+p {
+	color: #018667;
+	text-align: justify;
 }
 </style>
 <c:if test="${fn:contains(pageContext.request.serverName, 'tessyglodt.lu')}">
@@ -41,109 +53,142 @@
 </head>
 <body>
 
-	<div class="container">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-10">
+			<div class="row">
 
-		<div class="row">
+				<div class="col-sm-8">
+					<div class="row">
+						<div class="col-sm-6">
+							<h3>D’Déierewelt emol anescht…</h3>
+							<p>Erzielunge voller Fantasie, déi e Bezug hunn zum Alldag -</p>
+							<p>Zeechnungen, déi Gefiller net verstoppen a Froen inspiréieren -</p>
+							<p>Momenter, déi animéiren sech an eng Situatioun eran ze versetzen -</p>
+							<p>Naturléift an niewebäi duergestalten Hannergrond-Informatiounen -</p>
+							<p>esou loosse sech di véier Geschichten aus dem Kannerbuch ‘Blizzy‘</p>
+							<p>resuméieren. Se si kandgerecht illustréiert mat engem Hauch</p>
+							<p>Nostalgie an s‘entféieren Kanner zur Entspanung a kleng imaginär Welten.</p>
+						</div>
+						<div class="col-sm-6">
+							<h3>Un surprenant monde des animaux</h3>
 
-			<div class="col-sm-4">
-				<h1>Blizzy</h1>
-				<p>Latius iam disseminata licentia onerosus bonis omnibus Caesar nullum post haec adhibens modum orientis latera cuncta vexabat nec honoratis parcens nec urbium primatibus nec plebeiis.</p>
-				<p>Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.</p>
-				<p>Coactique aliquotiens nostri pedites ad eos persequendos scandere clivos sublimes etiam si lapsantibus plantis fruticeta prensando vel dumos ad vertices venerint summos, inter arta tamen et invia nullas acies explicare permissi nec firmare nisu valido gressus: hoste discursatore rupium abscisa volvente, ruinis ponderum inmanium consternuntur, aut ex necessitate ultima fortiter dimicante, superati periculose per prona discedunt.</p>
-				<p>Vita est illis semper in fuga uxoresque mercenariae conductae ad tempus ex pacto atque, ut sit species matrimonii, dotis nomine futura coniunx hastam et tabernaculum offert marito, post statum diem si id elegerit discessura, et incredibile est quo ardore apud eos in venerem uterque solvitur sexus.</p>
-				<p>Proinde concepta rabie saeviore, quam desperatio incendebat et fames, amplificatis viribus ardore incohibili in excidium urbium matris Seleuciae efferebantur, quam comes tuebatur Castricius tresque legiones bellicis sudoribus induratae.</p>
-			</div>
-
-			<div class="col-sm-4">
-				<h1>&nbsp;</h1>
-				<p>Latius iam disseminata licentia onerosus bonis omnibus Caesar nullum post haec adhibens modum orientis latera cuncta vexabat nec honoratis parcens nec urbium primatibus nec plebeiis.</p>
-				<p>Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.</p>
-				<p>Coactique aliquotiens nostri pedites ad eos persequendos scandere clivos sublimes etiam si lapsantibus plantis fruticeta prensando vel dumos ad vertices venerint summos, inter arta tamen et invia nullas acies explicare permissi nec firmare nisu valido gressus: hoste discursatore rupium abscisa volvente, ruinis ponderum inmanium consternuntur, aut ex necessitate ultima fortiter dimicante, superati periculose per prona discedunt.</p>
-				<p>Vita est illis semper in fuga uxoresque mercenariae conductae ad tempus ex pacto atque, ut sit species matrimonii, dotis nomine futura coniunx hastam et tabernaculum offert marito, post statum diem si id elegerit discessura, et incredibile est quo ardore apud eos in venerem uterque solvitur sexus.</p>
-				<p>Proinde concepta rabie saeviore, quam desperatio incendebat et fames, amplificatis viribus ardore incohibili in excidium urbium matris Seleuciae efferebantur, quam comes tuebatur Castricius tresque legiones bellicis sudoribus induratae.</p>
-			</div>
-
-			<div class="col-sm-4">
-				<h1>Commande</h1>
-
-				<form:form modelAttribute="order" method="post" action="${pageContext.request.contextPath}/blizzy" class="form-horizontal">
-
-					<div class="form-group">
-						<form:label path="title">Titel / Titre</form:label>
-						<form:select path="title" cssClass="form-control">
-							<form:option value="">[...]</form:option>
-							<form:option value="MS">Madame</form:option>
-							<form:option value="MR">Monsieur</form:option>
-						</form:select>
-					</div>
-
-					<div class="form-group">
-						<form:label path="lastName">Nonumm / Nom de famille</form:label>
-						<form:input path="lastName" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="firstName">Virnumm / Prénom</form:label>
-						<form:input path="firstName" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="email">Email</form:label>
-						<form:input type="email" path="email" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="houseNumber">Hausnummer / Numéro</form:label>
-						<form:input path="houseNumber" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="street">Strooss / Rue</form:label>
-						<form:input path="street" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="zipCode">Postleitzuel / Code postal</form:label>
-						<form:input path="zipCode" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="city">Uertschaft / Ville</form:label>
-						<form:input path="city" cssClass="form-control" />
-					</div>
-
-					<div class="form-group">
-						<form:label path="country">Land / Pays</form:label>
-						<form:select path="country" cssClass="form-control">
-							<form:option value="">[...]</form:option>
-							<form:option value="lu">Lëtzebuerg / Luxembourg</form:option>
-							<form:option value="be">Belsch / Belgique</form:option>
-							<form:option value="de">Däitschland / Allemagne</form:option>
-							<form:option value="fr">Frankräich / France</form:option>
-						</form:select>
-					</div>
-
-					<div class="form-group">
-						<form:label path="orderCopies">Exemplairen / Exemplaires</form:label>
-						<form:input type="number" path="orderCopies" cssClass="form-control" min="0" max="10" />
-					</div>
-
-					<div class="form-group">
-						<div class="col-xs-6">
-							<button type="submit" class="btn btn-primary">Bestellen / Commander</button>
+							<p>Histoires pleines de fantaisie avec lien à la vie quotidienne -</p>
+							<p>Illustrations faciles à interpréter inspirant des questions -</p>
+							<p>Situations qui animent à partager des moments émouvants -</p>
+							<p>Amour de la nature accompagné d’informations fondamentales -</p>
+							<p>ces mots résument les quatre histoires du livre ‘Blizzy’ destiné aux</p>
+							<p>enfants. La légère nostalgie des images emmène les petits à se</p>
+							<p>détendre dans des mondes imaginaires.</p>
 						</div>
 					</div>
-				</form:form>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="fading-slider text-center">
+								<ul>
+									<li><img src="<c:url value='/resources/b/p0.jpg' />"></li>
+									<li><img src="<c:url value='/resources/b/p5.jpg' />"></li>
+									<li><img src="<c:url value='/resources/b/p10.jpg' />"></li>
+									<li><img src="<c:url value='/resources/b/p20.jpg' />"></li>
+									<li><img src="<c:url value='/resources/b/p25.jpg' />"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<h3>Bestellung / Commande</h3>
+
+					<p>Wann dir d'Blizzy gäer bestellt da fëllt dëse Formulaire aus. Dir gidd duerno per Email kontaktéiert.</p>
+
+					<p>Si vous voulez commander Blizzy, replissez ce formulaire. Vous serez ensuite contacté par email.</p>
+
+					<form:form modelAttribute="order" method="post" action="${pageContext.request.contextPath}/blizzy" class="form-horizontal">
+
+						<div class="form-group">
+							<form:label path="title">Titel / Titre</form:label>
+							<form:select path="title" cssClass="form-control">
+								<form:option value="">[...]</form:option>
+								<form:option value="MS">Madame</form:option>
+								<form:option value="MR">Monsieur</form:option>
+							</form:select>
+						</div>
+
+						<div class="form-group">
+							<form:label path="lastName">Nonumm / Nom de famille</form:label>
+							<form:input path="lastName" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="firstName">Virnumm / Prénom</form:label>
+							<form:input path="firstName" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="email">Email</form:label>
+							<form:input type="email" path="email" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="houseNumber">Hausnummer / Numéro</form:label>
+							<form:input path="houseNumber" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="street">Strooss / Rue</form:label>
+							<form:input path="street" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="zipCode">Postleitzuel / Code postal</form:label>
+							<form:input path="zipCode" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="city">Uertschaft / Ville</form:label>
+							<form:input path="city" cssClass="form-control" />
+						</div>
+
+						<div class="form-group">
+							<form:label path="country">Land / Pays</form:label>
+							<form:select path="country" cssClass="form-control">
+								<form:option value="">[...]</form:option>
+								<form:option value="lu">Lëtzebuerg / Luxembourg</form:option>
+								<form:option value="be">Belsch / Belgique</form:option>
+								<form:option value="de">Däitschland / Allemagne</form:option>
+								<form:option value="fr">Frankräich / France</form:option>
+							</form:select>
+						</div>
+
+						<div class="form-group">
+							<form:label path="orderCopies">Exemplairen / Exemplaires</form:label>
+							<form:input type="number" path="orderCopies" cssClass="form-control" min="0" max="10" />
+						</div>
+
+						<div class="form-group">
+							<div class="col-xs-6">
+								<button type="submit" class="btn btn-primary">Bestellen / Commander</button>
+							</div>
+						</div>
+					</form:form>
+				</div>
+
 			</div>
-
 		</div>
-
+		<div class="col-sm-1"></div>
 	</div>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
 
-			$("h1").click(function() {
+			$(".fading-slider").unslider({
+				autoplay : true,
+				nav : false,
+				arrows : false
+				//animation : "fade"
+			});
+
+			$("h1,h3").click(function() {
 				$("#title").val("MS");
 				$("#lastName").val("Schmidt");
 				$("#firstName").val("Marie-Gelatine");

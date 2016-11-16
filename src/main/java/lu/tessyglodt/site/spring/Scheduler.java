@@ -17,7 +17,7 @@ public class Scheduler {
 	private PageService		pageService;
 
 	// @Scheduled(cron = "*/5 * * * * ?")
-	@Scheduled(cron = "0 15 7 * * ?")
+	@Scheduled(cron = "0 15 7 * * ?", zone = "Europe/Luxembourg")
 	public void tweet() {
 		Page page = pageService.getRandomPage();
 		pageService.tweetPage(page);
