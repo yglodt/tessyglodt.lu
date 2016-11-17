@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <jsp:useBean id="now" class="java.util.Date" scope="page" />
+<fmt:setLocale value="lb" />
 <!DOCTYPE html>
 <html lang="lb">
 <head>
@@ -19,19 +20,24 @@
 <script type="text/javascript" src="<c:url value='/resources/js/jquery.validate.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/unslider-min.js' />"></script>
 <style type="text/css">
+
 .errors {
-	border-color: red;
+	border-color: #e74827;
 	background-color: #f9dede
 }
 
 h3 {
-	color: #065949;
+	color: #e74827;
 }
 
 p {
-	color: #018667;
 	text-align: justify;
 }
+
+input, select, option {
+	font-weight: bold;
+}
+
 </style>
 <c:if test="${fn:contains(pageContext.request.serverName, 'tessyglodt.lu')}">
 	<script type="text/javascript">
@@ -61,25 +67,20 @@ p {
 				<div class="col-sm-8">
 					<div class="row">
 						<div class="col-sm-6">
-							<h3>D’Déierewelt emol anescht…</h3>
-							<p>Erzielunge voller Fantasie, déi e Bezug hunn zum Alldag -</p>
-							<p>Zeechnungen, déi Gefiller net verstoppen a Froen inspiréieren -</p>
-							<p>Momenter, déi animéiren sech an eng Situatioun eran ze versetzen -</p>
-							<p>Naturléift an niewebäi duergestalten Hannergrond-Informatiounen -</p>
-							<p>esou loosse sech di véier Geschichten aus dem Kannerbuch ‘Blizzy‘</p>
-							<p>resuméieren. Se si kandgerecht illustréiert mat engem Hauch</p>
-							<p>Nostalgie an s‘entféieren Kanner zur Entspanung a kleng imaginär Welten.</p>
+							<h3>D'Déierewelt emol anescht…</h3>
+							<p>Erzielunge voller Fantasie, déi e Bezug hunn zum Alldag.</p>
+							<p>Zeechnungen, déi Gefiller net verstoppen a Froen inspiréieren.</p>
+							<p>Momenter, déi animéiren sech an eng Situatioun eran ze versetzen.</p>
+							<p>Naturléift an niewebäi duergestalten Hannergrond-Informatiounen, esou loosse sech di véier Geschichten aus dem Kannerbuch <em>Blizzy</em> resuméieren.</p>
+							<p>Se si kandgerecht illustréiert mat engem Hauch Nostalgie an s'entféieren Kanner zur Entspanung a kleng imaginär Welten.</p>
 						</div>
 						<div class="col-sm-6">
 							<h3>Un surprenant monde des animaux</h3>
-
-							<p>Histoires pleines de fantaisie avec lien à la vie quotidienne -</p>
-							<p>Illustrations faciles à interpréter inspirant des questions -</p>
-							<p>Situations qui animent à partager des moments émouvants -</p>
-							<p>Amour de la nature accompagné d’informations fondamentales -</p>
-							<p>ces mots résument les quatre histoires du livre ‘Blizzy’ destiné aux</p>
-							<p>enfants. La légère nostalgie des images emmène les petits à se</p>
-							<p>détendre dans des mondes imaginaires.</p>
+							<p>Histoires pleines de fantaisie avec lien à la vie quotidienne.</p>
+							<p>Illustrations faciles à interpréter inspirant des questions.</p>
+							<p>Situations qui animent à partager des moments émouvants.</p>
+							<p>Amour de la nature accompagné d'informations fondamentales, ces mots résument les quatre histoires du livre <em>Blizzy</em> destiné aux enfants.</p>
+							<p>La légère nostalgie des images emmène les petits à se détendre dans des mondes imaginaires.</p>
 						</div>
 					</div>
 					<div class="row">
@@ -162,12 +163,19 @@ p {
 
 						<div class="form-group">
 							<form:label path="orderCopies">Exemplairen / Exemplaires</form:label>
-							<form:input type="number" path="orderCopies" cssClass="form-control" min="0" max="10" />
+							<form:select path="orderCopies" cssClass="form-control">
+								<form:option value="1">1 (<fmt:formatNumber value="${parameters[0].num_value * 1}" maxFractionDigits="2" minFractionDigits="2" /> EUR)</form:option>
+								<form:option value="2">2 (<fmt:formatNumber value="${parameters[0].num_value * 2}" maxFractionDigits="2" minFractionDigits="2" /> EUR)</form:option>
+								<form:option value="3">3 (<fmt:formatNumber value="${parameters[0].num_value * 3}" maxFractionDigits="2" minFractionDigits="2" /> EUR)</form:option>
+								<form:option value="4">4 (<fmt:formatNumber value="${parameters[0].num_value * 4}" maxFractionDigits="2" minFractionDigits="2" /> EUR)</form:option>
+								<form:option value="5">5 (<fmt:formatNumber value="${parameters[0].num_value * 5}" maxFractionDigits="2" minFractionDigits="2" /> EUR)</form:option>
+							</form:select>
+							<p class="form-control-static"><em>Präis inkl. Zoustellung per Post / Prix avec livraison postale</em></p>
 						</div>
 
 						<div class="form-group">
 							<div class="col-xs-6">
-								<button type="submit" class="btn btn-primary">Bestellen / Commander</button>
+								<button type="submit" class="btn btn-default">Bestellen / Commander</button>
 							</div>
 						</div>
 					</form:form>
@@ -185,7 +193,7 @@ p {
 				autoplay : true,
 				nav : false,
 				arrows : false
-				//animation : "fade"
+			//animation : "fade"
 			});
 
 			$("h1,h3").click(function() {

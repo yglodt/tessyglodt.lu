@@ -54,6 +54,10 @@ public class OrderService {
 		return rows;
 	}
 
+	public List<Map<String, Object>> getParameters() {
+		return jdbcTemplate.queryForList("select * from parameters order by id");
+	}
+
 	public void insert(final Order order) {
 
 		BigDecimal price = jdbcTemplate.queryForObject("select num_value from parameters where id = 'blizzy_price'", BigDecimal.class);

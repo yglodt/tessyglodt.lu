@@ -205,6 +205,7 @@ public class WebController {
 	@GetMapping(value = "/blizzy")
 	public String getOrderForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
 		model.addAttribute("order", new Order());
+		model.addAttribute("parameters", orderService.getParameters());
 		return "blizzy";
 	}
 
