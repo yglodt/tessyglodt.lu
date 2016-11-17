@@ -59,6 +59,8 @@ input, select, option {
 </head>
 <body>
 
+	<br/><a href="<c:url value='/' />" style="margin:20px; color:#484848; font-weight:bold; text-decoration:underline;">www.tessyglodt.lu</a>
+
 	<div class="row">
 		<div class="col-xs-1"></div>
 		<div class="col-xs-10">
@@ -68,10 +70,10 @@ input, select, option {
 					<div class="row">
 						<div class="col-sm-6">
 							<h3>D'Déierewelt emol anescht…</h3>
-							<p>Erzielunge voller Fantasie, déi e Bezug hunn zum Alldag.</p>
+							<p>Erzielunge voller Fantasie, déi e Bezuch hunn zum Alldag.</p>
 							<p>Zeechnungen, déi Gefiller net verstoppen a Froen inspiréieren.</p>
-							<p>Momenter, déi animéiren sech an eng Situatioun eran ze versetzen.</p>
-							<p>Naturléift an niewebäi duergestalten Hannergrond-Informatiounen, esou loosse sech di véier Geschichten aus dem Kannerbuch <em>Blizzy</em> resuméieren.</p>
+							<p>Momenter, déi animéiere sech an eng Situatioun eran ze versetzen.</p>
+							<p>Naturléift an niewebäi duergestallten Hannergrond-Informatiounen, esou loosse sech di véier Geschichten aus dem Kannerbuch <em>Blizzy</em> resuméieren.</p>
 							<p>Se si kandgerecht illustréiert mat engem Hauch Nostalgie an s'entféieren Kanner zur Entspanung a kleng imaginär Welten.</p>
 						</div>
 						<div class="col-sm-6">
@@ -100,7 +102,7 @@ input, select, option {
 				<div class="col-sm-4">
 					<h3>Bestellung / Commande</h3>
 
-					<p>Wann dir d'Blizzy gäer bestellt da fëllt dëse Formulaire aus. Dir gidd duerno per Email kontaktéiert.</p>
+					<p>Wann dir d'Blizzy gär bestellt da fëllt dëse Formulaire aus. Dir gitt duerno per Email kontaktéiert.</p>
 
 					<p>Si vous voulez commander Blizzy, replissez ce formulaire. Vous serez ensuite contacté par email.</p>
 
