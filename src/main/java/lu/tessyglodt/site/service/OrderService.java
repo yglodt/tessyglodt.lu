@@ -128,7 +128,8 @@ public class OrderService {
 		final MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
 
 		helper.setTo(new InternetAddress(order.getEmail(), order.getLastName() + " " + order.getFirstName()));
-		helper.setFrom(new InternetAddress("tessy.glodt@gmx.net", "Blizzy"));
+		helper.setFrom(new InternetAddress("site@tessyglodt.lu", "Blizzy"));
+		helper.setReplyTo(new InternetAddress("tessy.glodt@gmx.net", "Tessy GLODT-RAUS"));
 		helper.addBcc("tanyv@mind.lu");
 		helper.addBcc("tessyglodt@gmx.net");
 		// helper.setReplyTo(replyTo, personal);
