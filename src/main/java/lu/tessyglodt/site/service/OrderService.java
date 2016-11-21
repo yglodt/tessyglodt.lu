@@ -131,7 +131,7 @@ public class OrderService {
 		helper.setFrom(new InternetAddress("site@tessyglodt.lu", "Blizzy"));
 		helper.setReplyTo(new InternetAddress("tessy.glodt@gmx.net", "Tessy GLODT-RAUS"));
 		helper.addBcc("tanyv@mind.lu");
-		helper.addBcc("tessyglodt@gmx.net");
+		helper.addBcc("tessy.glodt@gmx.net");
 		// helper.setReplyTo(replyTo, personal);
 
 		StringBuilder body = new StringBuilder();
