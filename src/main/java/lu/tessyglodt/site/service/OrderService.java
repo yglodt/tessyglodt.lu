@@ -3,9 +3,7 @@ package lu.tessyglodt.site.service;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,7 +58,7 @@ public class OrderService {
 
 	public void insert(final Order order) {
 
-		BigDecimal price = jdbcTemplate.queryForObject("select num_value from parameters where id = 'blizzy_price'", BigDecimal.class);
+		final BigDecimal price = jdbcTemplate.queryForObject("select num_value from parameters where id = 'blizzy_price'", BigDecimal.class);
 
 		order.setOrderAmount(price.multiply(new BigDecimal(order.getOrderCopies())));
 
@@ -77,45 +75,41 @@ public class OrderService {
 		 * keyList.add(key); KeyHolder holder = new GeneratedKeyHolder(keyList);
 		 */
 
-		KeyHolder holder = new GeneratedKeyHolder();
+		final KeyHolder holder = new GeneratedKeyHolder();
 
 		// jdbcTemplate.update(sql, order.getTitle(), order.getLastName(),
 		// order.getFirstName(), order.getHouseNumber(), order.getStreet(),
 		// order.getZipCode(), order.getCity(), order.getCountry(),
 		// order.getEmail(), order.getOrderCopies(), order.getOrderAmount());
 
-		jdbcTemplate.update(new PreparedStatementCreator() {
-
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, order.getTitle());
-				ps.setString(2, order.getLastName());
-				ps.setString(3, order.getFirstName());
-				ps.setString(4, order.getHouseNumber());
-				ps.setString(5, order.getStreet());
-				ps.setString(6, order.getZipCode());
-				ps.setString(7, order.getCity());
-				ps.setString(8, order.getCountry());
-				ps.setString(9, order.getEmail());
-				ps.setShort(10, order.getOrderCopies());
-				ps.setBigDecimal(11, order.getOrderAmount());
-				return ps;
-			}
+		jdbcTemplate.update((PreparedStatementCreator) connection -> {
+			final PreparedStatement ps = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, order.getTitle());
+			ps.setString(2, order.getLastName());
+			ps.setString(3, order.getFirstName());
+			ps.setString(4, order.getHouseNumber());
+			ps.setString(5, order.getStreet());
+			ps.setString(6, order.getZipCode());
+			ps.setString(7, order.getCity());
+			ps.setString(8, order.getCountry());
+			ps.setString(9, order.getEmail());
+			ps.setShort(10, order.getOrderCopies());
+			ps.setBigDecimal(11, order.getOrderAmount());
+			return ps;
 		}, holder);
 
-		Integer orderId = (Integer) holder.getKeys().get("id");
+		final Integer orderId = (Integer) holder.getKeys().get("id");
 
 		order.setId(orderId);
 	}
 
-	public void sendConfirmationEmail(Order order) throws MessagingException, UnsupportedEncodingException {
+	public void sendConfirmationEmail(final Order order) throws MessagingException, UnsupportedEncodingException {
 
-		Map<String, String> titleMap = new HashMap<>();
+		final Map<String, String> titleMap = new HashMap<>();
 		titleMap.put("MS", "Madame");
 		titleMap.put("MR", "Monsieur");
 
-		Map<String, String> countryMap = new HashMap<>();
+		final Map<String, String> countryMap = new HashMap<>();
 		countryMap.put("lu", "Lëtzebuerg / Luxembourg");
 		countryMap.put("be", "Belsch / Belgique");
 		countryMap.put("de", "Däitschland / Allemagne");
@@ -128,13 +122,13 @@ public class OrderService {
 		final MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
 
 		helper.setTo(new InternetAddress(order.getEmail(), order.getLastName() + " " + order.getFirstName()));
-		helper.setFrom(new InternetAddress("site@tessyglodt.lu", "Blizzy"));
-		helper.setReplyTo(new InternetAddress("tessy.glodt@gmx.net", "Tessy GLODT-RAUS"));
+		// helper.setFrom(new InternetAddress("site@tessyglodt.lu", "Blizzy"));
+		helper.setFrom(new InternetAddress("tessy.glodt@gmx.net", "Tessy GLODT-RAUS"));
 		helper.addBcc("tanyv@mind.lu");
 		helper.addBcc("tessy.glodt@gmx.net");
 		// helper.setReplyTo(replyTo, personal);
 
-		StringBuilder body = new StringBuilder();
+		final StringBuilder body = new StringBuilder();
 		body.append("Merci fir Är Bestellung. Nodeems d'Iwwerweisung op eisem Kont ukomm ass kritt dir d'Bestellung zougescheckt.\n\n");
 		body.append("Merci pour votre commande. Après comptabilisation du paiement sur notre compte votre commande sera expédiée.\n\n");
 
