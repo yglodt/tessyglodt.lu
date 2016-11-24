@@ -133,7 +133,7 @@ public class OrderService {
 		body.append("Merci pour votre commande. Après comptabilisation du paiement sur notre compte votre commande sera expédiée.\n\n");
 
 		body.append("Bankverbindung / Coordonnées bancaires:\n\n");
-		body.append("Kont / Compte: LU28 0019 4006 4475 0000, CCPLULL.\n");
+		body.append("Kont / Compte: LU50 1111 0366 7812 0000, CCPLLULL.\n");
 		body.append("Titulaire: Tessy GLODT-RAUS\n");
 		body.append("Mentioun / Référence: Commande Blizzy N°" + order.getId() + "\n");
 		body.append("Montant: " + order.getOrderAmount() + " EUR\n\n");
