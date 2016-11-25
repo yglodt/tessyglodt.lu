@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -17,8 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import lu.tessyglodt.site.data.Page;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -28,10 +27,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import lu.tessyglodt.site.data.Page;
+
 @XmlRootElement
 public class Import {
 
-	final static Logger	logger	= LoggerFactory.getLogger(Import.class);
+	final static Logger logger = LoggerFactory.getLogger(Import.class);
 
 	private static String readFile(final String path) throws IOException {
 		final byte[] encoded = Files.readAllBytes(Paths.get(path));
@@ -123,7 +124,7 @@ public class Import {
 
 						// page.setOpenCmsContent(readFile(fileName));
 
-						page.setDateCreated(now);
+						page.setDateCreated(LocalDateTime.now());
 						page.setPublished(true);
 						/*
 						 * switch (diss[diss.length - 1]) { case "Diekirch":
@@ -131,7 +132,6 @@ public class Import {
 						 * "Grevenmacher": page.setDistrict(new District(2));
 						 * break; case "Luxembourg": page.setDistrict(new
 						 * District(3)); break; default: break; }
-						 * 
 						 * switch (cann[cann.length - 1]) { case "Capellen":
 						 * page.setCanton(new Canton(1)); break; case
 						 * "Clervaux": page.setCanton(new Canton(2)); break;
@@ -157,8 +157,6 @@ public class Import {
 						 * 1 Kapellen 2 Klierf 3 Dikrech 4 Iechternach 5
 						 * Esch-Uelzecht 6 Gréiwemaacher 7 Lëtzebuerg 8 Miersch
 						 * 9 Réiden 10 Réimech 11 Veianen 12 Wolz
-						 * 
-						 * 
 						 * 1 Dikrech 2 Gréiwemaacher 3 Lëtzebuerg
 						 */
 

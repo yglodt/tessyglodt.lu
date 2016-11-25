@@ -43,8 +43,7 @@ public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.successHandler(new AuthenticationSuccessHandler() {
 					@Override
-					public void onAuthenticationSuccess(final HttpServletRequest
-							request, final HttpServletResponse response, final Authentication arg2) throws IOException, ServletException {
+					public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication arg2) throws IOException, ServletException {
 						if (request.getServerName().contains("tessyglodt.lu")) {
 							response.sendRedirect("https://www.tessyglodt.lu/");
 						} else {

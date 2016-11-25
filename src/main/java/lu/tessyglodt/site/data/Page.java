@@ -2,7 +2,9 @@ package lu.tessyglodt.site.data;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -52,10 +54,10 @@ public class Page {
 
 	private boolean			published								= true;
 
-	private Date			dateCreated;
-	private Date			dateModified;
-	private Date			datePublished;
-	private Date			dateLastView;
+	private LocalDateTime	dateCreated;
+	private LocalDateTime	dateModified;
+	private LocalDateTime	datePublished;
+	private LocalDateTime	dateLastView;
 
 	private Integer			site									= SITE_KIERCHTUERMS­PROMENADEN;
 	private Integer			type									= TYPE_KIERCHTUERMS­PROMENADEN_ARTICLE;
@@ -123,32 +125,32 @@ public class Page {
 		this.longitude = longitude;
 	}
 
-	public Date getDateCreated() {
+	public LocalDateTime getDateCreated() {
 		return dateCreated;
 	}
 
-	public void setDateCreated(final Date dateCreated) {
+	public void setDateCreated(final LocalDateTime dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
-	public Date getDateModified() {
+	public LocalDateTime getDateModified() {
 		return dateModified;
 	}
 
-	public void setDateModified(final Date dateModified) {
+	public void setDateModified(final LocalDateTime dateModified) {
 		this.dateModified = dateModified;
 	}
 
-	public Date getDatePublished() {
+	public LocalDateTime getDatePublished() {
 		return datePublished;
 	}
 
-	public void setDatePublished(final Date datePublished) {
+	public void setDatePublished(final LocalDateTime datePublished) {
 		this.datePublished = datePublished;
 	}
 
 	public void setDatePublished(final String datePublished) {
-		this.datePublished = new Date(Long.valueOf(datePublished));
+		this.datePublished = Instant.ofEpochMilli(new Long(datePublished)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 	public Integer getViewCount() {
@@ -159,11 +161,11 @@ public class Page {
 		this.viewCount = viewCount;
 	}
 
-	public Date getDateLastView() {
+	public LocalDateTime getDateLastView() {
 		return dateLastView;
 	}
 
-	public void setDateLastView(final Date dateLastView) {
+	public void setDateLastView(final LocalDateTime dateLastView) {
 		this.dateLastView = dateLastView;
 	}
 
@@ -208,10 +210,10 @@ public class Page {
 
 	public String getTweet() {
 		// https://support.twitter.com/articles/78124
-		Document content = Jsoup.parse(getContent());
-		String contentAsText = content.text().trim();
-		String lengthIndicator = " 12345678901234567890123 #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
-		String suffix = " " + getUrl() + " #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
+		final Document content = Jsoup.parse(getContent());
+		final String contentAsText = content.text().trim();
+		final String lengthIndicator = " 12345678901234567890123 #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
+		final String suffix = " " + getUrl() + " #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
 		return "\"" + contentAsText.substring(0, 137 - lengthIndicator.length()) + "…\"" + suffix;
 	}
 

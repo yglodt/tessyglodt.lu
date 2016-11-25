@@ -37,7 +37,7 @@
 					</tr>
 					<tr>
 						<th>Publizéiert den</th>
-						<td><fmt:formatDate pattern="dd.MM.yyyy" value="${page.datePublished}" /></td>
+						<td><javatime:format pattern="dd.MM.yyyy" value="${page.datePublished}" /></td>
 					</tr>
 				</tbody>
 			</table>

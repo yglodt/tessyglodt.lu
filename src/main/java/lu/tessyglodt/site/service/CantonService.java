@@ -2,21 +2,21 @@ package lu.tessyglodt.site.service;
 
 import java.util.List;
 
-import lu.tessyglodt.site.Utils;
-import lu.tessyglodt.site.data.Canton;
-import lu.tessyglodt.site.data.CantonMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Canton;
+import lu.tessyglodt.site.data.CantonMapper;
+
 @Component
 public class CantonService {
 
 	@Autowired
-	private JdbcTemplate	jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public Canton getCanton(final Integer id) {

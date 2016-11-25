@@ -2,21 +2,21 @@ package lu.tessyglodt.site.service;
 
 import java.util.List;
 
-import lu.tessyglodt.site.Utils;
-import lu.tessyglodt.site.data.Municipality;
-import lu.tessyglodt.site.data.MunicipalityMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Municipality;
+import lu.tessyglodt.site.data.MunicipalityMapper;
+
 @Component
 public class MunicipalityService {
 
 	@Autowired
-	private JdbcTemplate	jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public Municipality getMunicipality(final Integer id) {

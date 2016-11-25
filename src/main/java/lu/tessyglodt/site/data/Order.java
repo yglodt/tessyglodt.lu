@@ -1,24 +1,24 @@
 package lu.tessyglodt.site.data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Order {
 
-	private int			id;
+	private int				id;
 
-	private String		title;
-	private String		lastName;
-	private String		firstName;
-	private String		houseNumber;
-	private String		street;
-	private String		zipCode;
-	private String		city;
-	private String		country;
-	private String		email;
-	private Date		orderDate;
-	private short		orderCopies;
-	private BigDecimal	orderAmount;
+	private String			title;
+	private String			lastName;
+	private String			firstName;
+	private String			houseNumber;
+	private String			street;
+	private String			zipCode;
+	private String			city;
+	private String			country;
+	private String			email;
+	private LocalDateTime	orderDate;
+	private short			orderCopies;
+	private BigDecimal		orderAmount;
 
 	public Order() {
 	}
@@ -107,11 +107,11 @@ public class Order {
 		this.email = email;
 	}
 
-	public Date getOrderDate() {
+	public LocalDateTime getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(Date orderDate) {
+	public void setOrderDate(LocalDateTime orderDate) {
 		this.orderDate = orderDate;
 	}
 

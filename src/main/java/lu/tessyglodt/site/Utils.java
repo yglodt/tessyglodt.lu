@@ -1,6 +1,8 @@
 package lu.tessyglodt.site;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.util.HtmlUtils;
@@ -31,9 +33,9 @@ public class Utils {
 	 * FileOutputStream(tempFile)) { IOUtils.copy(in, out); } return tempFile; }
 	 */
 
-	public static SyndFeed createFeed(String name, List<Page> pages) {
+	public static SyndFeed createFeed(final String name, final List<Page> pages) {
 
-		SyndFeed feed = new SyndFeedImpl();
+		final SyndFeed feed = new SyndFeedImpl();
 		/*
 		 * rss_0.9, rss_0.91, rss_0.92, rss_0.93, rss_0.94, rss_1.0, rss_2.0,
 		 * atom_0.3, or atom_1.0
@@ -46,17 +48,17 @@ public class Utils {
 		feed.setLink("http://www.tessyglodt.lu");
 		feed.setAuthor("Tessy Glodt");
 
-		List<SyndEntry> entries = new ArrayList<>();
+		final List<SyndEntry> entries = new ArrayList<>();
 
-		for (Page page : pages) {
+		for (final Page page : pages) {
 
-			SyndEntry entry = new SyndEntryImpl();
+			final SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(page.getTitle());
 			entry.setLink(page.getUrl());
-			entry.setPublishedDate(page.getDatePublished());
+			entry.setPublishedDate(Date.from(page.getDatePublished().atZone(ZoneId.systemDefault()).toInstant()));
 			entry.setAuthor("Tessy Glodt");
 
-			SyndContent content = new SyndContentImpl();
+			final SyndContent content = new SyndContentImpl();
 			// content.setType("text/plain");
 			content.setValue(HtmlUtils.htmlUnescape(page.getContent()));
 

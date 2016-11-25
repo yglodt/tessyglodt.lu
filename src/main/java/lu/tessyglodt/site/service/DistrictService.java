@@ -2,20 +2,20 @@ package lu.tessyglodt.site.service;
 
 import java.util.List;
 
-import lu.tessyglodt.site.data.District;
-import lu.tessyglodt.site.data.DistrictMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import lu.tessyglodt.site.data.District;
+import lu.tessyglodt.site.data.DistrictMapper;
+
 @Component
 public class DistrictService {
 
 	@Autowired
-	private JdbcTemplate	jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public District getDistrict(final Integer id) {

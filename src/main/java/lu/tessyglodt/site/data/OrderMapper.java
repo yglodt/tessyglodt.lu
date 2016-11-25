@@ -23,7 +23,7 @@ public class OrderMapper implements RowMapper<Order> {
 		o.setCountry(rs.getString("country"));
 		o.setEmail(rs.getString("email"));
 
-		o.setOrderDate(rs.getTimestamp("order_date"));
+		o.setOrderDate(rs.getTimestamp("order_date").toLocalDateTime());
 		o.setOrderCopies(rs.getShort("order_copies"));
 		o.setOrderAmount(rs.getBigDecimal("order_amount"));
 
