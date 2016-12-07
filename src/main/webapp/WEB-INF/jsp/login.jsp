@@ -2,8 +2,8 @@
 
 <%@ include file="_header.jsp"%>
 
-<div class="cont main">
-	<article>
+<div class="box margin-top margin-bottom">
+	<article class="text-box">
 
 		<h4>Log in</h4>
 

@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ include file="_header.jsp"%>
 
-<div class="cont main">
-	<article>
+<div class="box margin-top margin-bottom">
+	<article class="map_container text-box">
 		<h4>Kaart mat den Uertschaften</h4>
 		<div id="bigmap" style="width: 100%; height: 900px;"></div>
 	</article>

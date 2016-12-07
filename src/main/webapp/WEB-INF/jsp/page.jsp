@@ -4,14 +4,14 @@
 <%--
 <script type="text/javascript" src="https://ssl.panoramio.com/wapi/wapi.js?v=1"></script>
 --%>
-<div class="cont main">
+<div class="margin-top margin-bottom location_page">
 
-	<article class="text">
+	<article class="box text-box">
 		<h3>${page.title}</h3>
 		${page.content}
 	</article>
-	<aside>
-		<div class="fitem">
+	<aside class="box">
+		<div class="text-box">
 			<sec:authorize access="isAuthenticated()">
 				<p>
 					<a style="color: darkred; font-weight: bold;" href="<c:url value='/admin/pageform' />?id=${page.id}">Änneren</a>
@@ -21,7 +21,7 @@
 				</p>
 			</sec:authorize>
 			<h4>Informatiounen zu ${page.title}</h4>
-			<table class="table">
+			<table class="location_info_table">
 				<tbody>
 					<tr>
 						<th>Gemeng</th>
@@ -42,16 +42,10 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="fitem">
+		<div class="location_map">
 			<h4>Op der Landkaart</h4>
 			<div id="map"></div>
 		</div>
-		<%--
-		<div class="fitem">
-			<h4>Fotoen aus der Ëmgéigend</h4>
-			<div id="photos"></div>
-		</div>
-		--%>
 	</aside>
 
 </div>

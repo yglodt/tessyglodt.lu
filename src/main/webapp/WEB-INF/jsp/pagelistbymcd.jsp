@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ include file="_header.jsp"%>
 
-<div class="cont main">
+<div class="box margin-top margin-bottom text-box">
 	<aside>
 		<%@ include file="_districts.jsp"%>
 		<%@ include file="_cantons.jsp"%>

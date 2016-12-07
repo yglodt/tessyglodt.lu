@@ -4,11 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <footer>
-	<p>
-		&copy; 2012 -
-		<fmt:formatDate pattern="yyyy" value="${now}" />
-		Tessy Glodt
-	</p>
+    <div>
+	    <i class="material-icons">copyright</i>&nbsp;2012-<fmt:formatDate pattern="yyyy" value="${now}" /> Tessy Glodt<br/>
+    </div>
 </footer>
 
 </body>
