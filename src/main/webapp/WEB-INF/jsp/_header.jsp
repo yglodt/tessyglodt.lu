@@ -20,9 +20,10 @@
 	</c:otherwise>
 </c:choose>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f9f6e1">
-<link href='//fonts.googleapis.com/css?family=Italianno|Smythe' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Italianno|Smythe|Lora' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <c:choose>
 	<c:when test="${fn:contains(pageContext.request.serverName, 'tessyglodt.lu') and empty param.nocombine}">
 		<link href="<c:url value='/resources/css/$dynamicResourceNamePart$.min.css' />" rel="stylesheet" type="text/css" />
@@ -60,33 +61,28 @@
 		}(document, 'script', 'facebook-jssdk'));
 	</script>
 	<%-- end facebook SDK --%>
-	<div class="cont headermain">
-		<header>
-			<h1>Kierchtuerms&shy;promenaden</h1>
-			<h2 class="subtitle">En Tour duerch d&nbsp;'Lëtzebuerger Land mam Tessy Glodt</h2>
-		</header>
-		<c:if test="${pageContext.request.requestURI == '/WEB-INF/jsp/index.jsp'}"></c:if>
-		<div style="position:absolute; top:15px; right:20px;" class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
-		<%--
-		<div style="position:absolute; top:50px; right:20px;">
-			<a href="https://twitter.com/Kierchtuermspro" class="twitter-follow-button" data-show-count="false">Follow @Kierchtuermspromenaden</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-		</div>
-		--%>
-	</div>
-
-	<nav class="main">
-		<a href="<c:url value='/' />">Haaptsäit</a>
-		<a href="<c:url value='/kaart' />">Kaart mat den Uertschaften</a>
-		<a href="<c:url value='/apropos' />">Iwwert des Säit</a>
-		<a href="<c:url value='/auteur' />">Iwwert den Auteur</a>
-		<sec:authorize access="isAuthenticated()">
-			<a href="<c:url value='/admin/pageform' />">Nei Säit</a>
-			<a href="<c:url value='/admin/listmcd' />">Konfig</a>
-			<a href="<c:url value='/logout' />">Log out</a>
-		</sec:authorize>
-
-		<form role="search" action="${pageContext.request.contextPath}/sich">
-			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" value="${param.q}" size="15">&nbsp;
-			<button type="submit">Sichen</button>
-		</form>
-	</nav>
+  
+	<header>
+		<h1>Kierchtuerms&shy;promenaden</h1>
+		<h2>En Tour duerch d&nbsp;'Lëtzebuerger Land mam Tessy Glodt</h2>
+        <div class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
+	</header>
+  
+  	<nav>
+  		<a href="<c:url value='/' />"><i class="material-icons">home</i>&nbsp;Haaptsäit</a>
+  		<a href="<c:url value='/kaart' />"><i class="material-icons">map</i>&nbsp;Kaart mat den Uertschaften</a>
+  		<a href="<c:url value='/apropos' />"><i class="material-icons">info_outline</i>&nbsp;Iwwert des Säit</a>
+  		<a href="<c:url value='/auteur' />"><i class="material-icons">person</i>&nbsp;Iwwert den Auteur</a>
+  
+  		<form role="search" action="${pageContext.request.contextPath}/sich">
+  			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" value="${param.q}" size="15"><button type="submit"><i class="material-icons">search</i></button>
+  		</form>
+    </nav>
+    <sec:authorize access="isAuthenticated()">
+    <nav class="margin-top">
+        <a href="<c:url value='/admin/pageform' />">Nei Säit</a>
+        <a href="<c:url value='/admin/listmcd' />">Konfig</a>
+        <a href="<c:url value='/logout' />">Log out</a>
+    </nav>
+    </sec:authorize>
+  

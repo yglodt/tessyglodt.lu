@@ -2,14 +2,14 @@
 
 <%@ include file="_header.jsp"%>
 
-<div class="cont main">
-	<article>
+<div class="box margin-top margin-bottom">
+	<article class="text-box about_text">
 		<h4>Iwwert des Säit</h4>
 		<p>Radiostexter héiert ee normalerweis just eemol. Presentéiere se lëtzebuerger Uertschaften a Kierchen mat mol lokalen a folkloristeschen mol historeschen ’Trouvaillen‘, sinn dës no e puer Minutte verflunn!&nbsp;Ausgangspunkt zu de Stad- an Duerfporträiten ware Commentairen zur Plaz vun där d’Sonndesmass iwwerdroe gouf. Een Deel dovun gouf an engem Buch veréiwegt (…vun deem et just nach wéineg Exempläre gëtt.)</p>
 		<p>Ënner dem Titel ‚Kierchtuermspromenaden’ ass hei elo d’Suite um Internet disponibel. De Choix vun dëse ‘Promenaden‘ ass op Uertschafte gefall wou grad Kiermes war, aus deenen d’Radios-Mass koum oder vun deene bal ni geschwat gëtt.</p>
 		<p>Dës perséinlech Websäit proposéiert "eng breet Panoplie vu Geschichtlechem, Anekdoteschem, Kontemplativem a Remarquabelem aus dem Gemengeliewen an der Volleksreligiositéit" (Georges Hellinghausen - ‘Warte‘ 26.06.2008 - zu de ‚Kierchtuerms-Causerien‘.) Eist klengt Land huet nämlech charakteristesch Bräich an eng no Regioun ënnerschiddlech Mentalitéit opweises... Vermëscht mat engem Hauch Folklore ergëtt dëst zesummen, d’Leit, d‘Landschaft, d‘Duerfgeschicht an d’Kierch ee Ganzt.</p>
 		<p>Di kleng Radiosbäiträg koume säit 2003 sonndesmuerges um DNR; hir Zeilen adresséiere sech un Interessente vun eisem Patrimoine an u jiddereen dee Loscht huet a Gedanken an eisem Land op Entdeckung ze goen!</p>
-		<h3>Quellen</h3>
+		<h4>Quellen</h3>
 		<ul>
 			<li>Das alte Luxemburg heute, Krantz/Quintus</li>
 			<li>Luxemburg so wie es war, Mersch</li>
@@ -51,19 +51,6 @@
 			</em>
 		</p>
 	</article>
-
-	<aside>
-		<%
-			pageContext.setAttribute("chars", 250);
-		%>
-		<%@ include file="_randomPage.jsp"%>
-
-		<%@ include file="_lastReadPages.jsp"%>
-
-		<%@ include file="_mostReadPages.jsp"%>
-
-	</aside>
-
 </div>
 
 <%@ include file="_footer.jsp"%>

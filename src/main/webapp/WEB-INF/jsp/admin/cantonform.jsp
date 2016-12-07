@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
 <%@ include file="../_header.jsp"%>
 
-<div class="cont main">
-	<article>
+<div class="box margin-top margin-bottom">
+	<article class="text-box">
 		<h4>Kanton ${empty param.id ? 'derbäisetzen' : 'änneren' }</h4>
 
 		<form:form modelAttribute="canton" method="post" action="${pageContext.request.contextPath}/admin/cantonform" class="form-horizontal">

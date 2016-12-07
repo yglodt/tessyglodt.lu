@@ -3,6 +3,6 @@
 
 <ul>
 	<c:forEach items="${pages}" var="page">
-		<li><a href="<c:url value='/page' />/${page.name}">${page.title}</a></li>
+		<li><i class="material-icons">place</i><a href="<c:url value='/page' />/${page.name}">${page.title}</a></li>
 	</c:forEach>
 </ul>

@@ -7,7 +7,7 @@
 <script type="text/javascript" src="<c:url value='/resources/js/jquery.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/ckeditor/ckeditor.js' />"></script>
 
-<div class="cont main">
+<div class="box margin-top margin-bottom">
 	<article>
 
 		<form:form modelAttribute="page" method="post" action="${pageContext.request.contextPath}/admin/pageform" class="form-horizontal">
