@@ -151,7 +151,6 @@ public class Page {
 	}
 
 	public void setDatePublished(final LocalDate datePublished) {
-		System.out.println(datePublished);
 		this.datePublished = datePublished;
 	}
 
