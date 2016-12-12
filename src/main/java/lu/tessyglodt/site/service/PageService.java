@@ -1,5 +1,6 @@
 package lu.tessyglodt.site.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -201,24 +202,38 @@ public class PageService {
 		final String sql = "insert into page "
 				+ "(id, name, title, latitude, longitude, content, "
 				+ "municipality, date_published, published) values "
-				+ "(?,?,?,?,?,?,?,?,?)";
+				+ "(?,?,?,?,?,?,?,?::date,?)";
+
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String dateAsString = null;
+		if (page.getDatePublished() != null) {
+			dateAsString = page.getDatePublished().format(df);
+		}
+
 		jdbcTemplate.update(sql, UUID.randomUUID().toString().replace("-", ""),
 				page.getName(), page.getTitle(), page.getLatitude(),
 				page.getLongitude(), page.getContent(),
 				Utils.getValue(page.getMunicipality()),
-				page.getDatePublished(), page.isPublished());
+				dateAsString, page.isPublished());
 	}
 
 	@CacheEvict(value = { "page", "accessInfo" }, allEntries = true)
 	public void update(final Page page) {
 		final String sql = "update page set name = ?, title = ?, "
 				+ "latitude = ?, longitude = ?, content = ?, "
-				+ "municipality = ?, date_published = ?, "
+				+ "municipality = ?, date_published = ?::date, "
 				+ "published = ?, date_modified = ? where id = ?";
+
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String dateAsString = null;
+		if (page.getDatePublished() != null) {
+			dateAsString = page.getDatePublished().format(df);
+		}
+
 		jdbcTemplate.update(sql, page.getName(), page.getTitle(),
 				page.getLatitude(), page.getLongitude(), page.getContent(),
 				Utils.getValue(page.getMunicipality()),
-				page.getDatePublished(), page.isPublished(), new Date(),
+				dateAsString, page.isPublished(), new Date(),
 				page.getId());
 	}
 

@@ -2,12 +2,13 @@ package lu.tessyglodt.site.data;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.github.slugify.Slugify;
 
@@ -55,8 +56,12 @@ public class Page {
 	private boolean			published								= true;
 
 	private LocalDateTime	dateCreated;
+
 	private LocalDateTime	dateModified;
-	private LocalDateTime	datePublished;
+
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate		datePublished;
+
 	private LocalDateTime	dateLastView;
 
 	private Integer			site									= SITE_KIERCHTUERMS­PROMENADEN;
@@ -141,17 +146,19 @@ public class Page {
 		this.dateModified = dateModified;
 	}
 
-	public LocalDateTime getDatePublished() {
+	public LocalDate getDatePublished() {
 		return datePublished;
 	}
 
-	public void setDatePublished(final LocalDateTime datePublished) {
+	public void setDatePublished(final LocalDate datePublished) {
+		System.out.println(datePublished);
 		this.datePublished = datePublished;
 	}
 
-	public void setDatePublished(final String datePublished) {
-		this.datePublished = Instant.ofEpochMilli(new Long(datePublished)).atZone(ZoneId.systemDefault()).toLocalDateTime();
-	}
+	// public void setDatePublished(final String datePublished) {
+	// this.datePublished = Instant.ofEpochMilli(new
+	// Long(datePublished)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+	// }
 
 	public Integer getViewCount() {
 		return viewCount;

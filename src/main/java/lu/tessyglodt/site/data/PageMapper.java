@@ -19,7 +19,7 @@ public class PageMapper implements RowMapper<Page> {
 		page.setLatitude(rs.getBigDecimal("latitude"));
 		page.setLongitude(rs.getBigDecimal("longitude"));
 
-		page.setDatePublished(rs.getTimestamp("date_published").toLocalDateTime());
+		page.setDatePublished(rs.getDate("date_published").toLocalDate());
 		page.setPublished(rs.getBoolean("published"));
 
 		page.setMunicipality(new Municipality(rs.getInt("mun_id"), rs.getString("mun_name")));

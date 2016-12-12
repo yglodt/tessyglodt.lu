@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -92,7 +94,8 @@ public class Import {
 
 						// logger.debug(page.toString());
 
-						page.setDatePublished(e.getElementsByTagName("DateBroadcasted").item(0).getTextContent());
+						DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+						page.setDatePublished(LocalDate.parse(e.getElementsByTagName("DateBroadcasted").item(0).getTextContent(), df));
 
 						page.setLatitude(new BigDecimal(e.getElementsByTagName("Latitude").item(0).getTextContent().trim()));
 						page.setLongitude(new BigDecimal(e.getElementsByTagName("Longitude").item(0).getTextContent().trim()));
@@ -131,8 +134,8 @@ public class Import {
 						 * page.setDistrict(new District(1)); break; case
 						 * "Grevenmacher": page.setDistrict(new District(2));
 						 * break; case "Luxembourg": page.setDistrict(new
-						 * District(3)); break; default: break; }
-						 * switch (cann[cann.length - 1]) { case "Capellen":
+						 * District(3)); break; default: break; } switch
+						 * (cann[cann.length - 1]) { case "Capellen":
 						 * page.setCanton(new Canton(1)); break; case
 						 * "Clervaux": page.setCanton(new Canton(2)); break;
 						 * case "Diekirch": page.setCanton(new Canton(3));
@@ -156,8 +159,8 @@ public class Import {
 						/*
 						 * 1 Kapellen 2 Klierf 3 Dikrech 4 Iechternach 5
 						 * Esch-Uelzecht 6 Gréiwemaacher 7 Lëtzebuerg 8 Miersch
-						 * 9 Réiden 10 Réimech 11 Veianen 12 Wolz
-						 * 1 Dikrech 2 Gréiwemaacher 3 Lëtzebuerg
+						 * 9 Réiden 10 Réimech 11 Veianen 12 Wolz 1 Dikrech 2
+						 * Gréiwemaacher 3 Lëtzebuerg
 						 */
 
 						// System.out.println(i + ": " + page.toString());
