@@ -45,7 +45,7 @@ public class Utils {
 
 		feed.setTitle("Kierchtuerms­promenaden");
 		feed.setDescription(name);
-		feed.setLink("http://www.tessyglodt.lu");
+		feed.setLink("https://www.tessyglodt.lu/");
 		feed.setAuthor("Tessy Glodt");
 
 		final List<SyndEntry> entries = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Utils {
 			final SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(page.getTitle());
 			entry.setLink(page.getUrl());
-			entry.setPublishedDate(Date.from(page.getDatePublished().atZone(ZoneId.systemDefault()).toInstant()));
+			entry.setPublishedDate(Date.from(page.getDatePublished().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 			entry.setAuthor("Tessy Glodt");
 
 			final SyndContent content = new SyndContentImpl();
