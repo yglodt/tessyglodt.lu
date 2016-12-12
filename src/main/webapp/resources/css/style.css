@@ -336,4 +336,7 @@ table#stats_table > tbody > tr > td:nth-child(2) {
     padding-right: 30px;
 }
 
-
+/* Form errors */
+.errors {
+    border: 2px solid red;
+}
