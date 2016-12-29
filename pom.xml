@@ -8,10 +8,10 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.2.RELEASE</version>
+		<version>1.4.3.RELEASE</version>
 	</parent>
 
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<properties>
 		<main.basedir>${basedir}/../..</main.basedir>
@@ -21,6 +21,9 @@
 		<java.version>1.8</java.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+		<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
+		<thymeleaf-layout-dialect.version>2.1.2</thymeleaf-layout-dialect.version>
 	</properties>
 
 	<dependencies>
@@ -36,6 +39,26 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
@@ -43,11 +66,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
 		</dependency>
 
 		<dependency>
@@ -61,16 +79,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
 		</dependency>
@@ -78,24 +86,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.slugify</groupId>
-			<artifactId>slugify</artifactId>
-			<version>2.1.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.slugify</groupId>
-			<artifactId>slugify-integration-jstl</artifactId>
-			<version>2.1.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sargue</groupId>
-			<artifactId>java-time-jsptags</artifactId>
-			<version>1.1.2</version>
 		</dependency>
 
 		<dependency>
@@ -115,6 +105,7 @@
 			<version>1.9.2</version>
 		</dependency>
 	</dependencies>
+
 
 	<build>
 		<finalName>tessyglodt</finalName>
@@ -138,22 +129,25 @@
 				<executions>
 					<execution>
 						<id>minify-css</id>
-						<phase>process-resources</phase>
+						<!--<phase>process-resources</phase> -->
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>minify</goal>
 						</goals>
 						<configuration>
-							<linebreak>-1</linebreak>
-							<cssSourceDir>resources/css</cssSourceDir>
+							<webappSourceDir>${basedir}/target/classes</webappSourceDir>
+							<webappTargetDir>${project.build.directory}</webappTargetDir>
+							<yuiLineBreak>-1</yuiLineBreak>
+							<cssSourceDir>static/css</cssSourceDir>
 							<cssSourceFiles>
 								<cssSourceFile>style.css</cssSourceFile>
 							</cssSourceFiles>
-							<cssTargetDir>resources/css</cssTargetDir>
+							<cssTargetDir>classes/static/css</cssTargetDir>
 							<cssFinalFile>${timestamp}.css</cssFinalFile>
 						</configuration>
 					</execution>
 					<!-- <execution> <id>minify-js</id> <phase>process-resources</phase> 
-						<goals> <goal>minify</goal> </goals> <configuration> <linebreak>-1</linebreak> 
+						<goals> <goal>minify</goal> </goals> <configuration> <yuiLineBreak>-1</yuiLineBreak> 
 						<jsSourceDir>resources/js</jsSourceDir> <jsSourceFiles> <jsSourceFile>script.js</jsSourceFile> 
 						</jsSourceFiles> <jsTargetDir>resources/js</jsTargetDir> <jsFinalFile>${timestamp}.js</jsFinalFile> 
 						</configuration> </execution> -->
@@ -194,31 +188,12 @@
 						<configuration>
 							<ignoreMissingFile>false</ignoreMissingFile>
 							<basedir>${project.build.directory}</basedir>
-							<file>tessyglodt/WEB-INF/jsp/_header.jsp</file>
+							<file>classes/templates/layouts/layout.html</file>
 							<regex>false</regex>
 							<replacements>
 								<replacement>
-									<token>$dynamicResourceNamePart$</token>
-									<value>${timestamp}</value>
-								</replacement>
-							</replacements>
-						</configuration>
-					</execution>
-					<execution>
-						<id>Create dynamic css and js resource path for footer</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-						<configuration>
-							<ignoreMissingFile>false</ignoreMissingFile>
-							<basedir>${project.build.directory}</basedir>
-							<file>tessyglodt/WEB-INF/jsp/_footer.jsp</file>
-							<regex>false</regex>
-							<replacements>
-								<replacement>
-									<token>$dynamicResourceNamePart$</token>
-									<value>${timestamp}</value>
+									<token>style.css</token>
+									<value>${timestamp}.min.css</value>
 								</replacement>
 							</replacements>
 						</configuration>
@@ -231,7 +206,7 @@
 						</goals>
 						<configuration>
 							<basedir>${project.build.directory}</basedir>
-							<filesToInclude>tessyglodt/WEB-INF/jsp/**/*.jsp</filesToInclude>
+							<filesToInclude>classes/templates/**/*.html</filesToInclude>
 							<token>&gt;\s*&lt;</token>
 							<value>&gt;&lt;</value>
 							<regexFlags>
