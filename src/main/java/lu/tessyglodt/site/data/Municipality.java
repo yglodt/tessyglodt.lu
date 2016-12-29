@@ -1,9 +1,5 @@
 package lu.tessyglodt.site.data;
 
-import java.io.IOException;
-
-import com.github.slugify.Slugify;
-
 public class Municipality {
 
 	private Integer	id;
@@ -48,10 +44,6 @@ public class Municipality {
 
 	public void setCanton(final Canton canton) {
 		this.canton = canton;
-	}
-
-	public String getSlugName() throws IOException {
-		return new Slugify().slugify(name);
 	}
 
 	@Override

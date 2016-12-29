@@ -9,7 +9,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +34,7 @@ import lu.tessyglodt.site.service.MunicipalityService;
 import lu.tessyglodt.site.service.PageService;
 
 @Controller
-@EnableAutoConfiguration
+// @EnableAutoConfiguration
 public class AdminController {
 
 	final static Logger			logger	= LoggerFactory.getLogger(AdminController.class);
@@ -51,6 +50,11 @@ public class AdminController {
 
 	@Autowired
 	private DistrictService		districtService;
+
+	@GetMapping(value = "/login")
+	public String getLogin() {
+		return "login";
+	}
 
 	@GetMapping(value = "/admin/pageform")
 	public String getPageForm(final Model model, @RequestParam(value = "id", required = false) final String id) {

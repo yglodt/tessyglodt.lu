@@ -1,6 +1,5 @@
 package lu.tessyglodt.site.data;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,8 +8,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-
-import com.github.slugify.Slugify;
 
 public class Page {
 	/*
@@ -197,10 +194,6 @@ public class Page {
 
 	public void setType(final Integer type) {
 		this.type = type;
-	}
-
-	public String getSlugName() throws IOException {
-		return new Slugify().slugify(name);
 	}
 
 	@Override

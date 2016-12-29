@@ -2,8 +2,6 @@ package lu.tessyglodt.site;
 
 import java.io.IOException;
 
-import com.github.slugify.Slugify;
-
 /**
  *
  * Contains user-defined functions for the H2 Database.
@@ -15,6 +13,6 @@ import com.github.slugify.Slugify;
 
 public class H2Functions {
 	public static String slugify(final String value) throws IOException {
-		return new Slugify().slugify(value);
+		return ""; // new Slugify().slugify(value);
 	}
 }

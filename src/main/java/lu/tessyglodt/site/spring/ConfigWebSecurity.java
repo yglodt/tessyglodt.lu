@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,16 @@ import org.springframework.web.servlet.support.RequestDataValueProcessor;
 @Configuration
 @EnableWebSecurity
 public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
+
+	// @Bean
+	// public SpringSecurityDialect securityDialect() {
+	// return new SpringSecurityDialect();
+	// }
+
+	@Override
+	public void configure(final WebSecurity web) {
+		web.ignoring().antMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
+	}
 
 	@Bean
 	public RequestDataValueProcessor requestDataValueProcessor() {
@@ -43,7 +54,7 @@ public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.successHandler(new AuthenticationSuccessHandler() {
 					@Override
-					public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication arg2) throws IOException, ServletException {
+					public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication auth) throws IOException, ServletException {
 						if (request.getServerName().contains("tessyglodt.lu")) {
 							response.sendRedirect("https://www.tessyglodt.lu/");
 						} else {

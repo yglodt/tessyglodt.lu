@@ -21,7 +21,7 @@ public class CantonService {
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public Canton getCanton(final Integer id) {
 		final String sql = "select "
-				+ "c.id, c.name, "
+				+ "c.id, c.name, slugify(c.name) as \"slug\", "
 				+ "d.id as dist_id, d.name as dist_name "
 				+ "from canton c "
 				+ "left join district d on d.id = c.district "
@@ -32,7 +32,7 @@ public class CantonService {
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public Canton getCantonBySlugifiedName(final String name) {
 		final String sql = "select "
-				+ "c.id, c.name, "
+				+ "c.id, c.name, slugify(c.name) as \"slug\", "
 				+ "d.id as dist_id, d.name as dist_name "
 				+ "from canton c "
 				+ "left join district d on d.id = c.district "
@@ -43,7 +43,7 @@ public class CantonService {
 	@Cacheable(value = "page", key = "#root.methodName")
 	public List<Canton> getCantons() {
 		final String sql = "select "
-				+ "c.id, c.name, "
+				+ "c.id, c.name, slugify(c.name) as \"slug\", "
 				+ "d.id as dist_id, d.name as dist_name "
 				+ "from canton c "
 				+ "left join district d on d.id = c.district "

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -36,7 +35,7 @@ import lu.tessyglodt.site.service.OrderService;
 import lu.tessyglodt.site.service.PageService;
 
 @Controller
-@EnableAutoConfiguration
+// @EnableAutoConfiguration
 public class WebController {
 
 	final static Logger		logger	= LoggerFactory.getLogger(WebController.class);

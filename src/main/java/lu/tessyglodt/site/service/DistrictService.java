@@ -20,7 +20,7 @@ public class DistrictService {
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public District getDistrict(final Integer id) {
 		final String sql = "select "
-				+ "d.id, d.name "
+				+ "d.id, d.name, slugify(d.name) as \"slug\" "
 				+ "from district d "
 				+ "where d.id = ?";
 		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new DistrictMapper());
@@ -29,7 +29,7 @@ public class DistrictService {
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public District getDistrictBySlugifiedName(final String name) {
 		final String sql = "select "
-				+ "d.id, d.name "
+				+ "d.id, d.name, slugify(d.name) as \"slug\" "
 				+ "from district d "
 				+ "where slugify(d.name) = ?";
 		return jdbcTemplate.queryForObject(sql, new Object[] { name }, new DistrictMapper());
@@ -37,7 +37,7 @@ public class DistrictService {
 
 	@Cacheable(value = "page", key = "#root.methodName")
 	public List<District> getDistricts() {
-		final String sql = "select d.id, d.name from district d order by d.name asc";
+		final String sql = "select d.id, d.name, slugify(d.name) as \"slug\" from district d order by d.name asc";
 		return jdbcTemplate.query(sql, new DistrictMapper());
 	}
 

@@ -43,6 +43,7 @@ public class PageService {
 
 	@Cacheable(value = "page", key = "#root.methodName")
 	public List<Page> getPagesInfo() {
+		logger.debug("");
 		final String sql = "select id, name, title, "
 				+ "latitude, longitude, '' as content, "
 				+ "0 as dist_id, '' as dist_name, 0 as can_id, "

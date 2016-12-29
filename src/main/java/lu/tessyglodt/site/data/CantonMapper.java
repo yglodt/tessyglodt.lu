@@ -14,6 +14,7 @@ public class CantonMapper implements RowMapper<Canton> {
 		canton.setId(rs.getInt("id"));
 		canton.setName(rs.getString("name"));
 		canton.setDistrict(new District(rs.getInt("dist_id"), rs.getString("dist_name")));
+		canton.setSlug(rs.getString("slug"));
 
 		return canton;
 	}

@@ -13,6 +13,7 @@ public class DistrictMapper implements RowMapper<District> {
 		final District district = new District();
 		district.setId(rs.getInt("id"));
 		district.setName(rs.getString("name"));
+		district.setSlug(rs.getString("slug"));
 
 		return district;
 	}

@@ -1,14 +1,11 @@
 package lu.tessyglodt.site.data;
 
-import java.io.IOException;
-
-import com.github.slugify.Slugify;
-
 public class Canton {
 
 	private Integer		id;
 	private String		name;
 	private District	district;
+	private String		slug;
 
 	public Canton() {
 	}
@@ -46,8 +43,12 @@ public class Canton {
 		this.district = district;
 	}
 
-	public String getSlugName() throws IOException {
-		return new Slugify().slugify(name);
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
 	}
 
 	@Override
