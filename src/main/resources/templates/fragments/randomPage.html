@@ -1,0 +1,7 @@
+<html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+<div class="text-box">
+	<h4 th:text="${'Zoufallssäit: ' + randomPage.title}"></h4>
+	<div id="text">
+		<a th:href="@{/page/{page}(page=${randomPage.name})}" th:utext="${#strings.substring(randomPage.content, 0, 450)}"></a>
+	</div>
+</div>

@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Lëscht no Distrikt / Kanton</title>
+</head>
+<th:block layout:fragment="content">
+	<div class="box margin-top margin-bottom text-box">
+		<aside>
+			<div th:replace="fragments/districts"></div>
+			<div th:replace="fragments/cantons"></div>
+		</aside>
+		<article>
+			<h4 th:text="${'Texter aus dem ' + title + ' ' + name}"></h4>
+			<div class="textcolumns">
+				<div th:replace="fragments/pagesInfos"></div>
+			</div>
+		</article>
+	</div>
+</th:block>
+</html>

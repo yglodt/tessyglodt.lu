@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="lb">
+<head>
+<title>Blizzy</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="theme-color" content="#018667">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" th:href="@{/css/bootstrap-theme.css}">
+<link rel="stylesheet" th:href="@{/css/unslider.css}">
+<link rel="stylesheet" th:href="@{/css/unslider-dots.css}">
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/unslider-min.js}"></script>
+<style type="text/css">
+
+.errors {
+	border-color: #e74827;
+	background-color: #f9dede
+}
+
+h3 {
+	color: #e74827;
+}
+
+p {
+	text-align: justify;
+}
+
+input, select, option {
+	font-weight: bold;
+}
+
+</style>
+<!--
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push([ '_setAccount', 'UA-29144750-1' ]);
+		_gaq.push([ '_trackPageview' ]);
+		(function() {
+			var ga = document.createElement('script');
+			ga.type = 'text/javascript';
+			ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+					: 'http://www')
+					+ '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+-->
+</head>
+<body>
+
+	<br/><a th:href="@{/}" style="margin:20px; color:#484848; font-weight:bold; text-decoration:underline;">www.tessyglodt.lu</a>
+
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-10">
+			<div class="row">
+
+				<div class="col-sm-8">
+					<div class="row">
+						<div class="col-sm-6">
+							<h3>D'Déierewelt emol anescht…</h3>
+							<p>Erzielunge voller Fantasie, déi e Bezuch hunn zum Alldag.</p>
+							<p>Zeechnungen, déi Gefiller net verstoppen a Froen inspiréieren.</p>
+							<p>Momenter, déi animéiere sech an eng Situatioun eran ze versetzen.</p>
+							<p>Naturléift an niewebäi duergestallten Hannergrond-Informatiounen, esou loosse sech di véier Geschichten aus dem Kannerbuch <em>Blizzy</em> resuméieren.</p>
+							<p>Se si kandgerecht illustréiert mat engem Hauch Nostalgie an s'entféieren Kanner zur Entspanung a kleng imaginär Welten.</p>
+						</div>
+						<div class="col-sm-6">
+							<h3>Un surprenant monde des animaux</h3>
+							<p>Histoires pleines de fantaisie avec lien à la vie quotidienne.</p>
+							<p>Illustrations faciles à interpréter inspirant des questions.</p>
+							<p>Situations qui animent à partager des moments émouvants.</p>
+							<p>Amour de la nature accompagné d'informations fondamentales, ces mots résument les quatre histoires du livre <em>Blizzy</em> destiné aux enfants.</p>
+							<p>La légère nostalgie des images emmène les petits à se détendre dans des mondes imaginaires.</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="fading-slider text-center">
+								<ul>
+									<li><img th:src="@{/b/p0.jpg}"></li>
+									<li><img th:src="@{/b/p5.jpg}"></li>
+									<li><img th:src="@{/b/p10.jpg}"></li>
+									<li><img th:src="@{/b/p20.jpg}"></li>
+									<li><img th:src="@{/b/p25.jpg}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<h3>Bestellung / Commande</h3>
+
+					<p>Wann dir d'Blizzy gär bestellt da fëllt dëse Formulaire aus. Dir gitt duerno per Email kontaktéiert.</p>
+
+					<p>Si vous voulez commander Blizzy, replissez ce formulaire. Vous serez ensuite contacté par email.</p>
+
+					<form method="post" th:object="${order}" th:action="@{/blizzy}" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="title">Titel / Titre</label>
+							<select name="title" id="title" class="form-control">
+								<option value="">[...]</option>
+								<option value="MS">Madame</option>
+								<option value="MR">Monsieur</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="lastName">Nonumm / Nom de famille</label>
+							<input name="lastName" id="lastName" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="firstName">Virnumm / Prénom</label>
+							<input name="firstName" id="firstName" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" id="email" name="email" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="houseNumber">Hausnummer / Numéro</label>
+							<input name="houseNumber" id="houseNumber" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="street">Strooss / Rue</label>
+							<input name="street" id="street" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="zipCode">Postleitzuel / Code postal</label>
+							<input name="zipCode" id="zipCode" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="city">Uertschaft / Ville</label>
+							<input name="city" id="city" class="form-control" />
+						</div>
+
+						<div class="form-group">
+							<label for="country">Land / Pays</label>
+							<select name="country" id="country" class="form-control">
+								<option value="">[...]</option>
+								<option value="lu">Lëtzebuerg / Luxembourg</option>
+								<option value="be">Belsch / Belgique</option>
+								<option value="de">Däitschland / Allemagne</option>
+								<option value="fr">Frankräich / France</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="orderCopies">Exemplairen / Exemplaires</label>
+							<select name="orderCopies" id="orderCopies" class="form-control">
+								<option value="1" th:text="${'1 (' + #numbers.formatDecimal(parameters[0].num_value * 1, 0, 2) + ' EUR)'}"></option>
+								<option value="2" th:text="${'2 (' + #numbers.formatDecimal(parameters[0].num_value * 2, 0, 2) + ' EUR)'}"></option>
+								<option value="3" th:text="${'3 (' + #numbers.formatDecimal(parameters[0].num_value * 3, 0, 2) + ' EUR)'}"></option>
+								<option value="4" th:text="${'4 (' + #numbers.formatDecimal(parameters[0].num_value * 4, 0, 2) + ' EUR)'}"></option>
+								<option value="5" th:text="${'5 (' + #numbers.formatDecimal(parameters[0].num_value * 5, 0, 2) + ' EUR)'}"></option>
+							</select>
+							<p class="form-control-static"><em>Präis inkl. Zoustellung per Post / Prix avec livraison postale</em></p>
+						</div>
+
+						<div class="form-group">
+							<div class="col-xs-6">
+								<button type="submit" class="btn btn-default">Bestellen / Commander</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+		<div class="col-xs-1"></div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			$(".fading-slider").unslider({
+				autoplay : true,
+				nav : false,
+				arrows : false
+			//animation : "fade"
+			});
+
+			$("h1,h3").click(function() {
+				$("#title").val("MS");
+				$("#lastName").val("Schmidt");
+				$("#firstName").val("Marie-Gelatine");
+				$("#email").val("yg@mind.lu");
+				$("#houseNumber").val("54");
+				$("#street").val("rue de la Gare");
+				$("#zipCode").val("1419");
+				$("#city").val("Luxembourg");
+				$("#country").val("lu");
+				$("#orderCopies").val("2");
+			});
+
+			$("#order").validate({
+				rules : {
+					title : "required",
+					lastName : "required",
+					firstName : "required",
+					email : {
+						required : true,
+						email : true
+					},
+					houseNumber : "required",
+					street : "required",
+					zipCode : "required",
+					city : "required",
+					country : "required",
+					orderCopies : "required"
+				},
+				errorClass : "errors",
+				errorPlacement : function(error, element) {
+					return true;
+				}
+			});
+
+		});
+	</script>
+
+</body>
+</html>

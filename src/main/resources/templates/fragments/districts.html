@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+<div class="text-box">
+	<h4>Lëscht no Distrikt</h4>
+	<ul>
+		<li th:each="district : ${districts}"><i class="material-icons">place</i><a th:href="@{/district/{d}(d=${district.slug})}" th:text="${district.name}"></a></li>
+	</ul>
+</div>
+
+<!-- 
+
+<li><i class="material-icons">place</i><a href="<c:url value='/district' />/${slg:slugify(district.name)}">${district.name}</a></li>
+
+-->

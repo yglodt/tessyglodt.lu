@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Statistiken</title>
+</head>
+<th:block layout:fragment="content">
+	<div class="box margin-top margin-bottom">
+		<article class="text-box">
+			<h4>Statistiken</h4>
+			<table id="stats_table" class="table table-condensed table-hover">
+				<tr>
+					<th>Säit</th>
+					<th>Unzuel Klicks</th>
+					<th>Läschte Klick</th>
+				</tr>
+				<tr th:each="page : ${pages}">
+					<td th:text="${page.title}"></td>
+					<td th:text="${page.view_count}"></td>
+					<td th:text="${#temporals.format(page.date_last_view.toLocalDateTime(), 'dd.MM.yyyy - HH:mm')}"></td>
+				</tr>
+			</table>
+		</article>
+	</div>
+</th:block>
+</html>

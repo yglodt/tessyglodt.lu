@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle"></title>
+</head>
+<th:block layout:fragment="content">
+	<div class="margin-top margin-bottom location_page">
+
+		<article class="box text-box">
+			<h3 th:text="${page.title}"></h3>
+			<div th:utext="${page.content}" th:remove="tag"></div>
+		</article>
+		<aside class="box">
+			<div class="text-box">
+				<div sec:authorize="isAuthenticated()">
+					<p>
+						<a style="color: darkred; font-weight: bold;" th:href="@{/admin/pageform(id=${page.id})}">Änneren</a>
+					</p>
+					<p>
+						<a style="color: darkred; font-weight: bold;" href="#" id="tweet" onclick data-id="${page.id}">Tweeten</a>
+					</p>
+				</div>
+				<h4 th:text="${'Informatiounen zu ' + page.title}"></h4>
+				<table class="location_info_table">
+					<tbody>
+						<tr>
+							<th>Gemeng</th>
+							<td th:text="${page.municipality.name}"></td>
+						</tr>
+						<tr>
+							<th>Kanton</th>
+							<td th:text="${page.municipality.canton.name}"></td>
+						</tr>
+						<tr>
+							<th>Distrikt</th>
+							<td th:text="${page.municipality.canton.district.name}"></td>
+						</tr>
+						<tr>
+							<th>Publizéiert den</th>
+							<td th:text="${#temporals.format(page.datePublished, 'dd.MM.yyyy')}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="location_map">
+				<h4>Op der Landkaart</h4>
+				<div id="map"></div>
+			</div>
+		</aside>
+	</div>
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		function loadScript() {
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			script.src = "//maps.googleapis.com/maps/api/js?key=AIzaSyCJneX2_ynuWwRZthXVC_sf4AC5j4V5nqA&sensor=false&callback=showMap";
+			document.body.appendChild(script);
+		}
+
+		function showMap() {
+
+			var myLatlng = new google.maps.LatLng(/*[[${page.latitude}]]*/, /*[[${page.longitude}]]*/);
+
+			// var center = new google.maps.LatLng(49.6, 6.116667);
+			var center = new google.maps.LatLng(49.85, 6.1);
+
+			var myOptions = {
+				zoom : 8,
+				center : center,
+				mapTypeId : google.maps.MapTypeId.ROADMAP
+			}
+
+			var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+			var marker = new google.maps.Marker({
+				position : myLatlng,
+				title : /*[[${page.title}]]*/
+			});
+
+			// To add the marker to the map, call setMap();
+			marker.setMap(map);
+		}
+
+		window.onload = loadScript;
+		
+		/*]]>*/
+	</script>
+</th:block>
+</html>

@@ -1,0 +1,4 @@
+<html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+<ul>
+	<li th:each="page : ${pages}"><i class="material-icons">place</i><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
+</ul>

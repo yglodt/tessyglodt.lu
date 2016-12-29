@@ -1,0 +1,34 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Distrikter</title>
+</head>
+<th:block layout:fragment="content">
+
+	<div class="box margin-top margin-bottom">
+		<article class="text-box">
+
+			<h4 th:text="'Distrikt ' + ${param.id == null ? 'derbäisetzen' : 'änneren' }"></h4>
+
+			<form th:object="${district}" method="post" th:action="@{/admin/districtform}" class="form-horizontal">
+
+				<input type="hidden" name="id" th:value="${district.id}" />
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="name">Numm</label>
+					<div class="col-sm-2">
+						<input name="name" th:errorclass="errors" class="form-control" th:value="${district.name}" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-2 col-xs-10">
+						<button type="submit" class="btn btn-primary">Späicheren</button>
+					</div>
+				</div>
+			</form>
+
+		</article>
+	</div>
+
+</th:block>
+</html>

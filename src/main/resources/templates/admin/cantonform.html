@@ -1,0 +1,44 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Kantonen</title>
+</head>
+<th:block layout:fragment="content">
+
+	<div class="box margin-top margin-bottom">
+		<article class="text-box">
+
+			<h4 th:text="'Kanton ' + ${param.id == null ? 'derbäisetzen' : 'änneren' }"></h4>
+
+			<form th:object="${canton}" method="post" th:action="@{/admin/cantonform}" class="form-horizontal">
+
+				<input type="hidden" name="id" th:value="${canton.id}" />
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="name">Numm</label>
+					<div class="col-sm-2">
+						<input name="name" th:errorclass="errors" class="form-control" th:value="${canton.name}" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="district">Distrikt</label>
+					<div class="col-sm-2">
+						<select name="district" class="form-control" th:errorclass="errors">
+							<option value="">[...]</option>
+							<option th:each="item : ${districts}" th:value="${item.id}" th:text="${item.name}" th:selected="${item.id == canton.district?.id}"></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-2 col-xs-10">
+						<button type="submit" class="btn btn-primary">Späicheren</button>
+					</div>
+				</div>
+			</form>
+
+		</article>
+	</div>
+
+</th:block>
+</html>

@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Gemengen</title>
+</head>
+<th:block layout:fragment="content">
+
+	<div class="box margin-top margin-bottom">
+		<article class="text-box">
+			<h4 th:text="'Gemeng ' + ${param.id == null ? 'derbäisetzen' : 'änneren' }"></h4>
+
+			<form th:object="${municipality}" method="post" th:action="@{/admin/municipalityform}" class="form-horizontal">
+
+				<input type="hidden" name="id" th:value="${municipality.id}" />
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="name">Numm</label>
+					<div class="col-sm-2">
+						<input name="name" th:errorclass="errors" class="form-control" th:value="${municipality.name}" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="canton">Kanton</label>
+					<div class="col-sm-2">
+						<select name="canton" class="form-control" th:errorclass="errors">
+							<option value="">[...]</option>
+							<option th:each="item : ${cantons}" th:value="${item.id}" th:text="${item.name}" th:selected="${item.id == municipality.canton?.id}"></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-2 col-xs-10">
+						<button type="submit" class="btn btn-primary">Späicheren</button>
+					</div>
+				</div>
+			</form>
+		</article>
+	</div>
+</th:block>
+</html>

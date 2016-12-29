@@ -1,0 +1,23 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Sichen</title>
+</head>
+<th:block layout:fragment="content">
+	<div class="box margin-top margin-bottom">
+		<article class="text-box">
+			<h4 th:text="${'Resultat vun der Sich no ''' + param.q + ''''}"></h4>
+			<th:block th:switch="${pages}">
+				<div th:case="${null}">
+					<p>Keng Säite fonnt.</p>
+				</div>
+				<div th:case="*">
+					<ul>
+
+						<li th:each="page : ${pages}"><i class="material-icons">place</i><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
+					</ul>
+				</div>
+			</th:block>
+		</article>
+	</div>
+</th:block>
+</html>

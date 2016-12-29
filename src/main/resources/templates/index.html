@@ -1,0 +1,49 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+<head th:include="layouts/layout :: headerFragment">
+<title id="pageTitle">Home</title>
+</head>
+<th:block layout:fragment="content">
+
+	<div class="box middle_bar margin-bottom margin-top">
+		<div th:replace="fragments/randomPage"></div>
+		<div class="text-box blizzy">
+			<h4>Eppes neies...</h4>
+			<a th:href="@{/blizzy}"><img id="bimage" th:src="@{/b/ad-lb.jpg}" width="300" height="162" /></a>
+		</div>
+	</div>
+
+	<div class="lower_bar margin-bottom">
+		<article class="box text-box">
+			<h4>All d'Texter</h4>
+			<div class="text_columns">
+				<!--  <%@ include file="_pagesInfos.jsp"%>  -->
+				<div th:replace="fragments/pagesInfos"></div>
+			</div>
+		</article>
+		<aside class="box">
+			<div class="text-box map">
+				<h4>Kaart</h4>
+				<a th:href="@{/kaart}"><img id="index_mapimage" th:src="@{/img/kaart.jpg}" width="300" height="164" /></a>
+			</div>
+			<div th:replace="fragments/newestPages"></div>
+			<div th:replace="fragments/lastReadPages"></div>
+			<div th:replace="fragments/mostReadPages"></div>
+			<div th:replace="fragments/districts"></div>
+			<div th:replace="fragments/cantons"></div>
+		</aside>
+	</div>
+
+	<script type="text/javascript">
+		window
+				.setInterval(
+						function() {
+							var i = document.getElementById("bimage");
+							if (i.src.substring(i.src.length - 22) === "/b/ad-lb.jpg") {
+								i.src = "/b/ad-fr.jpg";
+							} else {
+								i.src = "/b/ad-lb.jpg";
+							}
+						}, 5000);
+	</script>
+</th:block>
+</html>
