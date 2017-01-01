@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="lb">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="lb">
 <head th:fragment="headerFragment">
 <title th:include=":: #pageTitle">Kierchtuermspromenaden &mdash; En Tour duerch d'Lëtzebuerger Land mam Tessy Glodt</title>
 <meta charset="utf-8" />
@@ -26,23 +26,22 @@
 		<h2>En Tour duerch d&nbsp;'Lëtzebuerger Land mam Tessy Glodt</h2>
 		<div class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
 	</header>
-  	<nav>
+	<nav>
 		<a th:href="@{/}"><i class="material-icons">home</i>&nbsp;Haaptsäit</a>
 		<a th:href="@{/kaart}"><i class="material-icons">map</i>&nbsp;Kaart mat den Uertschaften</a>
 		<a th:href="@{/apropos}"><i class="material-icons">info_outline</i>&nbsp;Iwwert des Säit</a>
 		<a th:href="@{/auteur}"><i class="material-icons">person</i>&nbsp;Iwwert den Auteur</a>
 		<form role="search" th:action="@{/sich}">
-			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" th:value="${param.q}" size="15" /><button type="submit"><i class="material-icons">search</i></button>
+			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" th:value="${param.q}" size="15" />
+			<button type="submit"><i class="material-icons">search</i></button>
 		</form>
-    </nav>
-	<div sec:authorize="isAuthenticated()">
-	<nav class="margin-top">
-		<a th:href="@{/admin/pageform}">Nei Säit</a>&nbsp;<a th:href="@{/admin/listmcd}">Konfig</a>&nbsp;<a th:href="@{/logout}">Log out</a>
 	</nav>
+	<div sec:authorize="hasRole('ROLE_ADMIN')">
+		<nav class="margin-top">
+			<a th:href="@{/admin/pageform}">Nei Säit</a>&nbsp;|&nbsp;<a th:href="@{/admin/listmcd}">Konfig</a>&nbsp;|&nbsp;<a th:href="@{/logout}">Log out</a>
+		</nav>
 	</div>
-    <!--<div th:replace="fragments/header :: header"></div>-->
 	<div layout:fragment="content"></div>
-	<!--<div th:replace="fragments/footer :: footer"></div>-->
 	<footer>
 		<div>
 			<i class="material-icons">copyright</i>&nbsp;2012&nbsp;&mdash;&nbsp;<span th:text="${#temporals.format(now, 'yyyy')}" th:remove="tag"></span> Tessy Glodt

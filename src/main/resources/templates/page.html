@@ -11,7 +11,7 @@
 		</article>
 		<aside class="box">
 			<div class="text-box">
-				<div sec:authorize="isAuthenticated()">
+				<div sec:authorize="hasRole('ROLE_ADMIN')">
 					<p>
 						<a style="color: darkred; font-weight: bold;" th:href="@{/admin/pageform(id=${page.id})}">Änneren</a>
 					</p>
