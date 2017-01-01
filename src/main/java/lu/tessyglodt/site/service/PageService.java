@@ -43,7 +43,7 @@ public class PageService {
 
 	@Cacheable(value = "page", key = "#root.methodName")
 	public List<Page> getPagesInfo() {
-		logger.debug("");
+		// logger.debug("");
 		final String sql = "select id, name, title, "
 				+ "latitude, longitude, '' as content, "
 				+ "0 as dist_id, '' as dist_name, 0 as can_id, "
@@ -67,12 +67,12 @@ public class PageService {
 	}
 
 	public Page getRandomPage() {
-		List<Page> allPages = getPagesInfo();
-		Page randomPage = allPages.get(randomGenerator.nextInt(allPages.size()));
+		final List<Page> allPages = getPagesInfo();
+		final Page randomPage = allPages.get(randomGenerator.nextInt(allPages.size()));
 		return getPageByProperty("name", randomPage.getName(), false);
 	}
 
-	private List<Page> getPagesWithWhere(final String clause, final Object[] params, boolean fullContent) {
+	private List<Page> getPagesWithWhere(final String clause, final Object[] params, final boolean fullContent) {
 		final String sql = "select p.id, p.name, " + "p.title, "
 				+ "0 as latitude, " + "0 as longitude, "
 				+ ((fullContent) ? "p.content, " : "'' as content, ")
@@ -91,7 +91,7 @@ public class PageService {
 	}
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0 + #p1")
-	public List<Page> getNewestPages(final int i, boolean fullContent) {
+	public List<Page> getNewestPages(final int i, final boolean fullContent) {
 		// return getPagesWithWhere("order by date_published desc limit ?", new
 		// Object[] { i });
 		return getPagesWithWhere("order by date_created desc limit ?", new Object[] { i }, fullContent);
@@ -104,7 +104,7 @@ public class PageService {
 
 	@CacheEvict(value = "accessInfo", allEntries = true)
 	@Cacheable(value = "page", key = "#root.methodName + #p0 + #p1")
-	public Page getPageByProperty(final String property, final String value, boolean log) {
+	public Page getPageByProperty(final String property, final String value, final boolean log) {
 		final String sql = "select p.*, d.id as dist_id, "
 				+ "d.name as dist_name, c.id as can_id, "
 				+ "c.name as can_name, m.id as mun_id, "
@@ -151,10 +151,8 @@ public class PageService {
 
 	public List<Map<String, Object>> getSearchPostgreSQL(final String q) {
 		/*
-		 *
 		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-
 		 * enough /
-		 *
 		 * http://stackoverflow.com/questions/10027996/postgres-fulltext-index
 		 */
 		final String sql = "select "
@@ -205,7 +203,7 @@ public class PageService {
 				+ "municipality, date_published, published) values "
 				+ "(?,?,?,?,?,?,?,?::date,?)";
 
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String dateAsString = null;
 		if (page.getDatePublished() != null) {
 			dateAsString = page.getDatePublished().format(df);
@@ -225,7 +223,7 @@ public class PageService {
 				+ "municipality = ?, date_published = ?::date, "
 				+ "published = ?, date_modified = ? where id = ?";
 
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String dateAsString = null;
 		if (page.getDatePublished() != null) {
 			dateAsString = page.getDatePublished().format(df);
@@ -255,14 +253,11 @@ public class PageService {
 	 * "/data/database-backup-" + new
 	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".sql", "", "");
 	 * } catch (final SQLException e) { logger.error(e.getMessage()); } }
-	 *
 	 * public void restore() { // java -cp //
 	 * "$dir/h2-1.3.174.jar:$dir/slugify-2.1.2.jar:$dir/lu/tessyglodt/site/:$H2DRIVERS:$CLASSPATH"
 	 * // org.h2.tools.RunScript -url jdbc:h2:/tmp/test2 -user sa -script //
 	 * /tmp/db.sql
-	 *
 	 * // http://www.h2database.com/javadoc/org/h2/tools/RunScript.html
-	 *
 	 * try { RunScript.execute( "jdbc:h2:/data/restore-" + new
 	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), "sa", "",
 	 * "/data/file_to_restore.sql", null, false); } catch (final SQLException e)
@@ -281,9 +276,9 @@ public class PageService {
 		return jdbcTemplate.queryForList(sql);
 	}
 
-	public Tweet tweetPage(Page page) {
+	public Tweet tweetPage(final Page page) {
 		logger.debug("Tweeting " + page.getTweet());
-		Twitter tt = twitterCreator.getTwitterTemplate();
+		final Twitter tt = twitterCreator.getTwitterTemplate();
 		return tt.timelineOperations().updateStatus(new TweetData(page.getTweet()).atLocation(page.getLongitude().floatValue(), page.getLatitude().floatValue()));
 	}
 

@@ -8,8 +8,7 @@
 <link th:href="@{//fonts.googleapis.com/css?family=Italianno|Smythe|Lora|Material+Icons}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" th:href="@{/css/style.css}" />
 <link rel="icon" type="image/png" th:href="@{/img/favicon.png}" sizes="64x64" />
-<!--
-<script type="text/javascript">
+<script th:if="${#httpServletRequest.serverName != 'localhost'}" type="text/javascript">
 		var _gaq = _gaq || []; _gaq.push([ '_setAccount', 'UA-29144750-1' ]); _gaq.push([ '_trackPageview' ]);
 		(function() {
 			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -17,7 +16,6 @@
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 		})();
 </script>
--->
 <link th:href="@{/feed/nei.xml}" title="Nei Texter" type="application/atom+xml" rel="alternate" />
 </head>
 <body>
@@ -48,8 +46,7 @@
 		</div>
 	</footer>
 
-	<!--
-	<script>
+	<script th:if="${#httpServletRequest.serverName != 'localhost'}" type="text/javascript">
 		(function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
 			if (d.getElementById(id))
@@ -60,6 +57,6 @@
 			fjs.parentNode.insertBefore(js, fjs);
 		}(document, 'script', 'facebook-jssdk'));
 	</script>
-	-->
+
 </body>
 </html>
