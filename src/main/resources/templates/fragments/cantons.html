@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
 <div class="text-box">
-	<h4>Lëscht no Distrikt</h4>
+	<h4>Lëscht no Kanton</h4>
 	<ul>
 		<li th:each="canton : ${cantons}"><i class="material-icons">place</i><a th:href="@{/canton/{c}(c=${canton.slug})}" th:text="${canton.name}"></a></li>
 	</ul>
