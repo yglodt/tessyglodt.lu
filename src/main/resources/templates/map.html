@@ -38,14 +38,14 @@
 
 			var n = new google.maps.Map(document.getElementById("bigmap"), myOptions);
 
-			// [# th:each="page : ${pageInfos}"]
+			/*[# th:each="page : ${pageInfos}"]*/
 			var l = new google.maps.LatLng(/*[[${page.latitude}]]*/, /*[[${page.longitude}]]*/);
 			var m = new google.maps.Marker({ position : l, title : /*[[${page.title}]]*/ });
 			google.maps.event.addListener(m, 'click', function() {
-				window.location.href = /*[# th:utext="@{/page/{p}(p=${page.name})}"/]*/;
+				window.location.href = "/*[# th:utext="@{/page/{p}(p=${page.name})}"/]*/";
 			});
 			m.setMap(n);
-			// [/]
+			/*[/]*/
 		}
 
 		window.onload = loadScript;
