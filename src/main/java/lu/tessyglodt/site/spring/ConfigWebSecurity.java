@@ -22,11 +22,6 @@ import org.springframework.web.servlet.support.RequestDataValueProcessor;
 @EnableWebSecurity
 public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 
-	// @Bean
-	// public SpringSecurityDialect securityDialect() {
-	// return new SpringSecurityDialect();
-	// }
-
 	@Override
 	public void configure(final WebSecurity web) {
 		web.ignoring().antMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
