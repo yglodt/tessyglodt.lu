@@ -16,7 +16,6 @@
 		<article class="box text-box">
 			<h4>All d'Texter</h4>
 			<div class="text_columns">
-				<!--  <%@ include file="_pagesInfos.jsp"%>  -->
 				<div th:replace="fragments/pagesInfos"></div>
 			</div>
 		</article>
@@ -34,16 +33,15 @@
 	</div>
 
 	<script type="text/javascript">
-		window
-				.setInterval(
-						function() {
-							var i = document.getElementById("bimage");
-							if (i.src.substring(i.src.length - 22) === "/b/ad-lb.jpg") {
-								i.src = "/b/ad-fr.jpg";
-							} else {
-								i.src = "/b/ad-lb.jpg";
-							}
-						}, 5000);
+		window.setInterval(
+			function() {
+				var i = document.getElementById("bimage");
+				if (i.src.substring(i.src.length - 12) === "/b/ad-lb.jpg") {
+					i.src = "/b/ad-fr.jpg";
+				} else {
+					i.src = "/b/ad-lb.jpg";
+				}
+			}, 5000);
 	</script>
 </th:block>
 </html>
