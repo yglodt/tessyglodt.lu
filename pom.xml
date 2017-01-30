@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.3.RELEASE</version>
+		<version>1.4.4.RELEASE</version>
 	</parent>
 
 	<packaging>jar</packaging>
@@ -147,10 +147,10 @@
 							<cssFinalFile>${timestamp}.css</cssFinalFile>
 						</configuration>
 					</execution>
-					<!-- <execution> <id>minify-js</id> <phase>process-resources</phase> 
-						<goals> <goal>minify</goal> </goals> <configuration> <yuiLineBreak>-1</yuiLineBreak> 
-						<jsSourceDir>resources/js</jsSourceDir> <jsSourceFiles> <jsSourceFile>script.js</jsSourceFile> 
-						</jsSourceFiles> <jsTargetDir>resources/js</jsTargetDir> <jsFinalFile>${timestamp}.js</jsFinalFile> 
+					<!-- <execution> <id>minify-js</id> <phase>process-resources</phase>
+						<goals> <goal>minify</goal> </goals> <configuration> <yuiLineBreak>-1</yuiLineBreak>
+						<jsSourceDir>resources/js</jsSourceDir> <jsSourceFiles> <jsSourceFile>script.js</jsSourceFile>
+						</jsSourceFiles> <jsTargetDir>resources/js</jsTargetDir> <jsFinalFile>${timestamp}.js</jsFinalFile>
 						</configuration> </execution> -->
 				</executions>
 			</plugin>
