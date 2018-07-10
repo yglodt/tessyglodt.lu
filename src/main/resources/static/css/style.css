@@ -231,6 +231,7 @@ body>nav>a {
 	font-size: x-large;
 	margin-right: 15px;
 	margin-bottom: 15px;
+	flex-grow: 1;
 }
 
 body>nav>a:link {
