@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -210,10 +211,10 @@ public class Page {
 	public String getTweet() {
 		// https://support.twitter.com/articles/78124
 		final Document content = Jsoup.parse(getContent());
-		final String contentAsText = content.text().trim();
+		final String contentAsText = StringUtils.trim(content.text());
 		final String lengthIndicator = " 12345678901234567890123 #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
 		final String suffix = " " + getUrl() + " #" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg";
-		return "\"" + contentAsText.substring(0, 137 - lengthIndicator.length()) + "…\"" + suffix;
+		return "\"" + contentAsText.substring(0, 200 - lengthIndicator.length()) + "…\"" + suffix;
 	}
 
 }
