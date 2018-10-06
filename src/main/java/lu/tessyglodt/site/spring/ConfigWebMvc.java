@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lu.tessyglodt.site.MyHandlerInterceptor;
 
@@ -19,7 +19,7 @@ import lu.tessyglodt.site.MyHandlerInterceptor;
 @EnableScheduling
 @EnableCaching
 @ComponentScan(basePackages = "lu.tessyglodt.site")
-public class ConfigWebMvc extends WebMvcConfigurerAdapter {
+public class ConfigWebMvc implements WebMvcConfigurer {
 
 	@Autowired
 	private MyHandlerInterceptor myHandlerInterceptor;
@@ -33,6 +33,21 @@ public class ConfigWebMvc extends WebMvcConfigurerAdapter {
 	public CacheManager cacheManager() {
 		return new ConcurrentMapCacheManager("page", "accessInfo");
 	}
+
+	// @Override
+	// public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+	// registry.addResourceHandler("/css/**")
+	// .addResourceLocations("/css/")
+	// .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+	// .resourceChain(false)
+	// .addResolver(new VersionResourceResolver().addContentVersionStrategy("/**"));
+	// }
+	//
+	// @Bean
+	// @ConditionalOnEnabledResourceChain
+	// public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+	// return new ResourceUrlEncodingFilter();
+	// }
 
 	// @Bean
 	// public EmbeddedServletContainerCustomizer tomcatCustomizer() {
