@@ -1,6 +1,8 @@
 package lu.tessyglodt.site.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+//import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -31,6 +33,17 @@ public class ConfigWebMvc extends WebMvcConfigurerAdapter {
 	public CacheManager cacheManager() {
 		return new ConcurrentMapCacheManager("page", "accessInfo");
 	}
+
+	// @Bean
+	// public EmbeddedServletContainerCustomizer tomcatCustomizer() {
+	// return (container) -> {
+	// if (container instanceof TomcatEmbeddedServletContainerFactory) {
+	// ((TomcatEmbeddedServletContainerFactory) container).addConnectorCustomizers((connector) -> {
+	// connector.addUpgradeProtocol(new Http2Protocol());
+	// });
+	// }
+	// };
+	// }
 
 	// @Bean
 	// public CacheManagerCustomizer<ConcurrentMapCacheManager>
