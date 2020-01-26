@@ -27,10 +27,6 @@ public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
 	}
 
-	@Bean
-	public RequestDataValueProcessor requestDataValueProcessor() {
-		return new CsrfRequestDataValueProcessor();
-	}
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
@@ -65,6 +61,8 @@ public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 
 		http
 				.authorizeRequests().anyRequest().authenticated();
+		
+		http.csrf();
 	}
 
 }
