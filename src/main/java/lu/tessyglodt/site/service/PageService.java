@@ -13,15 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.TweetData;
-import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Component;
 
 import lu.tessyglodt.site.TwitterTemplateCreator;
 import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
+import twitter4j.GeoLocation;
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 @Component
 public class PageService {
@@ -276,10 +278,12 @@ public class PageService {
 		return jdbcTemplate.queryForList(sql);
 	}
 
-	public Tweet tweetPage(final Page page) {
+	public Status tweetPage(final Page page) throws TwitterException {
 		logger.debug("Tweeting " + page.getTweet());
-		final Twitter tt = twitterCreator.getTwitterTemplate();
-		return tt.timelineOperations().updateStatus(new TweetData(page.getTweet()).atLocation(page.getLongitude().floatValue(), page.getLatitude().floatValue()));
+		final Twitter twitter = twitterCreator.getTwitter();
+		final StatusUpdate update = new StatusUpdate(page.getTweet());
+		update.setLocation(new GeoLocation(page.getLatitude().doubleValue(), page.getLongitude().doubleValue()));
+		return twitter.updateStatus(update);
 	}
 
 }
