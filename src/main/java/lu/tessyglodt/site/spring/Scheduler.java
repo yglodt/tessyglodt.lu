@@ -14,8 +14,7 @@ public class Scheduler {
 	@Autowired
 	private PageService pageService;
 
-	// @Scheduled(cron = "*/5 * * * * ?")
-	@Scheduled(cron = "0 15 7 * * ?", zone = "Europe/Luxembourg")
+	@Scheduled(cron = "0 15 8 * * ?", zone = "Europe/Luxembourg")
 	public void tweet() throws TwitterException {
 		final Page page = pageService.getRandomPage();
 		pageService.tweetPage(page);
