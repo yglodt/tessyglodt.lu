@@ -212,8 +212,8 @@ public class Page {
 		// https://support.twitter.com/articles/78124
 		final Document content = Jsoup.parse(getContent());
 		final String contentAsText = StringUtils.trim(content.text());
-		final String lengthOfPageUrlAndHashTags = " 12345678901234567890123 #" + getTitle() + (StringUtils.equalsIgnoreCase(getTitle(), getName()) ? "" : " #" + StringUtils.capitalize(getName())) + " #Lëtzebuerg #Luxembourg";
-		final String suffix = "\n" + getUrl() + "\n#" + getTitle() + (getTitle().toLowerCase().equals(getName().toLowerCase()) ? "" : " #" + getName()) + " #Lëtzebuerg #Luxembourg";
+		final String lengthOfPageUrlAndHashTags = " 12345678901234567890123 #" + StringUtils.trim(getTitle()) + (StringUtils.trim(getTitle()).toLowerCase().equals(StringUtils.trim(getName()).toLowerCase()) ? "" : " #" + StringUtils.capitalize(getName())) + " #Lëtzebuerg #Luxembourg";
+		final String suffix = "\n" + getUrl() + "\n#" + StringUtils.trim(getTitle()) + (StringUtils.trim(getTitle()).toLowerCase().equals(StringUtils.trim(getName()).toLowerCase()) ? "" : " #" + StringUtils.trim(StringUtils.capitalize(getName()))) + " #Lëtzebuerg #Luxembourg";
 		return "\"" + contentAsText.substring(0, 220 - lengthOfPageUrlAndHashTags.length()) + "…\"" + suffix;
 	}
 
