@@ -5,10 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,9 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,7 +33,6 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedOutput;
 
 import lu.tessyglodt.site.Utils;
-import lu.tessyglodt.site.data.Order;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
@@ -212,25 +207,6 @@ public class WebController {
 	@GetMapping(value = "/robots.txt")
 	public String getRobots() {
 		return "";
-	}
-
-	@GetMapping(value = "/blizzy")
-	public String getOrderForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
-		model.addAttribute("order", new Order());
-		model.addAttribute("parameters", orderService.getParameters());
-		return "blizzy";
-	}
-
-	@PostMapping(value = "/blizzy")
-	public String postOrderForm(@ModelAttribute final Order order) {
-		orderService.insert(order);
-		try {
-			orderService.sendConfirmationEmail(order);
-		} catch (UnsupportedEncodingException | MessagingException e) {
-			logger.error("Error sending Mail: " + e.getMessage());
-		}
-		logger.debug("Inserted " + order);
-		return "redirect:/blizzy?c=ok";
 	}
 
 	@ResponseBody
