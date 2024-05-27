@@ -2,41 +2,45 @@ package lu.tessyglodt.site.spring;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.servlet.support.RequestDataValueProcessor;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
+public class ConfigWebSecurity {
 
-	@Override
-	public void configure(final WebSecurity web) {
-		web.ignoring().antMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().requestMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
 	}
 
+	/*
+	 * @Override
+	 * public void configure(final WebSecurity web) {
+	 * web.ignoring().antMatchers("/b/**", "/ckeditor/**", "/css/**", "/fonts/**", "/img/**", "/js/**");
+	 * }
+	 */
 
-	@Override
-	protected void configure(final HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		// http.authorizeRequests().and().requiresChannel().antMatchers("/login",
 		// "/authcheck", "/admin/**").requiresSecure();
 
-		http.authorizeRequests()
-				.antMatchers("/admin/**").hasRole("ADMIN")
-				.antMatchers("/**").permitAll();
+		http.authorizeHttpRequests()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/**").permitAll();
 
 		http
 				.formLogin()
@@ -59,10 +63,9 @@ public class ConfigWebSecurity extends WebSecurityConfigurerAdapter {
 				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/")
 				.permitAll();
 
-		http
-				.authorizeRequests().anyRequest().authenticated();
-		
-		http.csrf();
+		http.authorizeHttpRequests().anyRequest().authenticated();
+
+		return http.build();
 	}
 
 }

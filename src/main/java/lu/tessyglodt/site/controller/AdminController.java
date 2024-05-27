@@ -3,7 +3,6 @@ package lu.tessyglodt.site.controller;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.xml.sax.SAXException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lu.tessyglodt.site.data.Canton;
 import lu.tessyglodt.site.data.District;
 import lu.tessyglodt.site.data.Municipality;

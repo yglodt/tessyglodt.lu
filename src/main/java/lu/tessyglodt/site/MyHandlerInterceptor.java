@@ -2,15 +2,15 @@ package lu.tessyglodt.site;
 
 import java.time.LocalDateTime;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class MyHandlerInterceptor extends HandlerInterceptorAdapter {
+public class MyHandlerInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
@@ -26,7 +26,7 @@ public class MyHandlerInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) throws Exception {
-		super.afterCompletion(request, response, handler, ex);
+		// super.afterCompletion(request, response, handler, ex);
 	}
 
 }
