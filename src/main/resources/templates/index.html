@@ -6,10 +6,6 @@
 
 	<div class="box middle_bar margin-bottom margin-top">
 		<div th:replace="fragments/randomPage"></div>
-		<div class="text-box blizzy">
-			<h4>Eppes neies...</h4>
-			<a th:href="@{/blizzy}"><img id="bimage" th:src="@{/b/ad-lb.jpg}" width="300" height="162" /></a>
-		</div>
 	</div>
 
 	<div class="lower_bar margin-bottom">
@@ -31,17 +27,5 @@
 			<div th:replace="fragments/cantons"></div>
 		</aside>
 	</div>
-
-	<script type="text/javascript">
-		window.setInterval(
-			function() {
-				var i = document.getElementById("bimage");
-				if (i.src.substring(i.src.length - 12) === "/b/ad-lb.jpg") {
-					i.src = "/b/ad-fr.jpg";
-				} else {
-					i.src = "/b/ad-lb.jpg";
-				}
-			}, 5000);
-	</script>
 </th:block>
 </html>
