@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#f9f6e1" />
 <link th:href="@{//fonts.googleapis.com/css?family=Italianno|Smythe|Lora|Material+Icons}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" th:href="@{/css/style.css}" th:if="${#httpServletRequest.serverName == 'localhost'}" />
-<link rel="stylesheet" th:href="@{/css/s.min.css}" th:if="${#httpServletRequest.serverName != 'localhost'}" />
+<link rel="stylesheet" th:href="@{/css/style.css}" th:if="${req.serverName == 'localhost'}" />
+<link rel="stylesheet" th:href="@{/css/s.min.css}" th:if="${req.serverName != 'localhost'}" />
 <link rel="icon" type="image/png" th:href="@{/img/favicon.png}" sizes="64x64" />
-<script th:if="${#httpServletRequest.serverName != 'localhost'}" type="text/javascript">
+<script th:if="${req.serverName != 'localhost'}" type="text/javascript">
 		var _gaq = _gaq || []; _gaq.push([ '_setAccount', 'UA-29144750-1' ]); _gaq.push([ '_trackPageview' ]);
 		(function() {
 			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -47,7 +47,7 @@
 		</div>
 	</footer>
 
-	<script th:if="${#httpServletRequest.serverName != 'localhost'}" type="text/javascript">
+	<script th:if="${req.serverName != 'localhost'}" type="text/javascript">
 		(function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
 			if (d.getElementById(id))

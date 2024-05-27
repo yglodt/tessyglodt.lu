@@ -25,32 +25,36 @@ import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
-import lu.tessyglodt.site.service.OrderService;
 import lu.tessyglodt.site.service.PageService;
 
 @Controller
 // @EnableAutoConfiguration
 public class WebController {
 
-	final static Logger		logger	= LoggerFactory.getLogger(WebController.class);
+	final static Logger			logger	= LoggerFactory.getLogger(WebController.class);
 
 	@Autowired
-	private PageService		pageService;
+	private PageService			pageService;
 
 	@Autowired
-	private CantonService	cantonService;
+	private CantonService		cantonService;
 
 	@Autowired
-	private DistrictService	districtService;
+	private DistrictService		districtService;
+
+	// @Autowired
+	// private OrderService orderService;
 
 	@Autowired
-	private OrderService	orderService;
+	private HttpServletRequest	request;
 
 	@Value("${spring.datasource.driverClassName}")
-	private String			driverClassName;
+	private String				driverClassName;
 
 	@GetMapping(value = { "/", "/index.html" })
 	public String getIndex(final Model model) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("pages", pageService.getPagesInfo());
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
@@ -63,6 +67,7 @@ public class WebController {
 
 	@GetMapping(value = { "/page/{name}", "/page/{name}.html" })
 	public String getPage(@PathVariable("name") final String name, final Model model, final HttpServletRequest request) {
+		model.addAttribute("req", request);
 
 		// final File oldPics = new File("/home/glodt/data/ville1/old");
 		// final File[] oldPicsFiles = oldPics.listFiles(Utils.folderFilter());
@@ -99,12 +104,16 @@ public class WebController {
 
 	@GetMapping(value = { "/kaart", "/kaart.html" })
 	public String getMap(final Model model) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("pageInfos", pageService.getPagesInfo());
 		return "map";
 	}
 
 	@GetMapping(value = { "/apropos", "/apropos.html" })
 	public String getAbout(final Model model) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
 		model.addAttribute("randomPage", pageService.getRandomPage());
@@ -113,6 +122,8 @@ public class WebController {
 
 	@GetMapping(value = { "/auteur", "/auteur.html" })
 	public String getAuthor(final Model model) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("lastReadPages", pageService.getLastReadPages(5));
 		model.addAttribute("mostReadPages", pageService.getMostReadPages(5));
 		model.addAttribute("randomPage", pageService.getRandomPage());
@@ -121,6 +132,7 @@ public class WebController {
 
 	@GetMapping(value = "/sich")
 	public String getSearch(final Model model, @RequestParam(value = "q", required = false) final String q) {
+		model.addAttribute("req", request);
 
 		if (!StringUtils.isEmpty(q)) {
 			logger.debug("Searching for \"" + q + "\"");
@@ -141,6 +153,8 @@ public class WebController {
 
 	@GetMapping(value = "/canton/{name}")
 	public String getByCanton(final Model model, @PathVariable(value = "name") final String name) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("pages", pageService.getPagesByCanton(name));
@@ -151,6 +165,8 @@ public class WebController {
 
 	@GetMapping(value = "/district/{name}")
 	public String getByDistrict(final Model model, @PathVariable(value = "name") final String name) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("pages", pageService.getPagesByDistrict(name));
@@ -161,6 +177,8 @@ public class WebController {
 
 	@GetMapping(value = "/stats")
 	public String getStats(final Model model) {
+		model.addAttribute("req", request);
+
 		model.addAttribute("pages", pageService.getStats());
 		return "stats";
 	}
@@ -168,7 +186,6 @@ public class WebController {
 	@ResponseBody
 	@GetMapping(value = "/feed/nei.xml")
 	public void getFeedNewestPages(final HttpServletResponse response) throws IOException, FeedException {
-
 		final List<Page> pages = pageService.getNewestPages(10, true);
 		final SyndFeed feed = Utils.createFeed("Nei Texter", pages);
 
