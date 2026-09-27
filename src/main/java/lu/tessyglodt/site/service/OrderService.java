@@ -49,7 +49,7 @@ public class OrderService {
 				+ "id, title, last_name, first_name, house_number, street, "
 				+ "zip_code, city, country, email, order_copies, order_amount, order_date "
 				+ "from orders order by order_date desc";
-		final List<Order> rows = jdbcTemplate.query(sql, new Object[] {}, new OrderMapper());
+		final List<Order> rows = jdbcTemplate.query(sql, new OrderMapper());
 		return rows;
 	}
 

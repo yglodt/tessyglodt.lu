@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -62,7 +62,7 @@ public class AdminController {
 	@GetMapping(value = "/admin/pageform")
 	public String getPageForm(final Model model, @RequestParam(value = "id", required = false) final String id) {
 
-		model.addAttribute("page", StringUtils.isEmpty(id) ? new Page() : pageService.getPageByProperty("id", id, false));
+		model.addAttribute("page", ObjectUtils.isEmpty(id) ? new Page() : pageService.getPageByProperty("id", id, false));
 
 		model.addAttribute("municipalities", municipalityService.getMunicipalities());
 		model.addAttribute("cantons", cantonService.getCantons());
@@ -91,7 +91,7 @@ public class AdminController {
 			return "admin/pageform";
 		} else {
 
-			if (StringUtils.isEmpty(page.getId())) {
+			if (ObjectUtils.isEmpty(page.getId())) {
 				pageService.insert(page);
 
 				logger.debug("Inserted " + page);
@@ -122,7 +122,7 @@ public class AdminController {
 	@GetMapping(value = "/admin/municipalityform")
 	public String getMunicipalityForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
 
-		model.addAttribute("municipality", StringUtils.isEmpty(id) ? new Municipality() : municipalityService.getMunicipality(id));
+		model.addAttribute("municipality", ObjectUtils.isEmpty(id) ? new Municipality() : municipalityService.getMunicipality(id));
 		model.addAttribute("cantons", cantonService.getCantons());
 
 		return "admin/municipalityform";
@@ -142,7 +142,7 @@ public class AdminController {
 			return "admin/municipalityform";
 		} else {
 
-			if (StringUtils.isEmpty(municipality.getId())) {
+			if (ObjectUtils.isEmpty(municipality.getId())) {
 				municipalityService.insert(municipality);
 				return "redirect:/admin/listmcd";
 			} else {
@@ -156,7 +156,7 @@ public class AdminController {
 	@GetMapping(value = "/admin/cantonform")
 	public String getCantonForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
 
-		model.addAttribute("canton", StringUtils.isEmpty(id) ? new Canton() : cantonService.getCanton(id));
+		model.addAttribute("canton", ObjectUtils.isEmpty(id) ? new Canton() : cantonService.getCanton(id));
 		model.addAttribute("districts", districtService.getDistricts());
 
 		return "admin/cantonform";
@@ -176,7 +176,7 @@ public class AdminController {
 			return "admin/cantonform";
 		} else {
 
-			if (StringUtils.isEmpty(canton.getId())) {
+			if (ObjectUtils.isEmpty(canton.getId())) {
 				cantonService.insert(canton);
 				return "redirect:/admin/listmcd";
 			} else {
@@ -189,7 +189,7 @@ public class AdminController {
 
 	@GetMapping(value = "/admin/districtform")
 	public String getDistrictForm(final Model model, @RequestParam(value = "id", required = false) final Integer id) {
-		model.addAttribute("district", StringUtils.isEmpty(id) ? new District() : districtService.getDistrict(id));
+		model.addAttribute("district", ObjectUtils.isEmpty(id) ? new District() : districtService.getDistrict(id));
 		return "admin/districtform";
 	}
 
@@ -204,7 +204,7 @@ public class AdminController {
 			return "admin/districtform";
 		} else {
 
-			if (StringUtils.isEmpty(district.getId())) {
+			if (ObjectUtils.isEmpty(district.getId())) {
 				logger.debug("inserting");
 				districtService.insert(district);
 				return "redirect:/admin/listmcd";
@@ -239,7 +239,7 @@ public class AdminController {
 		binder.registerCustomEditor(Municipality.class, "municipality", new PropertyEditorSupport() {
 			@Override
 			public void setAsText(final String text) {
-				setValue(StringUtils.isEmpty(text) ? null : new Municipality(Integer.valueOf(text)));
+				setValue(ObjectUtils.isEmpty(text) ? null : new Municipality(Integer.valueOf(text)));
 			}
 
 			@Override
@@ -252,7 +252,7 @@ public class AdminController {
 		binder.registerCustomEditor(Canton.class, "canton", new PropertyEditorSupport() {
 			@Override
 			public void setAsText(final String text) {
-				setValue(StringUtils.isEmpty(text) ? null : new Canton(Integer.valueOf(text)));
+				setValue(ObjectUtils.isEmpty(text) ? null : new Canton(Integer.valueOf(text)));
 			}
 
 			@Override
@@ -265,7 +265,7 @@ public class AdminController {
 		binder.registerCustomEditor(District.class, "district", new PropertyEditorSupport() {
 			@Override
 			public void setAsText(final String text) {
-				setValue(StringUtils.isEmpty(text) ? null : new District(Integer.valueOf(text)));
+				setValue(ObjectUtils.isEmpty(text) ? null : new District(Integer.valueOf(text)));
 			}
 
 			@Override

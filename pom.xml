@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>4.1.1</version>
 	</parent>
 
 	<packaging>jar</packaging>
@@ -32,7 +32,7 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
 		<dependency>
@@ -44,11 +44,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
 		</dependency>
 
 		<dependency>
@@ -67,12 +62,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-java8time</artifactId>
-			<version>3.0.4.RELEASE</version>
-		</dependency>
-
-		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
@@ -83,18 +72,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jdbc</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
 		<dependency>
@@ -120,7 +99,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.17.2</version>
+			<version>1.23.2</version>
 		</dependency>
 
 		<dependency>
@@ -132,7 +111,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.16.1</version>
+			<version>2.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib -->
@@ -163,7 +142,7 @@
 			<plugin>
 				<groupId>com.samaxes.maven</groupId>
 				<artifactId>minify-maven-plugin</artifactId>
-				<version>1.7.4</version>
+				<version>1.7.6</version>
 				<executions>
 					<execution>
 						<id>minify-css</id>

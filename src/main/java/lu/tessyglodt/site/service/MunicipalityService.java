@@ -28,7 +28,7 @@ public class MunicipalityService {
 				+ "left join canton c on c.id = m.canton "
 				+ "left join district d on d.id = c.district "
 				+ "where m.id = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new MunicipalityMapper());
+		return jdbcTemplate.queryForObject(sql, new MunicipalityMapper(), id);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName")
@@ -39,7 +39,7 @@ public class MunicipalityService {
 				+ "left join canton c on c.id = m.canton "
 				+ "left join district d on d.id = c.district "
 				+ "order by m.name asc";
-		return jdbcTemplate.query(sql, new Object[] {}, new MunicipalityMapper());
+		return jdbcTemplate.query(sql, new MunicipalityMapper());
 	}
 
 	@CacheEvict(value = "page", allEntries = true)

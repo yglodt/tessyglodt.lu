@@ -28,7 +28,7 @@ public class CantonService {
 				+ "from canton c "
 				+ "left join district d on d.id = c.district "
 				+ "where c.id = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new CantonMapper());
+		return jdbcTemplate.queryForObject(sql, new CantonMapper(), id);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
@@ -39,7 +39,7 @@ public class CantonService {
 				+ "from canton c "
 				+ "left join district d on d.id = c.district "
 				+ "where slugify(c.name) = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { name }, new CantonMapper());
+		return jdbcTemplate.queryForObject(sql, new CantonMapper(), name);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName")

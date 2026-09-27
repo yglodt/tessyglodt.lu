@@ -26,13 +26,15 @@ public class MyHandlerInterceptor implements HandlerInterceptor {
 
 	@Override
 	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView) throws Exception {
-		if (modelAndView != null) {
+		// Skip redirects: Spring would append simple model values like "now" to the redirect URL
+		final boolean isRedirect = modelAndView != null && modelAndView.getViewName() != null && modelAndView.getViewName().startsWith("redirect:");
+		if (modelAndView != null && !isRedirect) {
 			modelAndView.addObject("now", LocalDateTime.now());
 			// The layout needs "req"; error pages rendered by Spring Boot don't get it from a controller
 			if (!modelAndView.getModel().containsKey("req")) {
 				modelAndView.addObject("req", request);
 			}
-			if (request.isUserInRole("ADMIN") && !modelAndView.getViewName().startsWith("redirect:")) {
+			if (request.isUserInRole("ADMIN")) {
 				modelAndView.addObject("hiddenPages", pageService.getUnpublishedPages());
 			}
 		}

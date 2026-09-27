@@ -54,7 +54,7 @@ public class PageService {
 				+ "'' as can_name, 0 as mun_id, '' as mun_name, "
 				+ "date_published, published, site, type "
 				+ "from page where published order by title asc";
-		final List<Page> rows = jdbcTemplate.query(sql, new Object[] {}, new PageMapper());
+		final List<Page> rows = jdbcTemplate.query(sql, new PageMapper());
 		return rows;
 	}
 
@@ -65,8 +65,7 @@ public class PageService {
 				+ "'' as dist_name, 0 as can_id, '' as can_name, "
 				+ "0 as mun_id, '' as mun_name, date_published, "
 				+ "published, site, type from page where published order by title asc";
-		final List<Page> rows = jdbcTemplate.query(sql, new Object[] {},
-				new PageMapper());
+		final List<Page> rows = jdbcTemplate.query(sql, new PageMapper());
 		return rows;
 	}
 
@@ -88,7 +87,7 @@ public class PageService {
 				+ "p.site, p.type from page p " + joins
 				+ " where p.published" + (condition.isEmpty() ? "" : " and " + condition)
 				+ " " + orderBy;
-		final List<Page> rows = jdbcTemplate.query(sql, params, new PageMapper());
+		final List<Page> rows = jdbcTemplate.query(sql, new PageMapper(), params);
 		return rows;
 
 	}
@@ -124,15 +123,14 @@ public class PageService {
 		if (log) {
 			logger.debug("key: " + property + ", value: " + value);
 		}
-		final Page o = jdbcTemplate.queryForObject(sql, new Object[] { value }, new PageMapper());
+		final Page o = jdbcTemplate.queryForObject(sql, new PageMapper(), value);
 		return o;
 	}
 
 	public List<Page> getSearchH2(final String q) {
 		final String sql = "SELECT * FROM FT_SEARCH_DATA(?, 0, 0)";
 
-		final List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql,
-				new Object[] { q });
+		final List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, q);
 
 		final StringBuffer params = new StringBuffer();
 
@@ -170,7 +168,7 @@ public class PageService {
 				+ "as document from page p where p.published) p_search "
 				+ "where p_search.document @@ websearch_to_tsquery(unaccent(?))";
 
-		return jdbcTemplate.queryForList(sql, new Object[] { q });
+		return jdbcTemplate.queryForList(sql, q);
 
 	}
 

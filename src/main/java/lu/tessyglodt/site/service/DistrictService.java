@@ -25,7 +25,7 @@ public class DistrictService {
 				+ "d.id, d.name, slugify(d.name) as \"slug\" "
 				+ "from district d "
 				+ "where d.id = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { id }, new DistrictMapper());
+		return jdbcTemplate.queryForObject(sql, new DistrictMapper(), id);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
@@ -34,7 +34,7 @@ public class DistrictService {
 				+ "d.id, d.name, slugify(d.name) as \"slug\" "
 				+ "from district d "
 				+ "where slugify(d.name) = ?";
-		return jdbcTemplate.queryForObject(sql, new Object[] { name }, new DistrictMapper());
+		return jdbcTemplate.queryForObject(sql, new DistrictMapper(), name);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName")
