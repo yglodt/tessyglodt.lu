@@ -2,11 +2,13 @@ package lu.tessyglodt.site.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.util.UriUtils;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -22,6 +26,8 @@ import com.rometools.rome.io.SyndFeedOutput;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.Canton;
+import lu.tessyglodt.site.data.District;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
@@ -30,6 +36,8 @@ import lu.tessyglodt.site.service.PageService;
 @Controller
 // @EnableAutoConfiguration
 public class WebController {
+
+	private static final String			BASE_URL	= "https://www.tessyglodt.lu";
 
 	final static Logger					logger	= LoggerFactory.getLogger(WebController.class);
 
@@ -199,8 +207,44 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/robots.txt")
+	@GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String getRobots() {
-		return "";
+		return "User-agent: *\n"
+				+ "Disallow: /admin/\n"
+				+ "Disallow: /login\n"
+				+ "Disallow: /sich\n"
+				+ "\n"
+				+ "Sitemap: " + BASE_URL + "/sitemap.xml\n";
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+	public String getSitemap() {
+		final StringBuilder xml = new StringBuilder();
+		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		xml.append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+		for (final String path : List.of("/", "/kaart", "/apropos", "/auteur")) {
+			appendSitemapUrl(xml, path, null);
+		}
+		for (final Canton canton : cantonService.getCantons()) {
+			appendSitemapUrl(xml, "/canton/" + UriUtils.encodePathSegment(canton.getSlug(), "UTF-8"), null);
+		}
+		for (final District district : districtService.getDistricts()) {
+			appendSitemapUrl(xml, "/district/" + UriUtils.encodePathSegment(district.getSlug(), "UTF-8"), null);
+		}
+		for (final Map<String, Object> entry : pageService.getSitemapEntries()) {
+			final Object lastmod = entry.get("lastmod");
+			appendSitemapUrl(xml, "/page/" + UriUtils.encodePathSegment((String) entry.get("name"), "UTF-8"), lastmod == null ? null : lastmod.toString());
+		}
+		xml.append("</urlset>\n");
+		return xml.toString();
+	}
+
+	private static void appendSitemapUrl(final StringBuilder xml, final String path, final String lastmod) {
+		xml.append("<url><loc>").append(HtmlUtils.htmlEscape(BASE_URL + path)).append("</loc>");
+		if (lastmod != null) {
+			xml.append("<lastmod>").append(lastmod).append("</lastmod>");
+		}
+		xml.append("</url>\n");
 	}
 }

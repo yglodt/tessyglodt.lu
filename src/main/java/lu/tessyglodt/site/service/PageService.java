@@ -208,6 +208,13 @@ public class PageService {
 		return jdbcTemplate.queryForList("select name, title from page where not published order by title asc");
 	}
 
+	// For sitemap.xml: published pages with their last change (edit date, or publish date if never edited)
+	@Cacheable(value = "page", key = "#root.methodName")
+	public List<Map<String, Object>> getSitemapEntries() {
+		return jdbcTemplate.queryForList("select name, coalesce(date_modified::date, date_published) as lastmod "
+				+ "from page where published order by name asc");
+	}
+
 	public List<Map<String, Object>> getStats(final boolean includeUnpublished) {
 		final String sql = "select name, title, view_count, date_last_view from page "
 				+ (includeUnpublished ? "" : "where published ")
