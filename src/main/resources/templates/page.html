@@ -1,6 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layouts/layout}">
 <head>
 <title th:text="${page.title}"></title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
 </head>
 <th:block layout:fragment="content">
 	<div class="margin-top margin-bottom location_page">
@@ -48,39 +50,14 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 
-		function loadScript() {
-			var script = document.createElement("script");
-			script.type = "text/javascript";
-			script.src = "//maps.googleapis.com/maps/api/js?key=AIzaSyCJneX2_ynuWwRZthXVC_sf4AC5j4V5nqA&callback=showMap";
-			document.body.appendChild(script);
-		}
+		var map = L.map("map").setView([49.85, 6.1], 8);
+		L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			maxZoom : 19,
+			attribution : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
 
-		function showMap() {
+		L.marker([ [[${page.latitude}]], [[${page.longitude}]] ], { title : [[${page.title}]] }).addTo(map);
 
-			var myLatlng = new google.maps.LatLng(/*[[${page.latitude}]]*/, /*[[${page.longitude}]]*/);
-
-			// var center = new google.maps.LatLng(49.6, 6.116667);
-			var center = new google.maps.LatLng(49.85, 6.1);
-
-			var myOptions = {
-				zoom : 8,
-				center : center,
-				mapTypeId : google.maps.MapTypeId.ROADMAP
-			}
-
-			var map = new google.maps.Map(document.getElementById("map"), myOptions);
-
-			var marker = new google.maps.Marker({
-				position : myLatlng,
-				title : /*[[${page.title}]]*/
-			});
-
-			// To add the marker to the map, call setMap();
-			marker.setMap(map);
-		}
-
-		window.onload = loadScript;
-		
 		/*]]>*/
 	</script>
 </th:block>

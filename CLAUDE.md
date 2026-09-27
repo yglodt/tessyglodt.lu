@@ -112,7 +112,7 @@ Systemd service file: `tessyglodt_lu.service` (runs `java -jar tessyglodt.war` i
 
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
 - **HTML:** sidebar headings jump from `<h2>` to `<h4>` (kept deliberately — changing affects styling); header text `d&nbsp;'Lëtzebuerger` renders with a space before the apostrophe; Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
-- **Google Maps API key** is hardcoded in `map.html` and `page.html` (decided to keep it there). It's public by nature — make sure it is restricted to the site's domains and the Maps JavaScript API in the Google Cloud console.
+- **Maps** (`map.html`, `page.html`) use Leaflet 1.9.4 from cdnjs (with SRI hashes) and OpenStreetMap tiles — no API key. Google Maps was dropped in Sept 2026 after its key stopped working (`InvalidKeyMapError`). OSM's tile policy requires the attribution and allows only light use; switch to a tile provider if traffic grows a lot. In Thymeleaf inline JS, write `[ [[${x}]]` and never `[/*[[${x}]]*/`, because `[/` parses as a closing element.
 - **Social posting:** the Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
 - **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 
@@ -135,7 +135,7 @@ Other concerns: SQLite is single-writer (concurrent writes block), BigDecimal pr
 
 ### Thymeleaf Migration (assessed March 2025)
 
-24 templates using layout dialect, fragment composition, `sec:authorize`, `@InitBinder` form binding, inline JavaScript for Google Maps.
+24 templates using layout dialect, fragment composition, `sec:authorize`, `@InitBinder` form binding, inline JavaScript for the Leaflet maps.
 
 **Best option if migrating: htmx (~2-3 weeks, ~72-103 hours)**
 - Controllers return HTML fragments, add `hx-get`/`hx-post`/`hx-target` attributes. Can migrate incrementally, one page at a time.
