@@ -4,73 +4,101 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Spring Boot 2.7 web application (Java 17) for tessyglodt.lu — a geographic CMS about Luxembourg municipalities, cantons, and districts ("Kierchtuerms­promenaden"). Uses PostgreSQL and server-side rendering with Thymeleaf.
+Spring Boot 4.1 web application (Java 21 target — production needs a Java 21+ runtime; runs fine on JDK 25) for tessyglodt.lu — a geographic CMS about Luxembourg municipalities, cantons, and districts ("Kierchtuerms­promenaden"). Uses PostgreSQL and server-side rendering with Thymeleaf.
 
 ## Build and Development Commands
 
 ```bash
-mvn clean package        # Build JAR (tessyglodt.jar), minify CSS, strip HTML whitespace, run tests
-mvn spring-boot:run      # Run on port 8080
-mvn test                 # Run all tests
-mvn test -Dtest=ClassName  # Run a single test class
+mvn clean package                                   # Build JAR (target/tessyglodt.jar), minify CSS, strip HTML whitespace
+mvn spring-boot:run -Dspring-boot.run.profiles=dev  # Run locally on port 8080 against the local DB
+mvn test                                            # Run all tests (there are none yet)
 ```
 
-Note: There are currently no test classes in the project.
+- **Always run locally with the `dev` profile** (`application-dev.properties`: Postgres on port 5433, DEBUG logging). Without it the app connects to port 5432 and fails with `role "tessyglodt" does not exist`. VS Code: use the "Application (dev)" launch config in `.vscode/launch.json`.
+- Local admin login: `admin` / `password`.
+- **javac crash workaround:** when the code has compile errors, in-process javac on JDK 25 may crash with `Cannot load from object array because "this.hashes" is null` instead of reporting them. Run `mvn compile -Dmaven.compiler.fork=true` to see the real errors.
+- If the VS Code app is running, don't `mvn clean` underneath it (devtools restarts on half-built classes); test a separate instance with `java -jar target/tessyglodt.jar --spring.profiles.active=dev --server.port=8081`.
+
+## Configuration
+
+- `src/main/resources/application.properties` holds defaults (committed, including the placeholder admin password — intentional).
+- **Production** runs from `/data` (see `tessyglodt_lu.service`) and `/data/application.properties` overrides the bundled file key by key. Production-only values (admin password, DB credentials) live there.
+- `spring-boot-properties-migrator` is still in the pom to report renamed keys in the production config after the Boot 4 upgrade; remove it once the production startup log shows no migration warnings.
 
 ## Architecture
 
 ### Package Structure (`lu.tessyglodt.site`)
 
-- `controller/` — Two controllers: `WebController` (public pages) and `AdminController` (`/admin/**`, requires ADMIN role)
-- `service/` — Business logic with `@Cacheable`/`@CacheEvict` annotations. `PageService` is the main service.
-- `data/` — Domain objects (Page, Municipality, Canton, District, Order) and their `RowMapper` implementations
-- `spring/` — Configuration: `ConfigWebMvc` (caching, scheduling, interceptors), `ConfigWebSecurity` (Spring Security), `Scheduler` (daily tweet cron)
+- `controller/` — `WebController` (public pages), `AdminController` (`/admin/**`, requires ADMIN role), `NotFoundAdvice` (maps `EmptyResultDataAccessException` to 404)
+- `service/` — Business logic with `@Cacheable`/`@CacheEvict`. `PageService` is the main service; also `CantonService`, `DistrictService`, `MunicipalityService`.
+- `data/` — Domain objects (Page, Municipality, Canton, District) and their `RowMapper` implementations
+- `spring/` — `ConfigWebMvc` (caching, interceptor), `ConfigWebSecurity` (two `SecurityFilterChain`s)
+- `MyHandlerInterceptor` — adds `now`, `req` (the layout needs it, including on error pages) and, for admins, `hiddenPages` to every non-redirect model
+
+### Conventions
+
+- **Constructor injection** with `private final` fields — no field `@Autowired`.
+- `JdbcTemplate` calls use varargs (`query(sql, mapper, args...)`), not `new Object[] {...}`.
+- Code style: tabs, tab-aligned field declarations, `final` parameters.
+- **Line endings are mixed:** most Java files, `pom.xml` and `application.properties` use CRLF; some templates use LF. Preserve each file's existing line endings when editing (a rewrite to LF shows up as a whole-file diff).
 
 ### Database
 
-- **Direct JDBC** via Spring's `JdbcTemplate` — no JPA/Hibernate
-- **PostgreSQL** with a custom `slugify()` database function used for URL matching of geographic entities
-- Full-text search uses `to_tsvector`/`to_tsquery` with `unaccent`
-- Legacy H2 search path still exists in code but PostgreSQL is the active driver
+- **Direct JDBC** via Spring's `JdbcTemplate` — no JPA/Hibernate. Connection pool: HikariCP (via `spring-boot-starter-jdbc`).
+- **PostgreSQL** with a custom `slugify()` database function used for URL matching of cantons/districts.
+- Full-text search: `to_tsvector(unaccent(content)) @@ websearch_to_tsquery(unaccent(?))` — `websearch_to_tsquery` so arbitrary user input (multiple words, `&`, `(`) doesn't raise tsquery syntax errors.
+- The `orders` table exists in the DB but is no longer used by the code.
+- No schema files in the repo; a local `pg_dump` is the reference.
+
+### Published / hidden pages
+
+`page.published` ("Siichtbar" in the admin form) hides a page:
+- All public lists, the map, search, feeds, sitemap, random page and `/stats` filter `where published` (`PageService.getPagesWithWhere()` always adds it).
+- `/page/{name}` returns 404 for hidden pages unless the user is ADMIN.
+- Admins see hidden pages listed as "Verstoppt:" in the admin bar (`PageService.getUnpublishedPages()`), and in `/stats`.
+- The page form sends a hidden `_published` marker so an unchecked checkbox binds to `false` (the `Page` default is `true`).
 
 ### Caching
 
 Two cache regions in `ConcurrentMapCacheManager`:
-- `page` — page content and listings
+- `page` — page content and listings (incl. hidden pages list)
 - `accessInfo` — view-count-derived lists (last read, most read, newest)
 
-Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `accessInfo` (because it tracks last-read state).
+Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `accessInfo`, so in `WebController.getPage()` the view count is updated **before** `getPageByProperty()` — otherwise a concurrent request could re-cache stale lists. `updateViewCount` only touches published pages.
 
 ### URL Routes (Luxembourgish)
 
-Public routes use Luxembourgish names:
 - `/sich` — search
 - `/kaart` — map
 - `/apropos` — about
 - `/auteur` — author
-- `/canton/{slug}`, `/district/{slug}` — geographic browsing
+- `/canton/{slug}`, `/district/{slug}` — geographic browsing (slug = `slugify(name)`, e.g. `/canton/wolz`)
 - `/page/{name}` — individual page (updates view count, excludes bots)
+- `/stats` — view counts
 - `/feed/nei.xml`, `/feed/alles.xml` — Atom feeds
+- `/robots.txt` (blocks `/admin/`, `/login`, `/sich`) and `/sitemap.xml` (static pages, cantons, districts, published pages with `lastmod`; built in `WebController`, entries cached in `page`)
+- Unknown page/canton/district → 404 page (`templates/error/404.html`)
 
 ### View Layer
 
-- **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`
-- `MyHandlerInterceptor` injects `now` (current timestamp) into every model
-- **CKEditor** for admin rich text editing
-- Build step: Maven `replacer` plugin strips whitespace from HTML templates; `minify` plugin compresses `style.css` → `s.css`
+- **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`; pages use `layout:decorate="~{layouts/layout}"` and their own `<head>` (merged by the layout dialect, title via `layout:title-pattern`). Fragments are included with `th:replace="~{fragments/...}"`.
+- **CKEditor** for admin rich text editing; the edit form's textarea uses `th:text` (escaped), page display uses `th:utext`.
+- Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
+- Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost).
+- Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
 
 ### Security
 
-- `ConfigWebSecurity` extends `WebSecurityConfigurerAdapter` (deprecated in newer Spring Security)
-- `/admin/**` requires ADMIN role; credentials configured in `application.properties`
-- Static resources (`/b/**`, `/ckeditor/**`, `/css/**`, `/fonts/**`, `/img/**`, `/js/**`) bypass security
+- `ConfigWebSecurity` (Spring Security 7 lambda DSL):
+  - Chain 1 (`@Order(1)`): static paths (`/b/**`, `/ckeditor/**`, `/css/**`, `/fonts/**`, `/img/**`, `/js/**`) — permitAll, no session, **cache-control headers disabled** so browsers keep caching static files.
+  - Chain 2: `/admin/**` requires ADMIN, everything else permitAll; form login at `/login` posting to `/authcheck`; GET `/logout` allowed (the layout uses a plain link).
+- Admin credentials come from `spring.security.user.*` (overridden in production).
 
 ### Key Patterns
 
-- `AdminController.@InitBinder` registers custom `PropertyEditorSupport` instances to bind form select values (integers) to domain objects (Municipality, Canton, District)
-- `PageService.getPageByProperty(property, value, log)` builds SQL with the `property` parameter concatenated into the query — callers only pass hardcoded strings ("id", "name")
-- Bot detection in `WebController.getPage()` checks user-agent for known crawler strings before incrementing view count
-- `Scheduler` tweets a random page daily at 8:15 AM Europe/Luxembourg time via Twitter4j
+- `AdminController.@InitBinder` registers custom `PropertyEditorSupport` instances to bind form select values (integers) to domain objects (Municipality, Canton, District).
+- `PageService.getPageByProperty(property, value, log)` builds SQL with the `property` parameter concatenated into the query — callers only pass hardcoded strings ("id", "name").
+- Bot detection in `WebController.getPage()` checks the user-agent for known crawler strings before incrementing the view count.
 
 ### Geographic Hierarchy
 
@@ -78,34 +106,15 @@ District → Canton → Municipality → Page. The `PageMapper` reconstructs thi
 
 ### Deployment
 
-Systemd service file: `tessyglodt_lu.service`
+Systemd service file: `tessyglodt_lu.service` (runs `java -jar tessyglodt.war` in `/data`).
 
-## Known Technical Debt & Quick Wins
+## Known Technical Debt / Open Items
 
-### Dead Code to Remove
-- `PageService.getSearchH2()` and the `switch(driverClassName)` in `WebController.getSearch()` — H2 is no longer used
-- `PageService.registerUserDefinedFunctions()` and its endpoint `/admin/udf` — body is commented out
-- `PageService.deleteAllPages()` — body is commented out
-- `/admin/import` endpoint — body is commented out
-- Large commented-out blocks in `WebController` (old photo endpoints), `Utils` (image resizing), `ConfigWebMvc`
-
-### Deprecated APIs to Fix
-- `MyHandlerInterceptor` extends `HandlerInterceptorAdapter` — implement `HandlerInterceptor` interface instead
-- `ConfigWebSecurity` extends `WebSecurityConfigurerAdapter` — use `SecurityFilterChain` bean (required for Spring Boot 3.x)
-- `new Object[] {}` in JdbcTemplate calls throughout `PageService` — use varargs directly
-
-### Security
-- Credentials are committed in `application.properties` (`spring.security.user.password`, Twitter secrets) — move to environment variables or a gitignored `application-local.properties`
-
-### Missing Essentials
-- No DB schema files in the repo — export with `pg_dump -s tessyglodt > schema.sql` and commit
-- No test classes exist
-
-### Twitter4j / Scheduler
-- The Twitter/X API has fundamentally changed. The daily tweet scheduler (`Scheduler.java`, 8:15 AM) likely no longer works. Consider removing or replacing with Bluesky/Mastodon.
-
-### Spring Boot Upgrade Path (2.7 → 3.x)
-Spring Boot 2.7 is EOL. Main migration steps: `javax.*` → `jakarta.*` imports, `WebSecurityConfigurerAdapter` → `SecurityFilterChain` bean. Straightforward for this codebase (no JPA, no complex security).
+- **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
+- **HTML:** sidebar headings jump from `<h2>` to `<h4>` (kept deliberately — changing affects styling); header text `d&nbsp;'Lëtzebuerger` renders with a space before the apostrophe; Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
+- **Google Maps API key** is hardcoded in `map.html` and `page.html` (decided to keep it there). It's public by nature — make sure it is restricted to the site's domains and the Maps JavaScript API in the Google Cloud console.
+- **Social posting:** the Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
+- **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 
 ## Migration Assessments
 
@@ -118,7 +127,7 @@ PostgreSQL-specific features in use:
 - `now()` in `updateViewCount()` — replace with `CURRENT_TIMESTAMP`
 - `slugify()` custom DB function in `CantonService`, `DistrictService`, `PageService` — must reimplement in Java
 - `unaccent()` in search — must do accent stripping in Java
-- `to_tsvector`/`to_tsquery`/`@@` full-text search — **no direct SQLite equivalent**. SQLite FTS5 exists but doesn't handle accents and behaves differently. This is the dealbreaker for a Luxembourgish content site.
+- `to_tsvector`/`websearch_to_tsquery`/`@@` full-text search — **no direct SQLite equivalent**. SQLite FTS5 exists but doesn't handle accents and behaves differently. This is the dealbreaker for a Luxembourgish content site.
 
 Other concerns: SQLite is single-writer (concurrent writes block), BigDecimal precision loss with REAL type (store as TEXT), no schema files exist to port.
 
@@ -142,26 +151,26 @@ Other concerns: SQLite is single-writer (concurrent writes block), BigDecimal pr
 
 ## Local Database Setup (Postgres.app on macOS)
 
+The local server for this project listens on **port 5433** (a different Postgres instance runs on 5432).
+
 Restoring a `pg_dump` backup:
 ```bash
 # Add Postgres.app CLI tools to PATH (add to ~/.zshrc for permanence)
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+export PGPORT=5433
 
-# Create database and role
-createdb tessyglodt
-psql -d tessyglodt -c "CREATE ROLE tessyglodt WITH LOGIN PASSWORD 'tessyglodt';"
-psql -d tessyglodt -c "GRANT ALL PRIVILEGES ON DATABASE tessyglodt TO tessyglodt;"
+# Create role and database (the dump's objects are owned by "tessyglodt")
+psql -d postgres -c "CREATE ROLE tessyglodt WITH LOGIN PASSWORD 'tessyglodt';"
+createdb -O tessyglodt tessyglodt
+
+# Restore custom format (-Fc, .dump)
+pg_restore --no-privileges -d tessyglodt /path/to/backup.dump
 
 # Restore plain SQL format (.sql)
 psql -d tessyglodt < /path/to/backup.sql
 
-# Restore custom format (-Fc, .dump)
-pg_restore -d tessyglodt /path/to/backup.dump
-
-# If backup was made by a different user
+# If the backup was made by a different user
 pg_restore --no-owner --no-privileges -d tessyglodt /path/to/backup.dump
-
-# Grant permissions after restore
-psql -d tessyglodt -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO tessyglodt;"
-psql -d tessyglodt -c "GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO tessyglodt;"
 ```
+
+Don't keep backup dumps in the project folder unignored — `*.dump` is not in `.gitignore`.
