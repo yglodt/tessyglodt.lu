@@ -346,6 +346,58 @@ body>nav>form>button:hover {
 	background-color: #eee;
 }
 
+/* Compact header and navbar on phones */
+@media screen and (max-width: 600px) {
+	body>header {
+		margin-top: 8px;
+		padding: 10px;
+	}
+
+	body>header>h1 {
+		padding-top: 0;
+		font-size: min(32pt, 12.5vw);
+		line-height: 1.1;
+	}
+
+	body>header>h2 {
+		font-size: 14pt;
+		padding-bottom: 0;
+	}
+
+	body>nav {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
+		padding: 8px;
+	}
+
+	body>nav>a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
+		padding: 6px 8px;
+		font-size: large;
+	}
+
+	body>nav>form {
+		grid-column: 1 / -1;
+		margin: 0;
+	}
+
+	body>nav>form>input {
+		flex: 1;
+		min-width: 0;
+		padding: 8px;
+		font-size: large;
+	}
+
+	body>nav>form>button {
+		padding: 4px 8px;
+		font-size: large;
+	}
+}
+
 /* Location page */
 div.location_page {
 	display: flex;
