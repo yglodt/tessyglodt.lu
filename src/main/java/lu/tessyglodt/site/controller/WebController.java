@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,13 +39,7 @@ public class WebController {
 
 	private final DistrictService		districtService;
 
-	// @Autowired
-	// private OrderService orderService;
-
 	private final HttpServletRequest	request;
-
-	@Value("${spring.datasource.driverClassName}")
-	private String						driverClassName;
 
 	public WebController(final PageService pageService, final CantonService cantonService, final DistrictService districtService, final HttpServletRequest request) {
 		this.pageService = pageService;
@@ -72,9 +65,6 @@ public class WebController {
 	@GetMapping(value = { "/page/{name}", "/page/{name}.html" })
 	public String getPage(@PathVariable("name") final String name, final Model model, final HttpServletRequest request) {
 		model.addAttribute("req", request);
-
-		// final File oldPics = new File("/home/glodt/data/ville1/old");
-		// final File[] oldPicsFiles = oldPics.listFiles(Utils.folderFilter());
 
 		String ua = request.getHeader("user-agent");
 		boolean isBot = false;
@@ -104,9 +94,6 @@ public class WebController {
 		}
 
 		model.addAttribute("page", page);
-
-		// logger.debug(page.getTweet());
-		// pageService.tweetPage(page);
 
 		return "page";
 	}
@@ -146,14 +133,7 @@ public class WebController {
 		if (!StringUtils.isEmpty(q)) {
 			logger.debug("Searching for \"" + q + "\"");
 
-			switch (driverClassName) {
-			case "org.h2.Driver":
-				model.addAttribute("pages", pageService.getSearchH2(q));
-				break;
-			case "org.postgresql.Driver":
-				model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
-				break;
-			}
+			model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
 
 		}
 
@@ -223,80 +203,4 @@ public class WebController {
 	public String getRobots() {
 		return "";
 	}
-
-	/*
-	 * @ResponseBody
-	 * @GetMapping(value = "/photo/l/{page}/{filename:.*}")
-	 * public FileSystemResource getPic(
-	 * @PathVariable("filename") final String fileName,
-	 * @PathVariable("page") final String page,
-	 * // @PathVariable("sub") final String subFolder,
-	 * final HttpServletResponse response) throws IOException {
-	 * final File physicalFile = new File("/home/glodt/data/" + page + "/" + fileName);
-	 * // response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.maxAge(7, TimeUnit.DAYS).cachePrivate().getHeaderValue());
-	 * response.setHeader(HttpHeaders.CACHE_CONTROL, "max-age=0, private"); // CacheControl.maxAge(7, TimeUnit.DAYS).cachePrivate().getHeaderValue());
-	 * response.setDateHeader(HttpHeaders.LAST_MODIFIED, physicalFile.lastModified());
-	 * response.setHeader(HttpHeaders.EXPIRES, "0");
-	 * response.setHeader(HttpHeaders.ETAG, fileName + "-" + (physicalFile.lastModified() / 1000));
-	 * return new FileSystemResource(physicalFile);
-	 * }
-	 */
-
-	/*
-	 * @ResponseBody
-	 * @GetMapping(value = "/photo/s/{page}/{size}/{filename:.*}")
-	 * public ResponseEntity<InputStreamResource> getPicThumbnail(
-	 * @PathVariable("filename") final String fileName,
-	 * @PathVariable("page") final String page,
-	 * // @PathVariable("sub") final String subFolder,
-	 * @PathVariable("size") final int size,
-	 * final HttpServletResponse response) throws IOException {
-	 * response.setHeader(HttpHeaders.CACHE_CONTROL, "max-age=0, private"); // CacheControl.maxAge(7, TimeUnit.DAYS).cachePrivate().getHeaderValue());
-	 * // response.setHeader("Expires", "0");
-	 * final String absoluteFileName = "/home/glodt/data/" + page + "/" + fileName;
-	 * final String fileNameBase = StringUtils.substringBeforeLast(fileName, ".");
-	 * final String fileNameExt = StringUtils.substringAfterLast(fileName, ".");
-	 * final File physicalThumbnailFolder = new File("/home/glodt/data/" + page + "/" + "/thumbnails");
-	 * if (!physicalThumbnailFolder.exists()) {
-	 * physicalThumbnailFolder.mkdir();
-	 * }
-	 * final File physicalThumbnailFile = new File("/home/glodt/data/" + page + "/" + "/thumbnails/" + fileNameBase + "-" + size + "." + fileNameExt);
-	 * // byte[] bytes = null;
-	 * InputStream pic = null;
-	 * if (physicalThumbnailFile.exists()) {
-	 * logger.debug("Thumbnail exists         : " + physicalThumbnailFile.getCanonicalPath());
-	 * pic = new FileInputStream(physicalThumbnailFile);
-	 * // return ResponseEntity
-	 * // .ok()
-	 * // // .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS)) does not work... We need response.setHeader() above
-	 * // .lastModified(physicalThumbnailFile.lastModified())
-	 * // .eTag((physicalThumbnailFile.lastModified() / 1000) + "")
-	 * // .contentLength(physicalThumbnailFile.length())
-	 * // .contentType(MediaType.parseMediaType("image/jpg"))
-	 * // .body(new InputStreamResource(new FileInputStream(physicalThumbnailFile)));
-	 * } else {
-	 * final File physicalFile = new File(absoluteFileName);
-	 * logger.debug("Thumbnail does not exist : " + physicalThumbnailFile.getCanonicalPath());
-	 * final byte[] resizedPic = Utils.resizeImage(FileUtils.readFileToByteArray(physicalFile), fileNameExt, size);
-	 * FileUtils.writeByteArrayToFile(physicalThumbnailFile, resizedPic);
-	 * pic = new ByteArrayInputStream(resizedPic);
-	 * // return ResponseEntity
-	 * // .ok()
-	 * // // .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS)) does not work... We need response.setHeader() above
-	 * // .lastModified(physicalThumbnailFile.lastModified())
-	 * // .eTag((physicalThumbnailFile.lastModified() / 1000) + "")
-	 * // .contentLength(resizedPic.length)
-	 * // .contentType(MediaType.parseMediaType("image/jpg"))
-	 * // .body(new InputStreamResource(new ByteArrayInputStream(resizedPic)));
-	 * }
-	 * return ResponseEntity
-	 * .ok()
-	 * // .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS)) does not work... We need response.setHeader() above
-	 * .lastModified(physicalThumbnailFile.lastModified())
-	 * .eTag((physicalThumbnailFile.lastModified() / 1000) + "")
-	 * .contentLength(physicalThumbnailFile.length())
-	 * .contentType(MediaType.parseMediaType("image/jpg"))
-	 * .body(new InputStreamResource(pic));
-	 * }
-	 */
 }

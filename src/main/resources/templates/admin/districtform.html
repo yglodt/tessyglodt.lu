@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
-<head th:include="layouts/layout :: headerFragment">
+<head>
 <title>Distrikter</title>
 </head>
 <th:block layout:fragment="content">
@@ -16,7 +16,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="name">Numm</label>
 					<div class="col-sm-2">
-						<input name="name" th:errorclass="errors" class="form-control" th:value="${district.name}">
+						<input name="name" id="name" th:errorclass="errors" class="form-control" th:value="${district.name}">
 					</div>
 				</div>
 

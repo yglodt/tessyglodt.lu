@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
-<head th:include="layouts/layout :: headerFragment">
+<head>
 <title>Säiteneditor</title>
 </head>
 <th:block layout:fragment="content">
@@ -20,40 +20,42 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="name">Numm (fr)</label>
 					<div class="col-sm-2">
-						<input name="name" th:errorclass="errors" class="form-control" th:value="${page.name}">
+						<input name="name" id="name" th:errorclass="errors" class="form-control" th:value="${page.name}">
 					</div>
 					<label class="col-sm-2 control-label" for="title">Titel</label>
 					<div class="col-sm-2">
-						<input name="title" th:errorclass="errors" class="form-control" th:value="${page.title}">
+						<input name="title" id="title" th:errorclass="errors" class="form-control" th:value="${page.title}">
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="latitude">Latitude</label>
 					<div class="col-sm-2">
-						<input name="latitude" th:errorclass="errors" class="form-control" type="number" step="0.0000001" min="45" max="55" th:value="${page.latitude}">
+						<input name="latitude" id="latitude" th:errorclass="errors" class="form-control" type="number" step="0.0000001" min="45" max="55" th:value="${page.latitude}">
 					</div>
 					<label class="col-sm-2 control-label" for="longitude">Longitude</label>
 					<div class="col-sm-2">
-						<input name="longitude" th:errorclass="errors" class="form-control" type="number" step="0.0000001" min="5" max="8" th:value="${page.longitude}">
+						<input name="longitude" id="longitude" th:errorclass="errors" class="form-control" type="number" step="0.0000001" min="5" max="8" th:value="${page.longitude}">
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="municipality">Gemeng / Kanton / Distrikt</label>
 					<div class="col-sm-2">
-						<select name="municipality" class="form-control" th:errorclass="errors">
+						<select name="municipality" id="municipality" class="form-control" th:errorclass="errors">
 							<option value="">[...]</option>
 							<option th:each="item : ${municipalities}" th:value="${item.id}" th:text="${item.fullName}" th:selected="${item.id == page.municipality?.id}"></option>
 						</select>
 					</div>
 					<label class="col-sm-2 control-label" for="datePublished">Publizéiert</label>
 					<div class="col-sm-2">
-						<input name="datePublished" th:errorclass="errors" class="form-control" type="date" th:value="${page.datePublished}">
+						<input name="datePublished" id="datePublished" th:errorclass="errors" class="form-control" type="date" th:value="${page.datePublished}">
 					</div>
 					<label class="col-sm-2 control-label" for="published">Siichtbar</label>
 					<div class="col-sm-2">
-						<input type="checkbox" name="published" th:checked="${page.published}">
+						<input type="checkbox" name="published" id="published" th:checked="${page.published}">
+						<!-- Spring sets "published" to false when the unchecked box sends nothing -->
+						<input type="hidden" name="_published" value="on">
 					</div>
 				</div>
 
@@ -61,7 +63,7 @@
 
 				<div class="form-group">
 					<div class="col-xs-12">
-						<textarea name="content" id="content" class="form-control" th:errorclass="errors" th:utext="${page.content}"></textarea>
+						<textarea name="content" id="content" class="form-control" th:errorclass="errors" th:text="${page.content}"></textarea>
 					</div>
 				</div>
 

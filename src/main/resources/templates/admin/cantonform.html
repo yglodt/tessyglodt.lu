@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
-<head th:include="layouts/layout :: headerFragment">
+<head>
 <title>Kantonen</title>
 </head>
 <th:block layout:fragment="content">
@@ -16,14 +16,14 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="name">Numm</label>
 					<div class="col-sm-2">
-						<input name="name" th:errorclass="errors" class="form-control" th:value="${canton.name}">
+						<input name="name" id="name" th:errorclass="errors" class="form-control" th:value="${canton.name}">
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="district">Distrikt</label>
 					<div class="col-sm-2">
-						<select name="district" class="form-control" th:errorclass="errors">
+						<select name="district" id="district" class="form-control" th:errorclass="errors">
 							<option value="">[...]</option>
 							<option th:each="item : ${districts}" th:value="${item.id}" th:text="${item.name}" th:selected="${item.id == canton.district?.id}"></option>
 						</select>

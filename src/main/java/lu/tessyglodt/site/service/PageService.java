@@ -14,15 +14,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import lu.tessyglodt.site.TwitterTemplateCreator;
 import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
-import twitter4j.GeoLocation;
-import twitter4j.Status;
-import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 @Component
 public class PageService {
@@ -33,11 +27,8 @@ public class PageService {
 
 	private final JdbcTemplate				jdbcTemplate;
 
-	private final TwitterTemplateCreator	twitterCreator;
-
-	public PageService(final JdbcTemplate jdbcTemplate, final TwitterTemplateCreator twitterCreator) {
+	public PageService(final JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
-		this.twitterCreator = twitterCreator;
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName")
@@ -127,34 +118,6 @@ public class PageService {
 		return o;
 	}
 
-	public List<Page> getSearchH2(final String q) {
-		final String sql = "SELECT * FROM FT_SEARCH_DATA(?, 0, 0)";
-
-		final List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, q);
-
-		final StringBuffer params = new StringBuffer();
-
-		for (final Map<String, Object> temp : rows) {
-			final Object[] id = (Object[]) temp.get("KEYS");
-			final String idAsString = (String) id[0];
-			params.append("'" + idAsString + "',");
-		}
-
-		String params2 = params.toString();
-
-		if (params.length() > 0) {
-			// I could not find a way to use an array as a query parameter with
-			// jdbctemplate, that's why I use string concatenation. It has no
-			// security impact since the original query with the search string
-			// is done before, using a query parameter.
-			params2 = params2.substring(0, params.length() - 1);
-			return getPagesWithWhere("", "p.id in (" + params2 + ")", "order by title asc", null, false);
-		} else {
-			return null;
-		}
-
-	}
-
 	public List<Map<String, Object>> getSearchPostgreSQL(final String q) {
 		/*
 		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-
@@ -231,33 +194,6 @@ public class PageService {
 				page.getId());
 	}
 
-	public void deleteAllPages() {
-		// this.jdbcTemplate.update("delete from page");
-	}
-
-	public void registerUserDefinedFunctions() {
-		// this.jdbcTemplate.update("create alias if not exists slugify for
-		// \"lu.tessyglodt.site.H2Functions.slugify\";");
-		// this.jdbcTemplate.update("create alias if not exists ft_init for
-		// \"org.h2.fulltext.fulltext.init\";");
-	}
-
-	/*
-	 * public void backup() { try {
-	 * Script.process("jdbc:h2:/data/tessyglodt_lu", "sa", "",
-	 * "/data/database-backup-" + new
-	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".sql", "", "");
-	 * } catch (final SQLException e) { logger.error(e.getMessage()); } }
-	 * public void restore() { // java -cp //
-	 * "$dir/h2-1.3.174.jar:$dir/slugify-2.1.2.jar:$dir/lu/tessyglodt/site/:$H2DRIVERS:$CLASSPATH"
-	 * // org.h2.tools.RunScript -url jdbc:h2:/tmp/test2 -user sa -script //
-	 * /tmp/db.sql
-	 * // http://www.h2database.com/javadoc/org/h2/tools/RunScript.html
-	 * try { RunScript.execute( "jdbc:h2:/data/restore-" + new
-	 * SimpleDateFormat("yyyyMMddHHmmss").format(new Date()), "sa", "",
-	 * "/data/file_to_restore.sql", null, false); } catch (final SQLException e)
-	 * { logger.error(e.getMessage()); } }
-	 */
 	public void updateViewCount(final String name) {
 		final String sql = "update page "
 				+ "set date_last_view = now(), "
@@ -277,14 +213,6 @@ public class PageService {
 				+ (includeUnpublished ? "" : "where published ")
 				+ "order by view_count desc";
 		return jdbcTemplate.queryForList(sql);
-	}
-
-	public Status tweetPage(final Page page) throws TwitterException {
-		logger.debug("Tweeting " + page.getTweet());
-		final Twitter twitter = twitterCreator.getTwitter();
-		final StatusUpdate update = new StatusUpdate(page.getTweet());
-		update.setLocation(new GeoLocation(page.getLatitude().doubleValue(), page.getLongitude().doubleValue()));
-		return twitter.updateStatus(update);
 	}
 
 }

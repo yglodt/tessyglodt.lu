@@ -1,19 +1,9 @@
 package lu.tessyglodt.site;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-//import org.imgscalr.Scalr;
-//import org.imgscalr.Scalr.Method;
-//import java.awt.image.BufferedImage;
-//import java.io.ByteArrayInputStream;
-//import java.io.ByteArrayOutputStream;
-//import java.io.InputStream;
-//import javax.imageio.ImageIO;
 
 import org.springframework.web.util.HtmlUtils;
 
@@ -35,13 +25,6 @@ public class Utils {
 			return Integer.valueOf(o.toString());
 		}
 	}
-
-	/*
-	 * public static File stream2file(final InputStream in) throws IOException {
-	 * final File tempFile = File.createTempFile("stream2file", ".tmp");
-	 * tempFile.deleteOnExit(); try (FileOutputStream out = new
-	 * FileOutputStream(tempFile)) { IOUtils.copy(in, out); } return tempFile; }
-	 */
 
 	public static SyndFeed createFeed(final String name, final List<Page> pages) {
 
@@ -80,34 +63,4 @@ public class Utils {
 
 		return feed;
 	}
-
-	public static FileFilter folderFilter() {
-		return new FileFilter() {
-			@Override
-			public boolean accept(final File file) {
-				return file.isFile();
-			}
-		};
-	}
-
-	/*
-	 * public static byte[] resizeImage(final byte[] bytes, final String extension, final int targetSize) {
-	 * try {
-	 * // final long begin = System.currentTimeMillis();
-	 * final InputStream in = new ByteArrayInputStream(bytes);
-	 * final BufferedImage orig = ImageIO.read(in);
-	 * final BufferedImage resized = Scalr.resize(orig, Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_HEIGHT, targetSize, Scalr.OP_ANTIALIAS);
-	 * final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	 * ImageIO.write(resized, extension, baos);
-	 * baos.flush();
-	 * final byte[] imageInByte = baos.toByteArray();
-	 * baos.close();
-	 * // logger.debug("Resized image of " + bytes.length + " bytes (" + orig.getWidth() + "*" + orig.getHeight() + ") to " + imageInByte.length + " bytes (" + resized.getWidth() + "*" + resized.getHeight() + ") in " + (System.currentTimeMillis() - begin) + " ms");
-	 * return imageInByte;
-	 * } catch (final Exception e) {
-	 * // logger.error("Error resizing image: " + e.getMessage());
-	 * return null;
-	 * }
-	 * }
-	 */
 }

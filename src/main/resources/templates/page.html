@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layouts/layout}">
-<head th:include="layouts/layout :: headerFragment">
+<head>
 <title th:text="${page.title}"></title>
 </head>
 <th:block layout:fragment="content">
@@ -14,9 +14,6 @@
 				<div sec:authorize="hasRole('ROLE_ADMIN')">
 					<p>
 						<a style="color: darkred; font-weight: bold;" th:href="@{/admin/pageform(id=${page.id})}">Änneren</a>
-					</p>
-					<p>
-						<a style="color: darkred; font-weight: bold;" href="#" id="tweet" onclick data-id="${page.id}">Tweeten</a>
 					</p>
 				</div>
 				<h4 th:text="${'Informatiounen zu ' + page.title}"></h4>
@@ -54,7 +51,7 @@
 		function loadScript() {
 			var script = document.createElement("script");
 			script.type = "text/javascript";
-			script.src = "//maps.googleapis.com/maps/api/js?key=AIzaSyCJneX2_ynuWwRZthXVC_sf4AC5j4V5nqA&sensor=false&callback=showMap";
+			script.src = "//maps.googleapis.com/maps/api/js?key=AIzaSyCJneX2_ynuWwRZthXVC_sf4AC5j4V5nqA&callback=showMap";
 			document.body.appendChild(script);
 		}
 

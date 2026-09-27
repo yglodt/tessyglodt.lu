@@ -1,9 +1,6 @@
 package lu.tessyglodt.site.controller;
 
 import java.beans.PropertyEditorSupport;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.xml.sax.SAXException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lu.tessyglodt.site.data.Canton;
@@ -30,8 +25,6 @@ import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
 import lu.tessyglodt.site.service.MunicipalityService;
 import lu.tessyglodt.site.service.PageService;
-import twitter4j.Status;
-import twitter4j.TwitterException;
 
 @Controller
 // @EnableAutoConfiguration
@@ -217,22 +210,6 @@ public class AdminController {
 		}
 	}
 
-	@GetMapping(value = "/admin/import")
-	public String getImport(final Model model) throws ParserConfigurationException, SAXException, IOException {
-		/*
-		 * this.pageService.deleteAllPages();
-		 * final List<Page> pages = Import.doImport();
-		 * for (final Page page : pages) { this.pageService.insert(page); }
-		 */
-		return "redirect:/";
-	}
-
-	@GetMapping(value = "/admin/udf")
-	public String getRegisterUserDefinedFunctions(final Model model) {
-		pageService.registerUserDefinedFunctions();
-		return "redirect:/";
-	}
-
 	@InitBinder
 	private void initBinder(final HttpServletRequest request, final ServletRequestDataBinder binder) throws Exception {
 
@@ -275,12 +252,5 @@ public class AdminController {
 			}
 		});
 
-	}
-
-	@ResponseBody
-	@PostMapping(value = "/admin/tweet")
-	public Status postTweetPage(@RequestParam(value = "id", required = false) final String id) throws TwitterException {
-		final Page page = pageService.getPageByProperty("id", id, false);
-		return pageService.tweetPage(page);
 	}
 }
