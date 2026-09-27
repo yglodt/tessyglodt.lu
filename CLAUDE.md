@@ -83,6 +83,7 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 
 - **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`; pages use `layout:decorate="~{layouts/layout}"` and their own `<head>` (merged by the layout dialect, title via `layout:title-pattern`). Fragments are included with `th:replace="~{fragments/...}"`.
 - **CKEditor** for admin rich text editing; the edit form's textarea uses `th:text` (escaped), page display uses `th:utext`.
+- Fonts (Italianno, Smythe, Lora, Material Icons) are self-hosted in `static/fonts/`, with their `@font-face` rules at the top of `style.css` (Latin + Latin-Extended subsets only). No Google Fonts, no analytics.
 - Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
 - Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost).
 - Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
