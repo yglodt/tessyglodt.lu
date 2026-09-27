@@ -11,12 +11,12 @@
 
 			<form th:object="${canton}" method="post" th:action="@{/admin/cantonform}" class="form-horizontal">
 
-				<input type="hidden" name="id" th:value="${canton.id}" />
+				<input type="hidden" name="id" th:value="${canton.id}">
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="name">Numm</label>
 					<div class="col-sm-2">
-						<input name="name" th:errorclass="errors" class="form-control" th:value="${canton.name}" />
+						<input name="name" th:errorclass="errors" class="form-control" th:value="${canton.name}">
 					</div>
 				</div>
 

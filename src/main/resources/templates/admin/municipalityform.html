@@ -10,12 +10,12 @@
 
 			<form th:object="${municipality}" method="post" th:action="@{/admin/municipalityform}" class="form-horizontal">
 
-				<input type="hidden" name="id" th:value="${municipality.id}" />
+				<input type="hidden" name="id" th:value="${municipality.id}">
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="name">Numm</label>
 					<div class="col-sm-2">
-						<input name="name" th:errorclass="errors" class="form-control" th:value="${municipality.name}" />
+						<input name="name" th:errorclass="errors" class="form-control" th:value="${municipality.name}">
 					</div>
 				</div>
 

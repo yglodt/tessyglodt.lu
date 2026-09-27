@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="lb">
 <head th:fragment="headerFragment">
 <title layout:title-pattern="$CONTENT_TITLE — $LAYOUT_TITLE">Kierchtuermspromenaden</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#f9f6e1" />
-<link th:href="@{//fonts.googleapis.com/css?family=Italianno|Smythe|Lora|Material+Icons}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" th:href="@{/css/style.css}" th:if="${req.serverName == 'localhost'}" />
-<link rel="stylesheet" th:href="@{/css/s.min.css}" th:if="${req.serverName != 'localhost'}" />
-<link rel="icon" type="image/png" th:href="@{/img/favicon.png}" sizes="64x64" />
-<script th:if="${req.serverName != 'localhost'}" type="text/javascript">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f9f6e1">
+<link th:href="@{//fonts.googleapis.com/css?family=Italianno%7CSmythe%7CLora%7CMaterial+Icons}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" th:href="@{/css/style.css}" th:if="${req.serverName == 'localhost'}">
+<link rel="stylesheet" th:href="@{/css/s.min.css}" th:if="${req.serverName != 'localhost'}">
+<link rel="icon" type="image/png" th:href="@{/img/favicon.png}" sizes="64x64">
+<script th:if="${req.serverName != 'localhost'}">
 		var _gaq = _gaq || []; _gaq.push([ '_setAccount', 'UA-29144750-1' ]); _gaq.push([ '_trackPageview' ]);
 		(function() {
 			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -17,7 +17,7 @@
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 		})();
 </script>
-<link th:href="@{/feed/nei.xml}" title="Nei Texter" type="application/atom+xml" rel="alternate" />
+<link th:href="@{/feed/nei.xml}" title="Nei Texter" type="application/atom+xml" rel="alternate">
 </head>
 <body>
 	<header>
@@ -31,7 +31,7 @@
 		<a th:href="@{/apropos}"><i class="material-icons">info_outline</i>&nbsp;Iwwert des Säit</a>
 		<a th:href="@{/auteur}"><i class="material-icons">person</i>&nbsp;Iwwert den Auteur</a>
 		<form role="search" th:action="@{/sich}">
-			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" th:value="${param.q}" size="15" />
+			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" th:value="${param.q}" size="15">
 			<button type="submit"><i class="material-icons">search</i></button>
 		</form>
 	</nav>
@@ -39,7 +39,7 @@
 		<nav class="margin-top">
 			<a th:href="@{/admin/pageform}">Nei Säit</a>&nbsp;|&nbsp;<a th:href="@{/admin/listmcd}">Konfig</a>&nbsp;|&nbsp;<a th:href="@{/logout}">Log out</a>
 			<th:block th:if="${hiddenPages != null and !hiddenPages.isEmpty()}">
-				<br />Verstoppt:
+				<br>Verstoppt:
 				<th:block th:each="p, stat : ${hiddenPages}"><a th:href="@{/page/{name}(name=${p.name})}" th:text="${p.title}"></a><span th:unless="${stat.last}">, </span></th:block>
 			</th:block>
 		</nav>
@@ -51,7 +51,7 @@
 		</div>
 	</footer>
 
-	<script th:if="${req.serverName != 'localhost'}" type="text/javascript">
+	<script th:if="${req.serverName != 'localhost'}">
 		(function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
 			if (d.getElementById(id))
