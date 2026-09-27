@@ -17,7 +17,9 @@ mvn test                                            # Run all tests (there are n
 - **Always run locally with the `dev` profile** (`application-dev.properties`: Postgres on port 5433, DEBUG logging). Without it the app connects to port 5432 and fails with `role "tessyglodt" does not exist`. VS Code: use the "Application (dev)" launch config in `.vscode/launch.json`.
 - Local admin login: `admin` / `password`.
 - **javac crash workaround:** when the code has compile errors, in-process javac on JDK 25 may crash with `Cannot load from object array because "this.hashes" is null` instead of reporting them. Run `mvn compile -Dmaven.compiler.fork=true` to see the real errors.
-- If the VS Code app is running, don't `mvn clean` underneath it (devtools restarts on half-built classes); test a separate instance with `java -jar target/tessyglodt.jar --spring.profiles.active=dev --server.port=8081`.
+- The local dev app normally runs from VS Code on **port 8080**. Devtools reloads it on changes, including template and static-file edits, so check changes there first.
+- Don't `mvn clean` underneath the running app (devtools restarts on half-built classes). To test a full packaged build, run a separate instance: `java -jar target/tessyglodt.jar --spring.profiles.active=dev --server.port=8081`.
+- `localhost` serves the unminified `style.css`; open the site via `127.0.0.1` to get `s.min.css` as in production.
 
 ## Configuration
 
@@ -84,8 +86,11 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 - **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`; pages use `layout:decorate="~{layouts/layout}"` and their own `<head>` (merged by the layout dialect, title via `layout:title-pattern`). Fragments are included with `th:replace="~{fragments/...}"`.
 - **CKEditor** for admin rich text editing; the edit form's textarea uses `th:text` (escaped), page display uses `th:utext`.
 - Fonts (Italianno, Smythe, Lora, Material Icons) are self-hosted in `static/fonts/`, with their `@font-face` rules at the top of `style.css` (Latin + Latin-Extended subsets only). No Google Fonts, no analytics.
+- **Maps** (`map.html`, `page.html`) use Leaflet 1.9.4 from cdnjs (with SRI hashes; `<link>`/`<script>` sit in each page's own `<head>`) and OpenStreetMap tiles, with no API key. Google Maps was dropped in Sept 2026 after its key stopped working. OSM's tile policy requires the attribution and allows only light use; switch to a tile provider if traffic grows a lot.
+- **Thymeleaf inline JS gotcha:** write `[ [[${x}]]` (with a space), never `[/*[[${x}]]*/` or `[[[${x}]]`, because `[/` parses as a closing element and breaks rendering mid-response (`ERR_INCOMPLETE_CHUNKED_ENCODING`).
+- External requests from pages: cdnjs (Leaflet), `tile.openstreetmap.org`, and the Facebook SDK (only when not on localhost).
 - Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
-- Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost).
+- Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost). Static URLs are content-hashed (`spring.web.resources.chain.strategy.content`, e.g. `s.min-<hash>.css`), so long browser caching is safe.
 - Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
 
 ### Security
@@ -113,7 +118,7 @@ Systemd service file: `tessyglodt_lu.service` (runs `java -jar tessyglodt.war` i
 
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
 - **HTML:** sidebar headings jump from `<h2>` to `<h4>` (kept deliberately — changing affects styling); header text `d&nbsp;'Lëtzebuerger` renders with a space before the apostrophe; Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
-- **Maps** (`map.html`, `page.html`) use Leaflet 1.9.4 from cdnjs (with SRI hashes) and OpenStreetMap tiles — no API key. Google Maps was dropped in Sept 2026 after its key stopped working (`InvalidKeyMapError`). OSM's tile policy requires the attribution and allows only light use; switch to a tile provider if traffic grows a lot. In Thymeleaf inline JS, write `[ [[${x}]]` and never `[/*[[${x}]]*/`, because `[/` parses as a closing element.
+- **Facebook Like button** (`layout.html`) loads the legacy `connect.facebook.net/en_US/all.js` SDK, which probably no longer works and sends visitor data to Facebook. Candidate for removal (a plain link to the Facebook page would do).
 - **Social posting:** the Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
 - **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 
