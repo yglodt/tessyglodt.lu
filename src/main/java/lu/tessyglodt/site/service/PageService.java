@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,15 +27,18 @@ import twitter4j.TwitterException;
 @Component
 public class PageService {
 
-	final static Logger				logger			= LoggerFactory.getLogger(PageService.class);
+	final static Logger						logger			= LoggerFactory.getLogger(PageService.class);
 
-	private final Random			randomGenerator	= new Random();
+	private final Random					randomGenerator	= new Random();
 
-	@Autowired
-	private JdbcTemplate			jdbcTemplate;
+	private final JdbcTemplate				jdbcTemplate;
 
-	@Autowired
-	private TwitterTemplateCreator	twitterCreator;
+	private final TwitterTemplateCreator	twitterCreator;
+
+	public PageService(final JdbcTemplate jdbcTemplate, final TwitterTemplateCreator twitterCreator) {
+		this.jdbcTemplate = jdbcTemplate;
+		this.twitterCreator = twitterCreator;
+	}
 
 	@Cacheable(value = "page", key = "#root.methodName")
 	public Long countPages() {
@@ -51,7 +53,7 @@ public class PageService {
 				+ "0 as dist_id, '' as dist_name, 0 as can_id, "
 				+ "'' as can_name, 0 as mun_id, '' as mun_name, "
 				+ "date_published, published, site, type "
-				+ "from page order by title asc";
+				+ "from page where published order by title asc";
 		final List<Page> rows = jdbcTemplate.query(sql, new Object[] {}, new PageMapper());
 		return rows;
 	}
@@ -62,7 +64,7 @@ public class PageService {
 				+ "latitude, longitude, content, 0 as dist_id, "
 				+ "'' as dist_name, 0 as can_id, '' as can_name, "
 				+ "0 as mun_id, '' as mun_name, date_published, "
-				+ "published, site, type from page " + "order by title asc";
+				+ "published, site, type from page where published order by title asc";
 		final List<Page> rows = jdbcTemplate.query(sql, new Object[] {},
 				new PageMapper());
 		return rows;
@@ -74,14 +76,18 @@ public class PageService {
 		return getPageByProperty("name", randomPage.getName(), false);
 	}
 
-	private List<Page> getPagesWithWhere(final String clause, final Object[] params, final boolean fullContent) {
+	// Only returns published pages. "joins" may be empty, "condition" is
+	// and-ed with the published filter, "orderBy" may include a limit.
+	private List<Page> getPagesWithWhere(final String joins, final String condition, final String orderBy, final Object[] params, final boolean fullContent) {
 		final String sql = "select p.id, p.name, " + "p.title, "
 				+ "0 as latitude, " + "0 as longitude, "
 				+ ((fullContent) ? "p.content, " : "'' as content, ")
 				+ "0 as dist_id, '' as dist_name, "
 				+ "0 as can_id, '' as can_name, 0 as mun_id, "
 				+ "'' as mun_name, p.date_published, p.published, "
-				+ "p.site, p.type from page p " + clause;
+				+ "p.site, p.type from page p " + joins
+				+ " where p.published" + (condition.isEmpty() ? "" : " and " + condition)
+				+ " " + orderBy;
 		final List<Page> rows = jdbcTemplate.query(sql, params, new PageMapper());
 		return rows;
 
@@ -89,19 +95,19 @@ public class PageService {
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")
 	public List<Page> getLastReadPages(final int i) {
-		return getPagesWithWhere("order by date_last_view desc limit ?", new Object[] { i }, false);
+		return getPagesWithWhere("", "", "order by date_last_view desc limit ?", new Object[] { i }, false);
 	}
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0 + #p1")
 	public List<Page> getNewestPages(final int i, final boolean fullContent) {
 		// return getPagesWithWhere("order by date_published desc limit ?", new
 		// Object[] { i });
-		return getPagesWithWhere("order by date_created desc limit ?", new Object[] { i }, fullContent);
+		return getPagesWithWhere("", "", "order by date_created desc limit ?", new Object[] { i }, fullContent);
 	}
 
 	@Cacheable(value = "accessInfo", key = "#root.methodName + #p0")
 	public List<Page> getMostReadPages(final int i) {
-		return getPagesWithWhere("order by view_count desc limit ?", new Object[] { i }, false);
+		return getPagesWithWhere("", "", "order by view_count desc limit ?", new Object[] { i }, false);
 	}
 
 	@CacheEvict(value = "accessInfo", allEntries = true)
@@ -144,7 +150,7 @@ public class PageService {
 			// security impact since the original query with the search string
 			// is done before, using a query parameter.
 			params2 = params2.substring(0, params.length() - 1);
-			return getPagesWithWhere("where p.id in (" + params2 + ") order by title asc", null, false);
+			return getPagesWithWhere("", "p.id in (" + params2 + ")", "order by title asc", null, false);
 		} else {
 			return null;
 		}
@@ -161,31 +167,20 @@ public class PageService {
 				+ "id, name, title "
 				+ "from (select "
 				+ "p.id as id, p.name as name, p.title as title, to_tsvector(unaccent(p.content)) "
-				+ "as document from page p) p_search "
-				+ "where p_search.document @@ to_tsquery(unaccent(?))";
+				+ "as document from page p where p.published) p_search "
+				+ "where p_search.document @@ websearch_to_tsquery(unaccent(?))";
 
 		return jdbcTemplate.queryForList(sql, new Object[] { q });
 
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
-	public List<Page> getPagesByCanton(final Integer cantonId) {
-		return getPagesWithWhere("where p.canton = ? order by p.title asc", new Object[] { cantonId }, false);
-	}
-
-	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public List<Page> getPagesByCanton(final String cantonName) {
 		return getPagesWithWhere(
 				"left join municipality m on m.id = p.municipality "
-						+ "left join canton c on c.id = m.canton "
-						+ "where slugify(c.name) = ? order by title asc",
+						+ "left join canton c on c.id = m.canton",
+				"slugify(c.name) = ?", "order by title asc",
 				new Object[] { cantonName }, false);
-	}
-
-	@Cacheable(value = "page", key = "#root.methodName + #p0")
-	public List<Page> getPagesByDistrict(final Integer districtId) {
-		return getPagesWithWhere("where p.district = ? order by p.title asc",
-				new Object[] { districtId }, false);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
@@ -193,8 +188,8 @@ public class PageService {
 		return getPagesWithWhere(
 				"left join municipality m on m.id = p.municipality "
 						+ "left join canton c on c.id = m.canton "
-						+ "left join district d on d.id = c.district "
-						+ "where slugify(d.name) = ? order by title asc",
+						+ "left join district d on d.id = c.district",
+				"slugify(d.name) = ?", "order by title asc",
 				new Object[] { districtName }, false);
 	}
 
@@ -268,13 +263,21 @@ public class PageService {
 	public void updateViewCount(final String name) {
 		final String sql = "update page "
 				+ "set date_last_view = now(), "
-				+ "view_count = (select view_count from page where name = ?) + 1 "
-				+ "where name = ?";
-		jdbcTemplate.update(sql, name, name);
+				+ "view_count = view_count + 1 "
+				+ "where name = ? and published";
+		jdbcTemplate.update(sql, name);
 	}
 
-	public List<Map<String, Object>> getStats() {
-		final String sql = "select name, title, view_count, date_last_view from page order by view_count desc";
+	// For the admin bar: hidden pages are not listed anywhere else
+	@Cacheable(value = "page", key = "#root.methodName")
+	public List<Map<String, Object>> getUnpublishedPages() {
+		return jdbcTemplate.queryForList("select name, title from page where not published order by title asc");
+	}
+
+	public List<Map<String, Object>> getStats(final boolean includeUnpublished) {
+		final String sql = "select name, title, view_count, date_last_view from page "
+				+ (includeUnpublished ? "" : "where published ")
+				+ "order by view_count desc";
 		return jdbcTemplate.queryForList(sql);
 	}
 

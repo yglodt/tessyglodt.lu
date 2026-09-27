@@ -38,6 +38,10 @@
 	<div sec:authorize="hasRole('ROLE_ADMIN')">
 		<nav class="margin-top">
 			<a th:href="@{/admin/pageform}">Nei Säit</a>&nbsp;|&nbsp;<a th:href="@{/admin/listmcd}">Konfig</a>&nbsp;|&nbsp;<a th:href="@{/logout}">Log out</a>
+			<th:block th:if="${hiddenPages != null and !hiddenPages.isEmpty()}">
+				<br />Verstoppt:
+				<th:block th:each="p, stat : ${hiddenPages}"><a th:href="@{/page/{name}(name=${p.name})}" th:text="${p.title}"></a><span th:unless="${stat.last}">, </span></th:block>
+			</th:block>
 		</nav>
 	</div>
 	<div layout:fragment="content"></div>

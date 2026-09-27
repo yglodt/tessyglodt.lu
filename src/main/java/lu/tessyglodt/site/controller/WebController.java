@@ -6,14 +6,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -31,25 +32,28 @@ import lu.tessyglodt.site.service.PageService;
 // @EnableAutoConfiguration
 public class WebController {
 
-	final static Logger			logger	= LoggerFactory.getLogger(WebController.class);
+	final static Logger					logger	= LoggerFactory.getLogger(WebController.class);
 
-	@Autowired
-	private PageService			pageService;
+	private final PageService			pageService;
 
-	@Autowired
-	private CantonService		cantonService;
+	private final CantonService			cantonService;
 
-	@Autowired
-	private DistrictService		districtService;
+	private final DistrictService		districtService;
 
 	// @Autowired
 	// private OrderService orderService;
 
-	@Autowired
-	private HttpServletRequest	request;
+	private final HttpServletRequest	request;
 
 	@Value("${spring.datasource.driverClassName}")
-	private String				driverClassName;
+	private String						driverClassName;
+
+	public WebController(final PageService pageService, final CantonService cantonService, final DistrictService districtService, final HttpServletRequest request) {
+		this.pageService = pageService;
+		this.cantonService = cantonService;
+		this.districtService = districtService;
+		this.request = request;
+	}
 
 	@GetMapping(value = { "/", "/index.html" })
 	public String getIndex(final Model model) {
@@ -73,26 +77,31 @@ public class WebController {
 		// final File[] oldPicsFiles = oldPics.listFiles(Utils.folderFilter());
 
 		String ua = request.getHeader("user-agent");
-		boolean log = true;
+		boolean isBot = false;
 
 		if (ua != null) {
 			ua = ua.toLowerCase();
-			if ((!ua.contains("bot")) &&
-					(!ua.contains("spider")) &&
-					(!ua.contains("slurp")) &&
-					(!ua.contains("scrap")) &&
-					(!ua.contains("netcraft")) &&
-					(!ua.contains("crawl")) &&
-					(!ua.contains("facebookexternalhit"))) {
-				pageService.updateViewCount(name);
-			} else {
-				// logger.debug("Not updating viewCount for " + name + " since
-				// client is a bot: " + ua);
-				log = false;
-			}
+			isBot = ua.contains("bot") ||
+					ua.contains("spider") ||
+					ua.contains("slurp") ||
+					ua.contains("scrap") ||
+					ua.contains("netcraft") ||
+					ua.contains("crawl") ||
+					ua.contains("facebookexternalhit");
 		}
 
-		final Page page = pageService.getPageByProperty("name", name, log);
+		// Must run before getPageByProperty(), which evicts the "last read"/"most read" caches.
+		// Only touches published pages, so unknown and hidden pages are not counted.
+		if (ua != null && !isBot) {
+			pageService.updateViewCount(name);
+		}
+
+		// Throws EmptyResultDataAccessException (-> 404) for unknown pages
+		final Page page = pageService.getPageByProperty("name", name, !isBot);
+
+		if (!page.isPublished() && !request.isUserInRole("ADMIN")) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 
 		model.addAttribute("page", page);
 
@@ -179,7 +188,7 @@ public class WebController {
 	public String getStats(final Model model) {
 		model.addAttribute("req", request);
 
-		model.addAttribute("pages", pageService.getStats());
+		model.addAttribute("pages", pageService.getStats(request.isUserInRole("ADMIN")));
 		return "stats";
 	}
 

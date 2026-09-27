@@ -1,6 +1,5 @@
 package lu.tessyglodt.site.spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +9,11 @@ import twitter4j.TwitterException;
 @Component
 public class Scheduler {
 
-	@Autowired
-	private PageService pageService;
+	private final PageService pageService;
+
+	public Scheduler(final PageService pageService) {
+		this.pageService = pageService;
+	}
 
 	@Scheduled(cron = "0 15 8 * * ?", zone = "Europe/Luxembourg")
 	public void tweet() throws TwitterException {

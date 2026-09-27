@@ -2,7 +2,6 @@ package lu.tessyglodt.site.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,8 +13,11 @@ import lu.tessyglodt.site.data.DistrictMapper;
 @Component
 public class DistrictService {
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
+
+	public DistrictService(final JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
 	public District getDistrict(final Integer id) {

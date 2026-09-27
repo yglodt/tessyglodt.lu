@@ -7,7 +7,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -38,19 +37,22 @@ import twitter4j.TwitterException;
 // @EnableAutoConfiguration
 public class AdminController {
 
-	final static Logger			logger	= LoggerFactory.getLogger(AdminController.class);
+	final static Logger					logger	= LoggerFactory.getLogger(AdminController.class);
 
-	@Autowired
-	private PageService			pageService;
+	private final PageService			pageService;
 
-	@Autowired
-	private MunicipalityService	municipalityService;
+	private final MunicipalityService	municipalityService;
 
-	@Autowired
-	private CantonService		cantonService;
+	private final CantonService			cantonService;
 
-	@Autowired
-	private DistrictService		districtService;
+	private final DistrictService		districtService;
+
+	public AdminController(final PageService pageService, final MunicipalityService municipalityService, final CantonService cantonService, final DistrictService districtService) {
+		this.pageService = pageService;
+		this.municipalityService = municipalityService;
+		this.cantonService = cantonService;
+		this.districtService = districtService;
+	}
 
 	@GetMapping(value = "/login")
 	public String getLogin() {

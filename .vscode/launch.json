@@ -1,0 +1,15 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Application (dev)",
+			"request": "launch",
+			"mainClass": "lu.tessyglodt.site.Application",
+			"projectName": "lu.tessyglodt.site",
+			"env": {
+				"SPRING_PROFILES_ACTIVE": "dev"
+			}
+		}
+	]
+}

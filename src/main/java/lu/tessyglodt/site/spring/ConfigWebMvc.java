@@ -1,6 +1,5 @@
 package lu.tessyglodt.site.spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 //import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.cache.CacheManager;
@@ -21,8 +20,11 @@ import lu.tessyglodt.site.MyHandlerInterceptor;
 @ComponentScan(basePackages = "lu.tessyglodt.site")
 public class ConfigWebMvc implements WebMvcConfigurer {
 
-	@Autowired
-	private MyHandlerInterceptor myHandlerInterceptor;
+	private final MyHandlerInterceptor myHandlerInterceptor;
+
+	public ConfigWebMvc(final MyHandlerInterceptor myHandlerInterceptor) {
+		this.myHandlerInterceptor = myHandlerInterceptor;
+	}
 
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {

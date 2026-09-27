@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -30,13 +29,16 @@ import lu.tessyglodt.site.data.OrderMapper;
 @Component
 public class OrderService {
 
-	final static Logger		logger	= LoggerFactory.getLogger(OrderService.class);
+	final static Logger				logger	= LoggerFactory.getLogger(OrderService.class);
 
-	@Autowired
-	private JdbcTemplate	jdbcTemplate;
+	private final JdbcTemplate		jdbcTemplate;
 
-	@Autowired
-	private JavaMailSender	mailSender;
+	private final JavaMailSender	mailSender;
+
+	public OrderService(final JdbcTemplate jdbcTemplate, final JavaMailSender mailSender) {
+		this.jdbcTemplate = jdbcTemplate;
+		this.mailSender = mailSender;
+	}
 
 	public Long countOrders() {
 		return jdbcTemplate.queryForObject("select count(id) from orders", Long.class);

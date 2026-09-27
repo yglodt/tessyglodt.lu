@@ -208,6 +208,11 @@ public class Page {
 		return "https://www.tessyglodt.lu/page/" + name;
 	}
 
+	// Plain-text excerpt for the random page box; cutting the HTML itself could split a tag
+	public String getTeaser() {
+		return StringUtils.abbreviate(StringUtils.trim(Jsoup.parse(getContent()).text()), "…", 450);
+	}
+
 	public String getTweet() {
 		// https://support.twitter.com/articles/78124
 		final Document content = Jsoup.parse(getContent());
