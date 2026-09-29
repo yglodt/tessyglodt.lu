@@ -124,6 +124,12 @@ public class WebController {
 		return "about";
 	}
 
+	// Not linked from the site; exists for the Meta app settings (privacy policy URL)
+	@GetMapping(value = "/dateschutz")
+	public String getPrivacy() {
+		return "privacy";
+	}
+
 	@GetMapping(value = { "/auteur", "/auteur.html" })
 	public String getAuthor(final Model model) {
 		model.addAttribute("req", request);
