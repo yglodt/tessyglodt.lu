@@ -24,7 +24,8 @@ mvn test                                            # Run all tests (there are n
 ## Configuration
 
 - `src/main/resources/application.properties` holds defaults (committed, including the placeholder admin password — intentional).
-- **Production** runs from `/data` (see `tessyglodt_lu.service`) and `/data/application.properties` overrides the bundled file key by key. Production-only values (admin password, DB credentials) live there.
+- **Production** runs `/applications/tessyglodt.jar` as user `apps` (see `tessyglodt.lu.service`) with `--spring.config.location=/etc/tessyglodt.properties`. That option **replaces** the bundled `application.properties`, so none of its defaults apply in production: every key production needs must be in `/etc/tessyglodt.properties`, and `@Value` placeholders need inline defaults (`${key:default}`) or a missing key stops the app from starting (this happened with `facebook.enabled`).
+- **Local secrets** (e.g. the Facebook token for testing) go in `config/application-dev.properties` in the project root, which is git-ignored and loaded by Boot on top of the classpath file. Never put tokens in `src/main/resources/*.properties`: they're tracked and the repo is public.
 - `spring-boot-properties-migrator` is still in the pom to report renamed keys in the production config after the Boot 4 upgrade; remove it once the production startup log shows no migration warnings.
 
 ## Architecture
@@ -32,7 +33,7 @@ mvn test                                            # Run all tests (there are n
 ### Package Structure (`lu.tessyglodt.site`)
 
 - `controller/` — `WebController` (public pages), `AdminController` (`/admin/**`, requires ADMIN role), `NotFoundAdvice` (maps `EmptyResultDataAccessException` to 404)
-- `service/` — Business logic with `@Cacheable`/`@CacheEvict`. `PageService` is the main service; also `CantonService`, `DistrictService`, `MunicipalityService`.
+- `service/` — Business logic with `@Cacheable`/`@CacheEvict`. `PageService` is the main service; also `CantonService`, `DistrictService`, `MunicipalityService`, and `FacebookService` (see Facebook posting).
 - `data/` — Domain objects (Page, Municipality, Canton, District) and their `RowMapper` implementations
 - `spring/` — `ConfigWebMvc` (caching, interceptor), `ConfigWebSecurity` (two `SecurityFilterChain`s)
 - `MyHandlerInterceptor` — adds `now`, `req` (the layout needs it, including on error pages) and, for admins, `hiddenPages` to every non-redirect model
@@ -77,6 +78,7 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 - `/canton/{slug}`, `/district/{slug}` — geographic browsing (slug = `slugify(name)`, e.g. `/canton/wolz`)
 - `/page/{name}` — individual page (updates view count, excludes bots)
 - `/stats` — view counts
+- `/dateschutz` — privacy page (`privacy.html`), deliberately **not linked** anywhere on the site and not in the sitemap; it only exists as the privacy policy URL in the Meta app settings
 - `/feed/nei.xml`, `/feed/alles.xml` — Atom feeds
 - `/robots.txt` (blocks `/admin/`, `/login`, `/sich`) and `/sitemap.xml` (static pages, cantons, districts, published pages with `lastmod`; built in `WebController`, entries cached in `page`)
 - Unknown page/canton/district → 404 page (`templates/error/404.html`)
@@ -92,6 +94,10 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 - Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
 - Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost). Static URLs are content-hashed (`spring.web.resources.chain.strategy.content`, e.g. `s.min-<hash>.css`), so long browser caching is safe.
 - Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
+
+### Facebook posting
+
+`FacebookService` posts a random published page (title, 📍 municipality and canton, the teaser, and "Weiderliesen op tessyglodt.lu: <url>" since Facebook can't put links behind text; the link card comes from the `link` parameter) to https://www.facebook.com/Kierchtuermspromenaden via Graph API `POST /{page_id}/feed`, daily at `facebook.cron` (default 7:15 Europe/Luxembourg). Off unless `facebook.enabled=true`; `facebook.page-id` and `facebook.access-token` (a long-lived Page token from the Meta app "Kierchtuermspromenaden", Live mode, with `pages_manage_posts` + `pages_read_engagement`; posts from a Development-mode app aren't public) live only in `/etc/tessyglodt.properties`. `GET /admin/facebook/post-now` posts one immediately and returns the result as plain text, which also checks the token. `page.html` has Open Graph tags (no `og:image`: pages have no images of their own) for the link preview. Location tagging was left out: `place` needs a Facebook Place page ID and place search is deprecated.
 
 ### Security
 
@@ -112,14 +118,14 @@ District → Canton → Municipality → Page. The `PageMapper` reconstructs thi
 
 ### Deployment
 
-Systemd service file: `tessyglodt_lu.service` (runs `java -jar tessyglodt.war` in `/data`).
+Systemd service file: `tessyglodt.lu.service`, a copy of `/etc/systemd/system/tessyglodt.lu.service` on the server.
 
 ## Known Technical Debt / Open Items
 
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
 - **HTML:** sidebar headings jump from `<h2>` to `<h4>` (kept deliberately — changing affects styling); header text `d&nbsp;'Lëtzebuerger` renders with a space before the apostrophe; Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
 - **Facebook Like button** (`layout.html`) loads the legacy `connect.facebook.net/en_US/all.js` SDK, which probably no longer works and sends visitor data to Facebook. Candidate for removal (a plain link to the Facebook page would do).
-- **Social posting:** the Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
+- **Social posting:** Facebook posting exists (see above). The Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
 - **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 
 ## Migration Assessments

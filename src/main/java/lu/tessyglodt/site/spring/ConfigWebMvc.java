@@ -6,6 +6,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,6 +14,7 @@ import lu.tessyglodt.site.MyHandlerInterceptor;
 
 @Configuration
 @EnableCaching
+@EnableScheduling
 @ComponentScan(basePackages = "lu.tessyglodt.site")
 public class ConfigWebMvc implements WebMvcConfigurer {
 

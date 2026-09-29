@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lu.tessyglodt.site.data.Canton;
@@ -23,6 +24,7 @@ import lu.tessyglodt.site.data.Municipality;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
+import lu.tessyglodt.site.service.FacebookService;
 import lu.tessyglodt.site.service.MunicipalityService;
 import lu.tessyglodt.site.service.PageService;
 
@@ -40,11 +42,14 @@ public class AdminController {
 
 	private final DistrictService		districtService;
 
-	public AdminController(final PageService pageService, final MunicipalityService municipalityService, final CantonService cantonService, final DistrictService districtService) {
+	private final FacebookService		facebookService;
+
+	public AdminController(final PageService pageService, final MunicipalityService municipalityService, final CantonService cantonService, final DistrictService districtService, final FacebookService facebookService) {
 		this.pageService = pageService;
 		this.municipalityService = municipalityService;
 		this.cantonService = cantonService;
 		this.districtService = districtService;
+		this.facebookService = facebookService;
 	}
 
 	@GetMapping(value = "/login")
@@ -99,6 +104,17 @@ public class AdminController {
 				return "redirect:/page/" + page.getName();
 			}
 
+		}
+	}
+
+	@GetMapping(value = "/admin/facebook/post-now", produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String postToFacebookNow() {
+		try {
+			return facebookService.postRandomPage();
+		} catch (final Exception e) {
+			logger.error("Posting to Facebook failed", e);
+			return "Posting to Facebook failed: " + e.getMessage();
 		}
 	}
 
