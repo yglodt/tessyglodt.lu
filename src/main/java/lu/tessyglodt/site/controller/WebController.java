@@ -102,6 +102,7 @@ public class WebController {
 		}
 
 		model.addAttribute("page", page);
+		model.addAttribute("nearbyPages", pageService.getNearbyPages(page, 5));
 
 		return "page";
 	}

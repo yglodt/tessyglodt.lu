@@ -49,6 +49,12 @@
 				<h4>Op der Landkaart</h4>
 				<div id="map"></div>
 			</div>
+			<div class="nearby_pages" th:unless="${#lists.isEmpty(nearbyPages)}">
+				<h4>An der Géigend</h4>
+				<ul>
+					<li th:each="nearbyPage : ${nearbyPages}"><i class="material-icons">place</i><a th:href="@{/page/{page}(page=${nearbyPage.name})}" th:text="${nearbyPage.title}"></a><span class="distance" th:text="${#numbers.formatDecimal(nearbyPage.distance, 1, 1, 'COMMA') + ' km'}"></span></li>
+				</ul>
+			</div>
 		</aside>
 	</div>
 

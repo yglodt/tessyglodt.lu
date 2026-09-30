@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import lu.tessyglodt.site.Utils;
+import lu.tessyglodt.site.data.NearbyPage;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
 
@@ -64,6 +65,17 @@ public class PageService {
 		final List<Page> allPages = getPagesInfo();
 		final Page randomPage = allPages.get(randomGenerator.nextInt(allPages.size()));
 		return getPageByProperty("name", randomPage.getName(), false);
+	}
+
+	// Nearest published pages. Treats the map as flat, which is accurate to
+	// a few metres over the size of Luxembourg (1° of latitude = 111.2 km).
+	@Cacheable(value = "page", key = "#root.methodName + #p0.id + '_' + #p1")
+	public List<NearbyPage> getNearbyPages(final Page page, final int count) {
+		final String sql = "select name, title, "
+				+ "111.2 * sqrt(power(latitude - ?, 2) + power((longitude - ?) * cos(radians(?)), 2)) as distance "
+				+ "from page where published and id <> ? order by distance limit ?";
+		return jdbcTemplate.query(sql, (rs, rowNum) -> new NearbyPage(rs.getString("name"), rs.getString("title"), rs.getDouble("distance")),
+				page.getLatitude(), page.getLongitude(), page.getLatitude(), page.getId(), count);
 	}
 
 	// Only returns published pages. "joins" may be empty, "condition" is

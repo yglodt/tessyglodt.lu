@@ -92,6 +92,7 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 - **Thymeleaf inline JS gotcha:** write `[ [[${x}]]` (with a space), never `[/*[[${x}]]*/` or `[[[${x}]]`, because `[/` parses as a closing element and breaks rendering mid-response (`ERR_INCOMPLETE_CHUNKED_ENCODING`).
 - External requests from pages: cdnjs (Leaflet), `tile.openstreetmap.org`, and the Facebook SDK (only when not on localhost).
 - Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
+- "An der Géigend" box on `page.html`: the 5 nearest published pages with straight-line distance (`PageService.getNearbyPages()`, flat-earth formula in SQL). The map itself stays on the whole-country view.
 - Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost). Static URLs are content-hashed (`spring.web.resources.chain.strategy.content`, e.g. `s.min-<hash>.css`), so long browser caching is safe.
 - Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
 

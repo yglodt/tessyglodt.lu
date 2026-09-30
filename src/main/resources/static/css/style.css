@@ -434,6 +434,12 @@ div.location_page aside #map {
 	outline: 1px solid #eee;
 }
 
+div.location_page aside .nearby_pages .distance {
+	margin-left: 0.4em;
+	color: #777;
+	white-space: nowrap;
+}
+
 /* Footer */
 body>footer {
 	background-color: rgba(255, 255, 255, 0.2);
