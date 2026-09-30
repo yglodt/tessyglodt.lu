@@ -24,7 +24,7 @@ mvn test                                            # Run all tests (there are n
 ## Configuration
 
 - `src/main/resources/application.properties` holds defaults (committed, including the placeholder admin password — intentional).
-- **Production** runs `/applications/tessyglodt.jar` as user `apps` (see `tessyglodt.lu.service`) with `--spring.config.location=/etc/tessyglodt.properties`. That option **replaces** the bundled `application.properties`, so none of its defaults apply in production: every key production needs must be in `/etc/tessyglodt.properties`, and `@Value` placeholders need inline defaults (`${key:default}`) or a missing key stops the app from starting (this happened with `facebook.enabled`).
+- **Production** starts the JAR with `--spring.config.location` pointing to its own properties file on the server. That option **replaces** the bundled `application.properties`, so none of its defaults apply in production: every key production needs must be in that file, and `@Value` placeholders need inline defaults (`${key:default}`) or a missing key stops the app from starting (this happened with `facebook.enabled`).
 - **Local secrets** (e.g. the Facebook token for testing) go in `config/application-dev.properties` in the project root, which is git-ignored and loaded by Boot on top of the classpath file. Never put tokens in `src/main/resources/*.properties`: they're tracked and the repo is public.
 - `spring-boot-properties-migrator` is still in the pom to report renamed keys in the production config after the Boot 4 upgrade; remove it once the production startup log shows no migration warnings.
 
@@ -98,7 +98,7 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 
 ### Facebook posting
 
-`FacebookService` posts a published page (title · 📍 municipality and canton on one line, the teaser, and the bare page URL on the last line since Facebook can't put links behind text; the link card comes from the `link` parameter) to https://www.facebook.com/Kierchtuermspromenaden via Graph API `POST /{page_id}/feed`, daily at `facebook.cron` (default 7:15 Europe/Luxembourg). Off unless `facebook.enabled=true`; `facebook.page-id` and `facebook.access-token` (a long-lived Page token from the Meta app "Kierchtuermspromenaden", Live mode, with `pages_manage_posts` + `pages_read_engagement`; posts from a Development-mode app aren't public) live only in `/etc/tessyglodt.properties`. Each post is logged in the `facebook_post` table (`page_id` → `page.id`, `post_id`, `date_posted`); the next page is a random one among those never posted, else among those posted longest ago, so all published pages come up once before any repeats. `GET /admin/facebook/post-now` posts one immediately and returns the result as plain text, which also checks the token. `page.html` has Open Graph tags (no `og:image`: pages have no images of their own) for the link preview. Location tagging was left out: `place` needs a Facebook Place page ID and place search is deprecated.
+`FacebookService` posts a published page (title · 📍 municipality and canton on one line, the teaser, and the bare page URL on the last line since Facebook can't put links behind text; the link card comes from the `link` parameter) to https://www.facebook.com/Kierchtuermspromenaden via Graph API `POST /{page_id}/feed`, daily at `facebook.cron` (default 7:15 Europe/Luxembourg). Off unless `facebook.enabled=true`; `facebook.page-id` and `facebook.access-token` (a long-lived Page token from the Meta app "Kierchtuermspromenaden", Live mode, with `pages_manage_posts` + `pages_read_engagement`; posts from a Development-mode app aren't public) live only in the production properties file. Each post is logged in the `facebook_post` table (`page_id` → `page.id`, `post_id`, `date_posted`); the next page is a random one among those never posted, else among those posted longest ago, so all published pages come up once before any repeats. `GET /admin/facebook/post-now` posts one immediately and returns the result as plain text, which also checks the token. `page.html` has Open Graph tags (no `og:image`: pages have no images of their own) for the link preview. Location tagging was left out: `place` needs a Facebook Place page ID and place search is deprecated.
 
 ### Security
 
@@ -119,7 +119,7 @@ District → Canton → Municipality → Page. The `PageMapper` reconstructs thi
 
 ### Deployment
 
-Systemd service file: `tessyglodt.lu.service`, a copy of `/etc/systemd/system/tessyglodt.lu.service` on the server.
+Runs in Docker next to its database. No build pipeline: deploy = build `target/tessyglodt.jar` locally, copy it to the server and restart the app container.
 
 ## Known Technical Debt / Open Items
 
