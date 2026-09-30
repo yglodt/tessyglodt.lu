@@ -119,7 +119,7 @@ District → Canton → Municipality → Page. The `PageMapper` reconstructs thi
 
 ### Deployment
 
-Runs in Docker next to its database. No build pipeline: deploy = build `target/tessyglodt.jar` locally, copy it to the server and restart the app container.
+Runs in Docker next to its database. The server builds the app image itself from this repo's `master` branch, so deploy = push to `master`, then rebuild the app container on the server. Anything not pushed isn't deployed. The build uses Maven 3.9 while local builds may use an older Maven, so plugins must not rely on dependencies older Maven versions provided implicitly (hence `plexus-utils` on the minify plugin).
 
 ## Known Technical Debt / Open Items
 
