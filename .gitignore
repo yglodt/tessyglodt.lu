@@ -4,3 +4,5 @@ target/
 .project
 .settings/
 /config/
+tools/book/.venv/
+tools/book/fonts/
