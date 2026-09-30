@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -23,6 +24,8 @@ public class FacebookService {
 
 	private final PageService	pageService;
 
+	private final JdbcTemplate	jdbcTemplate;
+
 	private final RestClient	restClient;
 
 	private final JsonMapper	jsonMapper	= JsonMapper.builder().build();
@@ -33,12 +36,13 @@ public class FacebookService {
 
 	private final String		accessToken;
 
-	public FacebookService(final PageService pageService,
+	public FacebookService(final PageService pageService, final JdbcTemplate jdbcTemplate,
 			@Value("${facebook.enabled:false}") final boolean enabled,
 			@Value("${facebook.page-id:}") final String pageId,
 			@Value("${facebook.access-token:}") final String accessToken,
 			@Value("${facebook.api-version:v26.0}") final String apiVersion) {
 		this.pageService = pageService;
+		this.jdbcTemplate = jdbcTemplate;
 		this.enabled = enabled;
 		this.pageId = pageId;
 		this.accessToken = accessToken;
@@ -63,7 +67,7 @@ public class FacebookService {
 			throw new IllegalStateException("facebook.page-id and facebook.access-token must be set");
 		}
 
-		final Page page = pageService.getRandomPage();
+		final Page page = getNextPage();
 
 		final MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
 		form.add("message", getMessage(page));
@@ -78,22 +82,34 @@ public class FacebookService {
 				.retrieve()
 				.body(String.class);
 
-		final String result = "Posted " + page.getUrl() + " as Facebook post " + jsonMapper.readTree(response).path("id").asString();
+		final String postId = jsonMapper.readTree(response).path("id").asString();
+		jdbcTemplate.update("insert into facebook_post (page_id, post_id) values (?, ?)", page.getId(), postId);
+
+		final String result = "Posted " + page.getUrl() + " as Facebook post " + postId;
 		logger.info(result);
 		return result;
+	}
+
+	// A random page among those never posted, or else among those posted
+	// longest ago, so every published page comes up once before any repeats
+	private Page getNextPage() {
+		final String name = jdbcTemplate.queryForObject("select p.name from page p "
+				+ "left join (select page_id, max(date_posted) as last_posted from facebook_post group by page_id) f on f.page_id = p.id "
+				+ "where p.published order by f.last_posted nulls first, random() limit 1", String.class);
+		return pageService.getPageByProperty("name", name, false);
 	}
 
 	private static String getMessage(final Page page) {
 		final StringBuilder sb = new StringBuilder(page.getTitle());
 		if (page.getMunicipality() != null) {
-			sb.append("\n\uD83D\uDCCD Gemeng ").append(page.getMunicipality().getName());
+			sb.append(" \u00B7 \uD83D\uDCCD Gemeng ").append(page.getMunicipality().getName());
 			if (page.getMunicipality().getCanton() != null) {
 				sb.append(", Kanton ").append(page.getMunicipality().getCanton().getName());
 			}
 		}
 		sb.append("\n\n").append(page.getTeaser());
 		// Facebook has no links behind text, so the URL itself is the link
-		sb.append("\n\nWeiderliesen op tessyglodt.lu: ").append(page.getUrl());
+		sb.append("\n\n").append(page.getUrl());
 		return sb.toString();
 	}
 
