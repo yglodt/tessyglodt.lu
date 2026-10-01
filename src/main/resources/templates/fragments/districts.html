@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
-<div class="text-box">
-	<h4>Lëscht no Distrikt</h4>
+<section>
+	<h3>Lëscht no Distrikt</h3>
 	<ul>
-		<li th:each="district : ${districts}"><i class="material-icons">place</i><a th:href="@{/district/{d}(d=${district.slug})}" th:text="${district.name}"></a></li>
+		<li th:each="item : ${districts}"><a th:href="@{/district/{d}(d=${item.slug})}" th:text="${item.name}"></a></li>
 	</ul>
-</div>
+</section>

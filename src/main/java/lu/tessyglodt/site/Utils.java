@@ -1,9 +1,12 @@
 package lu.tessyglodt.site;
 
+import java.text.Normalizer;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.util.HtmlUtils;
 
@@ -24,6 +27,25 @@ public class Utils {
 		} else {
 			return Integer.valueOf(o.toString());
 		}
+	}
+
+	// Groups pages (sorted by title) by first letter without accents, "Äischen" goes under "A"
+	public static Map<String, List<Page>> groupByInitial(final List<Page> pages) {
+		final Map<String, List<Page>> groups = new LinkedHashMap<>();
+		for (final Page page : pages) {
+			groups.computeIfAbsent(initial(page.getTitle()), k -> new ArrayList<>()).add(page);
+		}
+		return groups;
+	}
+
+	private static String initial(final String title) {
+		final String plain = Normalizer.normalize(title, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+		for (final char c : plain.toCharArray()) {
+			if (Character.isLetter(c)) {
+				return String.valueOf(Character.toUpperCase(c));
+			}
+		}
+		return "#";
 	}
 
 	public static SyndFeed createFeed(final String name, final List<Page> pages) {

@@ -9,52 +9,47 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
 </head>
-<th:block layout:fragment="content">
-	<div class="margin-top margin-bottom location_page">
+<main layout:fragment="content" class="page">
+	<div class="with-margin">
 
-		<article class="box text-box">
-			<h3 th:text="${page.title}"></h3>
-			<div th:utext="${page.content}" th:remove="tag"></div>
+		<article class="chapter">
+			<header class="chapter-head">
+				<p class="kicker" th:text="${'Kanton ' + page.municipality.canton.name + ' · Gemeng ' + page.municipality.name}"></p>
+				<h2 th:text="${page.title}"></h2>
+				<hr class="ornament">
+			</header>
+			<div class="prose" th:utext="${page.content}"></div>
+			<nav class="turn" aria-label="Bliederen">
+				<a class="previous" th:if="${previousPage}" th:href="@{/page/{p}(p=${previousPage.name})}"><span>← Virdrun</span><th:block th:text="${previousPage.title}"></th:block></a>
+				<a class="next" th:if="${nextPage}" th:href="@{/page/{p}(p=${nextPage.name})}"><span>Duerno →</span><th:block th:text="${nextPage.title}"></th:block></a>
+			</nav>
 		</article>
-		<aside class="box">
-			<div class="text-box">
-				<div sec:authorize="hasRole('ROLE_ADMIN')">
-					<p>
-						<a style="color: darkred; font-weight: bold;" th:href="@{/admin/pageform(id=${page.id})}">Änneren</a>
-					</p>
-				</div>
-				<h4 th:text="${'Informatiounen zu ' + page.title}"></h4>
-				<table class="location_info_table">
-					<tbody>
-						<tr>
-							<th>Gemeng</th>
-							<td th:text="${page.municipality.name}"></td>
-						</tr>
-						<tr>
-							<th>Kanton</th>
-							<td th:text="${page.municipality.canton.name}"></td>
-						</tr>
-						<tr>
-							<th>Distrikt</th>
-							<td th:text="${page.municipality.canton.district.name}"></td>
-						</tr>
-						<tr>
-							<th>Publizéiert den</th>
-							<td th:text="${#temporals.format(page.datePublished, 'dd.MM.yyyy')}"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="location_map">
-				<h4>Op der Landkaart</h4>
+
+		<aside class="marginalia">
+			<section>
+				<p sec:authorize="hasRole('ROLE_ADMIN')"><a class="edit-link" th:href="@{/admin/pageform(id=${page.id})}">Änneren</a></p>
+				<h3>Informatiounen</h3>
+				<dl class="facts">
+					<dt>Gemeng</dt>
+					<dd th:text="${page.municipality.name}"></dd>
+					<dt>Kanton</dt>
+					<dd th:text="${page.municipality.canton.name}"></dd>
+					<dt>Distrikt</dt>
+					<dd th:text="${page.municipality.canton.district.name}"></dd>
+					<dt>Publizéiert</dt>
+					<dd th:text="${#temporals.format(page.datePublished, 'dd.MM.yyyy')}"></dd>
+				</dl>
+			</section>
+			<section class="location-map">
+				<h3>Op der Landkaart</h3>
 				<div id="map"></div>
-			</div>
-			<div class="nearby_pages" th:unless="${#lists.isEmpty(nearbyPages)}">
-				<h4>An der Géigend</h4>
+			</section>
+			<section class="nearby" th:unless="${#lists.isEmpty(nearbyPages)}">
+				<h3>An der Géigend</h3>
 				<ul>
-					<li th:each="nearbyPage : ${nearbyPages}"><i class="material-icons">place</i><a th:href="@{/page/{page}(page=${nearbyPage.name})}" th:text="${nearbyPage.title}"></a><span class="distance" th:text="${#numbers.formatDecimal(nearbyPage.distance, 1, 1, 'COMMA') + ' km'}"></span></li>
+					<li th:each="nearbyPage : ${nearbyPages}"><a th:href="@{/page/{page}(page=${nearbyPage.name})}" th:text="${nearbyPage.title}"></a><span class="distance" th:text="${#numbers.formatDecimal(nearbyPage.distance, 1, 1, 'COMMA') + ' km'}"></span></li>
 				</ul>
-			</div>
+			</section>
 		</aside>
 	</div>
 
@@ -71,5 +66,5 @@
 
 		/*]]>*/
 	</script>
-</th:block>
+</main>
 </html>

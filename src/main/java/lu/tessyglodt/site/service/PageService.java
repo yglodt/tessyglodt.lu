@@ -2,6 +2,7 @@ package lu.tessyglodt.site.service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -18,6 +19,7 @@ import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.NearbyPage;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
+import lu.tessyglodt.site.data.PageNeighbours;
 
 @Component
 public class PageService {
@@ -27,6 +29,10 @@ public class PageService {
 	private final Random					randomGenerator	= new Random();
 
 	private final JdbcTemplate				jdbcTemplate;
+
+	// Previous and next page for each page name. Filled whenever getPagesInfo() loads the list,
+	// cleared by insert() and update() together with the "page" cache.
+	private volatile Map<String, PageNeighbours>	pageNeighbours;
 
 	public PageService(final JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -47,7 +53,27 @@ public class PageService {
 				+ "date_published, published, site, type "
 				+ "from page where published order by title asc";
 		final List<Page> rows = jdbcTemplate.query(sql, new PageMapper());
+
+		final Map<String, PageNeighbours> neighbours = new HashMap<>();
+		for (int i = 0; i < rows.size(); i++) {
+			neighbours.put(rows.get(i).getName(), new PageNeighbours(
+					i > 0 ? rows.get(i - 1) : null,
+					i < rows.size() - 1 ? rows.get(i + 1) : null));
+		}
+		pageNeighbours = neighbours;
+
 		return rows;
+	}
+
+	// Previous and next published page in alphabetical order, null for hidden or unknown pages
+	public PageNeighbours getPageNeighbours(final String name) {
+		Map<String, PageNeighbours> neighbours = pageNeighbours;
+		if (neighbours == null) {
+			// Only after a page was saved. A call on this instance skips the cache, so this reloads the list.
+			getPagesInfo();
+			neighbours = pageNeighbours;
+		}
+		return neighbours == null ? null : neighbours.get(name);
 	}
 
 	// @Cacheable(value = "page", key = "#root.methodName")
@@ -184,6 +210,7 @@ public class PageService {
 				page.getLongitude(), page.getContent(),
 				Utils.getValue(page.getMunicipality()),
 				dateAsString, page.isPublished());
+		pageNeighbours = null;
 	}
 
 	@CacheEvict(value = { "page", "accessInfo" }, allEntries = true)
@@ -204,6 +231,7 @@ public class PageService {
 				Utils.getValue(page.getMunicipality()),
 				dateAsString, page.isPublished(), new Date(),
 				page.getId());
+		pageNeighbours = null;
 	}
 
 	public void updateViewCount(final String name) {

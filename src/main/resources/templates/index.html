@@ -2,30 +2,35 @@
 <head>
 <title>En Tour duerch d'Lëtzebuerger Land mam Tessy Glodt</title>
 </head>
-<th:block layout:fragment="content">
+<main layout:fragment="content" class="home">
 
-	<div class="box middle_bar margin-bottom margin-top">
-		<div th:replace="~{fragments/randomPage}"></div>
-	</div>
+	<section class="feature" th:replace="~{fragments/randomPage}"></section>
 
-	<div class="lower_bar margin-bottom">
-		<article class="box text-box">
-			<h4>All d'Texter</h4>
-			<div class="text_columns">
-				<div th:replace="~{fragments/pagesInfos}"></div>
-			</div>
-		</article>
-		<aside class="box">
-			<div class="text-box map">
-				<h4>Kaart</h4>
-				<a th:href="@{/kaart}"><img id="index_mapimage" th:src="@{/img/kaart.jpg}" width="300" height="164" alt="Kaart mat den Uertschaften"></a>
-			</div>
-			<div th:replace="~{fragments/newestPages}"></div>
-			<div th:replace="~{fragments/lastReadPages}"></div>
-			<div th:replace="~{fragments/mostReadPages}"></div>
-			<div th:replace="~{fragments/districts}"></div>
-			<div th:replace="~{fragments/cantons}"></div>
-		</aside>
-	</div>
-</th:block>
+	<aside class="marginalia shelf">
+		<section class="mapthumb">
+			<h3>Kaart</h3>
+			<a th:href="@{/kaart}"><img th:src="@{/img/kaart.jpg}" width="300" height="164" alt="Kaart mat den Uertschaften"></a>
+		</section>
+		<section th:replace="~{fragments/newestPages}"></section>
+		<section th:replace="~{fragments/lastReadPages}"></section>
+		<section th:replace="~{fragments/mostReadPages}"></section>
+		<section th:replace="~{fragments/districts}"></section>
+		<section th:replace="~{fragments/cantons}"></section>
+	</aside>
+
+	<article class="register">
+		<h2>All d’Texter</h2>
+		<nav class="alphabet" aria-label="Alphabet">
+			<a th:each="entry : ${pagesByInitial}" th:href="${'#' + entry.key}" th:text="${entry.key}"></a>
+		</nav>
+		<div class="register-body">
+			<section th:each="entry : ${pagesByInitial}">
+				<h3 th:id="${entry.key}" th:text="${entry.key}"></h3>
+				<ul>
+					<li th:each="page : ${entry.value}"><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
+				</ul>
+			</section>
+		</div>
+	</article>
+</main>
 </html>

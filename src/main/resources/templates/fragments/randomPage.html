@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
-<div class="text-box">
-	<h4 th:text="${'Zoufallssäit: ' + randomPage.title}"></h4>
-	<div id="text">
-		<a th:href="@{/page/{page}(page=${randomPage.name})}" th:text="${randomPage.teaser}"></a>
-	</div>
-</div>
+<section class="feature">
+	<p class="kicker">Zoufallssäit</p>
+	<h2><a th:href="@{/page/{page}(page=${randomPage.name})}" th:text="${randomPage.title}"></a></h2>
+	<p class="teaser" th:text="${randomPage.teaser}"></p>
+	<a class="more" th:href="@{/page/{page}(page=${randomPage.name})}">Weiderliesen →</a>
+</section>

@@ -8,6 +8,8 @@
 	<link rel="stylesheet" th:href="@{/css/bootstrap-theme.css}">
 
 	<script th:src="@{/js/jquery.min.js}"></script>
+	<!-- The content-hashed file name hides CKEditor's own location from it -->
+	<script th:inline="javascript">window.CKEDITOR_BASEPATH = /*[[@{/ckeditor/}]]*/ "/ckeditor/";</script>
 	<script th:src="@{/ckeditor/ckeditor.js}"></script>
 
 	<div class="box margin-top margin-bottom">

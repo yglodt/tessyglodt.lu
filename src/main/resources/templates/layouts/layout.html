@@ -4,55 +4,41 @@
 <title layout:title-pattern="$CONTENT_TITLE — $LAYOUT_TITLE">Kierchtuermspromenaden</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f9f6e1">
+<meta name="theme-color" content="#e7e0cf">
 <link rel="stylesheet" th:href="@{/css/style.css}" th:if="${req.serverName == 'localhost'}">
 <link rel="stylesheet" th:href="@{/css/s.min.css}" th:if="${req.serverName != 'localhost'}">
 <link rel="icon" type="image/png" th:href="@{/img/favicon.png}" sizes="64x64">
 <link th:href="@{/feed/nei.xml}" title="Nei Texter" type="application/atom+xml" rel="alternate">
 </head>
 <body>
-	<header>
-		<h1>Kierchtuerms&shy;promenaden</h1>
-		<h2>En Tour duerch d&nbsp;'Lëtzebuerger Land mam Tessy Glodt</h2>
-		<div class="fb-like" data-href="https://www.facebook.com/Kierchtuermspromenaden" data-send="false" data-layout="button_count" data-width="30" data-show-faces="true"></div>
-	</header>
-	<nav>
-		<a th:href="@{/}"><i class="material-icons">home</i>&nbsp;Haaptsäit</a>
-		<a th:href="@{/kaart}"><i class="material-icons">map</i>&nbsp;Kaart mat den Uertschaften</a>
-		<a th:href="@{/apropos}"><i class="material-icons">info_outline</i>&nbsp;Iwwert des Säit</a>
-		<a th:href="@{/auteur}"><i class="material-icons">person</i>&nbsp;Iwwert den Auteur</a>
-		<form role="search" th:action="@{/sich}">
-			<input type="text" name="q" class="fc" placeholder="Sichbegrëff" th:value="${param.q}" size="15">
-			<button type="submit"><i class="material-icons">search</i></button>
-		</form>
-	</nav>
-	<div sec:authorize="hasRole('ROLE_ADMIN')">
-		<nav class="margin-top">
+	<div class="sheet">
+		<header class="masthead">
+			<h1><a th:href="@{/}">Kierchtuerms&shy;promenaden</a></h1>
+			<p class="tagline">En Tour duerch d’Lëtzebuerger Land mam Tessy Glodt</p>
+		</header>
+		<nav class="mainnav" aria-label="Menü">
+			<a th:href="@{/}">Haaptsäit</a>
+			<a th:href="@{/kaart}">Kaart</a>
+			<a th:href="@{/apropos}">Iwwert des Säit</a>
+			<a th:href="@{/auteur}">Iwwert den Auteur</a>
+			<form role="search" th:action="@{/sich}">
+				<input type="search" name="q" placeholder="Sichen…" aria-label="Sichbegrëff" th:value="${param.q}">
+				<button type="submit" aria-label="Sichen"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+			</form>
+		</nav>
+		<div class="adminbar" sec:authorize="hasRole('ROLE_ADMIN')">
 			<a th:href="@{/admin/pageform}">Nei Säit</a>&nbsp;|&nbsp;<a th:href="@{/admin/listmcd}">Konfig</a>&nbsp;|&nbsp;<a th:href="@{/logout}">Log out</a>
 			<th:block th:if="${hiddenPages != null and !hiddenPages.isEmpty()}">
 				<br>Verstoppt:
 				<th:block th:each="p, stat : ${hiddenPages}"><a th:href="@{/page/{name}(name=${p.name})}" th:text="${p.title}"></a><span th:unless="${stat.last}">, </span></th:block>
 			</th:block>
-		</nav>
-	</div>
-	<div layout:fragment="content"></div>
-	<footer>
-		<div>
-			<i class="material-icons">copyright</i>&nbsp;2012&nbsp;&mdash;&nbsp;<span th:text="${#temporals.format(now, 'yyyy')}" th:remove="tag"></span> Tessy Glodt
 		</div>
-	</footer>
-
-	<script th:if="${req.serverName != 'localhost'}">
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id))
-				return;
-			js = d.createElement(s);
-			js.id = id;
-			js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
-	</script>
-
+		<main layout:fragment="content"></main>
+		<footer class="colophon">
+			<hr class="ornament">
+			<p>&copy;&nbsp;2012–<span th:text="${#temporals.format(now, 'yyyy')}" th:remove="tag"></span> Tessy Glodt</p>
+			<p><a href="https://www.facebook.com/Kierchtuermspromenaden">Kierchtuermspromenaden op Facebook</a> · <a th:href="@{/feed/nei.xml}">Nei Texter abonnéieren (Feed)</a></p>
+		</footer>
+	</div>
 </body>
 </html>

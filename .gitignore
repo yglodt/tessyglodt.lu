@@ -6,3 +6,4 @@ target/
 /config/
 tools/book/.venv/
 tools/book/fonts/
+.playwright-mcp/

@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:remove="tag">
-<div class="text-box">
-	<h4>Lëscht no Kanton</h4>
+<section>
+	<h3>Lëscht no Kanton</h3>
 	<ul>
-		<li th:each="canton : ${cantons}"><i class="material-icons">place</i><a th:href="@{/canton/{c}(c=${canton.slug})}" th:text="${canton.name}"></a></li>
+		<li th:each="item : ${cantons}"><a th:href="@{/canton/{c}(c=${item.slug})}" th:text="${item.name}"></a></li>
 	</ul>
-</div>
+</section>

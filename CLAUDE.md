@@ -85,15 +85,17 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 
 ### View Layer
 
-- **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`; pages use `layout:decorate="~{layouts/layout}"` and their own `<head>` (merged by the layout dialect, title via `layout:title-pattern`). Fragments are included with `th:replace="~{fragments/...}"`.
-- **CKEditor** for admin rich text editing; the edit form's textarea uses `th:text` (escaped), page display uses `th:utext`.
-- Fonts (Italianno, Smythe, Lora, Material Icons) are self-hosted in `static/fonts/`, with their `@font-face` rules at the top of `style.css` (Latin + Latin-Extended subsets only). No Google Fonts, no analytics.
+- **Thymeleaf** with layout dialect. Main layout: `templates/layouts/layout.html`; pages use `layout:decorate="~{layouts/layout}"` and their own `<head>` (merged by the layout dialect, title via `layout:title-pattern`). Fragments are included with `th:replace="~{fragments/...}"`. Each page's content element is `<main layout:fragment="content">`: the page's element *replaces* the layout's placeholder, so a `th:block` there would leave no `<main>` (admin templates still do this).
+- **CKEditor** for admin rich text editing; the edit form's textarea uses `th:text` (escaped), page display uses `th:utext`. `pageform.html` sets `CKEDITOR_BASEPATH` because the content-hashed `ckeditor-<hash>.js` name stops CKEditor from finding its own folder. The page form also loads Bootstrap, which overrides some site styles there (admin only).
+- **Design:** "book" look — one paper sheet on a desk-coloured background, colours as CSS variables in `:root` of `style.css` (`--accent` dark red for drop caps, ornaments, hover), text column limited to `--measure` (36em) with the sidebar as margin notes (`.with-margin`). Text pages: small-caps kicker (canton · municipality), title, ornament (`<hr class="ornament">`, an SVG data URI), drop cap on the first paragraph only, previous/next page in alphabetical order (`PageService.getPageNeighbours(name)`: a name → `PageNeighbours` map built by `getPagesInfo()` whenever it loads the list, cleared in `insert`/`update`). Home: random page as a featured text, short lists in a band (`.shelf`), all texts as an A–Z index (`Utils.groupByInitial()`, accents ignored). No Tailwind/Bootstrap on public pages; plain CSS. Phone breakpoint 600px, tablet 900px; there is a print stylesheet.
+- Fonts (Italianno, Smythe, Lora regular/italic/bold, Material Icons — the latter only used in admin) are self-hosted in `static/fonts/`, with their `@font-face` rules at the top of `style.css` (Latin + Latin-Extended subsets only). No Google Fonts, no analytics.
 - **Maps** (`map.html`, `page.html`) use Leaflet 1.9.4 from cdnjs (with SRI hashes; `<link>`/`<script>` sit in each page's own `<head>`) and OpenStreetMap tiles, with no API key. Google Maps was dropped in Sept 2026 after its key stopped working. OSM's tile policy requires the attribution and allows only light use; switch to a tile provider if traffic grows a lot.
 - **Thymeleaf inline JS gotcha:** write `[ [[${x}]]` (with a space), never `[/*[[${x}]]*/` or `[[[${x}]]`, because `[/` parses as a closing element and breaks rendering mid-response (`ERR_INCOMPLETE_CHUNKED_ENCODING`).
-- External requests from pages: cdnjs (Leaflet), `tile.openstreetmap.org`, and the Facebook SDK (only when not on localhost).
+- External requests from pages: cdnjs (Leaflet) and `tile.openstreetmap.org`. The footer links to the Facebook page (no SDK).
 - Random page teaser: `Page.getTeaser()` (plain text via Jsoup, 450 chars).
 - "An der Géigend" box on `page.html`: the 5 nearest published pages with straight-line distance (`PageService.getNearbyPages()`, flat-earth formula in SQL). The map itself stays on the whole-country view.
 - Build step: Maven `replacer` plugin strips whitespace between tags in templates; `minify` plugin compresses `style.css` → `s.min.css` (used when not on localhost). Static URLs are content-hashed (`spring.web.resources.chain.strategy.content`, e.g. `s.min-<hash>.css`), so long browser caching is safe.
+- **YUI CSS minifier gotchas:** it strips spaces inside custom property values (write `%20` in data URIs) and around `+`/`-`, so don't use `calc()`/`clamp()` arithmetic like `1rem + 2vw`. After CSS changes, check `s.min.css` in a packaged build.
 - Templates validate with the W3C Nu checker except for the known items below. To check: render pages from a running instance and run `vnu.jar` (npm package `vnu-jar`).
 
 ### Facebook posting
@@ -124,8 +126,7 @@ Runs in Docker next to its database. The server builds the app image itself from
 ## Known Technical Debt / Open Items
 
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
-- **HTML:** sidebar headings jump from `<h2>` to `<h4>` (kept deliberately — changing affects styling); header text `d&nbsp;'Lëtzebuerger` renders with a space before the apostrophe; Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
-- **Facebook Like button** (`layout.html`) loads the legacy `connect.facebook.net/en_US/all.js` SDK, which probably no longer works and sends visitor data to Facebook. Candidate for removal (a plain link to the Facebook page would do).
+- **HTML:** Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
 - **Social posting:** Facebook posting exists (see above). The Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
 - **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 

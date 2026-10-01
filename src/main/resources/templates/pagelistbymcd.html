@@ -2,18 +2,20 @@
 <head>
 <title>Lëscht no Distrikt / Kanton</title>
 </head>
-<th:block layout:fragment="content">
-	<div class="box margin-top margin-bottom text-box">
-		<aside>
-			<div th:replace="~{fragments/districts}"></div>
-			<div th:replace="~{fragments/cantons}"></div>
-		</aside>
+<main layout:fragment="content">
+	<div class="with-margin wide">
 		<article>
-			<h4 th:text="${'Texter aus dem ' + title + ' ' + name}"></h4>
-			<div class="textcolumns">
-				<div th:replace="~{fragments/pagesInfos}"></div>
-			</div>
+			<header class="chapter-head">
+				<p class="kicker">Texter aus dem</p>
+				<h2 th:text="${title + ' ' + name}"></h2>
+				<hr class="ornament">
+			</header>
+			<ul th:replace="~{fragments/pagesInfos}"></ul>
 		</article>
+		<aside class="marginalia">
+			<section th:replace="~{fragments/districts}"></section>
+			<section th:replace="~{fragments/cantons}"></section>
+		</aside>
 	</div>
-</th:block>
+</main>
 </html>

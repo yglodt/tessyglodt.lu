@@ -2,22 +2,25 @@
 <head>
 <title th:text="${'Sich no ''' + param.q + ''''}"></title>
 </head>
-<th:block layout:fragment="content">
-	<div class="box margin-top margin-bottom">
-		<article class="text-box">
-			<h4 th:text="${'Resultat vun der Sich no ''' + param.q + ''''}"></h4>
+<main layout:fragment="content">
+	<div class="single">
+		<article>
+			<header class="chapter-head">
+				<p class="kicker">Resultat vun der Sich</p>
+				<h2 th:text="${'„' + param.q + '“'}"></h2>
+				<hr class="ornament">
+			</header>
 			<th:block th:switch="${pages}">
 				<div th:case="${null}">
 					<p>Keng Säite fonnt.</p>
 				</div>
 				<div th:case="*">
-					<ul>
-
-						<li th:each="page : ${pages}"><i class="material-icons">place</i><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
+					<ul class="results">
+						<li th:each="page : ${pages}"><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
 					</ul>
 				</div>
 			</th:block>
 		</article>
 	</div>
-</th:block>
+</main>
 </html>

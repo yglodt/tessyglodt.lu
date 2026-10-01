@@ -29,6 +29,7 @@ import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.Canton;
 import lu.tessyglodt.site.data.District;
 import lu.tessyglodt.site.data.Page;
+import lu.tessyglodt.site.data.PageNeighbours;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
 import lu.tessyglodt.site.service.PageService;
@@ -60,7 +61,7 @@ public class WebController {
 	public String getIndex(final Model model) {
 		model.addAttribute("req", request);
 
-		model.addAttribute("pages", pageService.getPagesInfo());
+		model.addAttribute("pagesByInitial", Utils.groupByInitial(pageService.getPagesInfo()));
 		model.addAttribute("cantons", cantonService.getCantons());
 		model.addAttribute("districts", districtService.getDistricts());
 		model.addAttribute("randomPage", pageService.getRandomPage());
@@ -103,6 +104,14 @@ public class WebController {
 
 		model.addAttribute("page", page);
 		model.addAttribute("nearbyPages", pageService.getNearbyPages(page, 5));
+
+		// Previous and next page in alphabetical order, like turning a page in the book.
+		// Hidden pages aren't in the map, so they get no links.
+		final PageNeighbours neighbours = pageService.getPageNeighbours(page.getName());
+		if (neighbours != null) {
+			model.addAttribute("previousPage", neighbours.previous());
+			model.addAttribute("nextPage", neighbours.next());
+		}
 
 		return "page";
 	}
