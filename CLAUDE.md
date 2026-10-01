@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Spring Boot 4.1 web application (Java 21 target — production needs a Java 21+ runtime; runs fine on JDK 25) for tessyglodt.lu — a geographic CMS about Luxembourg municipalities, cantons, and districts ("Kierchtuerms­promenaden"). Uses PostgreSQL and server-side rendering with Thymeleaf.
+Spring Boot 4.1 web application (Java 25, in production and for development) for tessyglodt.lu — a geographic CMS about Luxembourg municipalities, cantons, and districts ("Kierchtuerms­promenaden"). Uses PostgreSQL and server-side rendering with Thymeleaf.
 
 ## Build and Development Commands
 
