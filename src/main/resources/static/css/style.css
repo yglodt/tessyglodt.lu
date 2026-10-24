@@ -486,6 +486,172 @@ main {
 	text-align: right;
 }
 
+/* The same links at the top, like a book's running head; on wide screens
+   they float as tabs at the edges of the window, next to the sheet */
+.running-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+	font-size: 0.85rem;
+	font-style: italic;
+	color: var(--muted);
+}
+
+/* Only the title gets shortened, the arrow always stays */
+.running-head a {
+	display: flex;
+	align-items: center;
+	gap: 0.35em;
+	max-width: 48%;
+	text-decoration: none;
+}
+
+.running-head .title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.running-head .arrow {
+	flex: none;
+	font-style: normal;
+	color: var(--accent);
+}
+
+.running-head .next {
+	margin-left: auto;
+}
+
+@media screen and (min-width: 1300px) {
+	.running-head {
+		margin: 0;
+	}
+
+	.running-head a {
+		position: fixed;
+		top: 50%;
+		z-index: 10;
+		box-sizing: border-box;
+		max-width: none;
+		height: min(8rem, 60vh); /* same size on both sides, whatever the titles */
+		padding: 0 0.55rem;
+		writing-mode: vertical-rl;
+		transform: translateY(-50%);
+		background: var(--paper);
+		box-shadow: 0 1px 2px rgba(60, 45, 20, 0.08), 0 6px 20px rgba(60, 45, 20, 0.1);
+		border-radius: 4px 0 0 4px;
+		font-size: 0.8rem;
+		letter-spacing: 0.04em;
+		color: var(--ink-soft);
+		view-transition-name: tab-next;
+	}
+
+	/* Reads bottom to top on the left, like the spine of a book. Turned
+	   upside down, so its end is at the top: that's where the arrow goes */
+	.running-head .previous {
+		left: 0;
+		transform: translateY(-50%) rotate(180deg);
+		view-transition-name: tab-previous;
+	}
+
+	.running-head .next {
+		right: 0;
+	}
+
+	.running-head a:hover {
+		color: var(--accent);
+	}
+
+	.running-head .arrow {
+		padding: 0.3rem 0;
+		writing-mode: horizontal-tb;
+		font-size: 1.2rem;
+		line-height: 1;
+	}
+
+	/* The title is centred in the space below the arrow */
+	.running-head .title {
+		flex: 1;
+		text-align: center;
+	}
+
+	/* The arrow always sits at the top, so it doesn't move with the title */
+	.running-head .next .arrow {
+		order: -1;
+	}
+
+	.running-head .previous .arrow {
+		order: 1;
+		transform: rotate(180deg);
+	}
+}
+
+/* Turning the page when following a previous/next link: a cross-document
+   view transition, no JavaScript (Chrome, Edge and Safari; other browsers
+   just load the page). The old sheet only gets a name while a turn link is
+   hovered or focused, so it is captured on its own and folds away over the
+   new page; any other navigation keeps the plain swap. */
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+	animation: none;
+}
+
+html:has(a[rel=next]:hover, a[rel=next]:focus) .sheet {
+	view-transition-name: turn-forward;
+}
+
+html:has(a[rel=prev]:hover, a[rel=prev]:focus) .sheet {
+	view-transition-name: turn-back;
+}
+
+::view-transition-group(turn-forward), ::view-transition-group(turn-back) {
+	animation: none;
+}
+
+::view-transition-old(turn-forward) {
+	transform-origin: left center;
+	animation: turn-forward 0.65s cubic-bezier(0.45, 0, 0.75, 0.6) both;
+}
+
+::view-transition-old(turn-back) {
+	transform-origin: right center;
+	animation: turn-back 0.65s cubic-bezier(0.45, 0, 0.75, 0.6) both;
+}
+
+@keyframes turn-forward {
+	from {
+		transform: rotateY(0deg) skewY(0deg);
+		filter: brightness(1) drop-shadow(0 0 0 rgba(40, 30, 10, 0));
+	}
+
+	to {
+		transform: rotateY(-88deg) skewY(-4deg);
+		filter: brightness(0.8) drop-shadow(30px 0 40px rgba(40, 30, 10, 0.35));
+	}
+}
+
+@keyframes turn-back {
+	from {
+		transform: rotateY(0deg) skewY(0deg);
+		filter: brightness(1) drop-shadow(0 0 0 rgba(40, 30, 10, 0));
+	}
+
+	to {
+		transform: rotateY(88deg) skewY(4deg);
+		filter: brightness(0.8) drop-shadow(-30px 0 40px rgba(40, 30, 10, 0.35));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: none;
+	}
+}
+
 /* Home: featured text */
 .feature {
 	max-width: 44em;
@@ -803,7 +969,7 @@ table.stats th:nth-child(2), table.stats td:nth-child(2) {
 		max-width: none;
 	}
 
-	.mainnav, .adminbar, .turn, .edit-link, .location-map, .nearby, .colophon a {
+	.mainnav, .adminbar, .turn, .running-head, .edit-link, .location-map, .nearby, .colophon a {
 		display: none;
 	}
 

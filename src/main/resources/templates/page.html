@@ -13,6 +13,10 @@
 	<div class="with-margin">
 
 		<article class="chapter">
+			<nav class="running-head" aria-label="Bliederen" th:if="${previousPage != null or nextPage != null}">
+				<a class="previous" rel="prev" th:if="${previousPage}" th:href="@{/page/{p}(p=${previousPage.name})}" th:title="${'Virdrun: ' + previousPage.title}"><span class="arrow" aria-hidden="true">‹</span><span class="title" th:text="${previousPage.title}"></span></a>
+				<a class="next" rel="next" th:if="${nextPage}" th:href="@{/page/{p}(p=${nextPage.name})}" th:title="${'Duerno: ' + nextPage.title}"><span class="title" th:text="${nextPage.title}"></span><span class="arrow" aria-hidden="true">›</span></a>
+			</nav>
 			<header class="chapter-head">
 				<p class="kicker" th:text="${'Kanton ' + page.municipality.canton.name + ' · Gemeng ' + page.municipality.name}"></p>
 				<h2 th:text="${page.title}"></h2>
@@ -20,8 +24,8 @@
 			</header>
 			<div class="prose" th:utext="${page.content}"></div>
 			<nav class="turn" aria-label="Bliederen">
-				<a class="previous" th:if="${previousPage}" th:href="@{/page/{p}(p=${previousPage.name})}"><span>← Virdrun</span><th:block th:text="${previousPage.title}"></th:block></a>
-				<a class="next" th:if="${nextPage}" th:href="@{/page/{p}(p=${nextPage.name})}"><span>Duerno →</span><th:block th:text="${nextPage.title}"></th:block></a>
+				<a class="previous" rel="prev" th:if="${previousPage}" th:href="@{/page/{p}(p=${previousPage.name})}"><span>← Virdrun</span><th:block th:text="${previousPage.title}"></th:block></a>
+				<a class="next" rel="next" th:if="${nextPage}" th:href="@{/page/{p}(p=${nextPage.name})}"><span>Duerno →</span><th:block th:text="${nextPage.title}"></th:block></a>
 			</nav>
 		</article>
 
