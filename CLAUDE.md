@@ -128,6 +128,7 @@ Runs in Docker next to its database. The server builds the app image itself from
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
 - **HTML:** Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
 - **Social posting:** Facebook posting exists (see above). The Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
+- **Punctuation clean-up of the page texts (in progress, Oct 2026):** a one-off normalisation of apostrophes, quotation marks („…“), dashes, dots and spaces in `page.content`. `tools/punctuation/fix-punctuation.sh` only writes a before/after report and SQL files to `target/`; nothing has been applied to any database yet. Status, decisions taken and how to apply: `tools/punctuation/README.md`.
 - **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
 
 ## Migration Assessments
