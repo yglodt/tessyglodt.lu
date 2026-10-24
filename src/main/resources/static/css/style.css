@@ -528,6 +528,11 @@ main {
 		margin: 0;
 	}
 
+	/* The tabs are always in view, so the links below the text aren't needed */
+	.turn {
+		display: none;
+	}
+
 	.running-head a {
 		position: fixed;
 		top: 50%;
