@@ -30,6 +30,7 @@ import lu.tessyglodt.site.data.Canton;
 import lu.tessyglodt.site.data.District;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageNeighbours;
+import lu.tessyglodt.site.data.SearchResults;
 import lu.tessyglodt.site.service.CantonService;
 import lu.tessyglodt.site.service.DistrictService;
 import lu.tessyglodt.site.service.PageService;
@@ -39,6 +40,8 @@ import lu.tessyglodt.site.service.PageService;
 public class WebController {
 
 	private static final String			BASE_URL	= "https://www.tessyglodt.lu";
+
+	private static final int			SEARCH_PAGE_SIZE	= 20;
 
 	final static Logger					logger	= LoggerFactory.getLogger(WebController.class);
 
@@ -151,14 +154,18 @@ public class WebController {
 	}
 
 	@GetMapping(value = "/sich")
-	public String getSearch(final Model model, @RequestParam(value = "q", required = false) final String q) {
+	public String getSearch(final Model model, @RequestParam(value = "q", required = false) final String q,
+			@RequestParam(value = "p", defaultValue = "1") final int p) {
 		model.addAttribute("req", request);
 
-		if (!StringUtils.isEmpty(q)) {
-			logger.debug("Searching for \"" + q + "\"");
+		if (!StringUtils.isBlank(q)) {
+			logger.debug("Searching for \"" + q + "\", page " + p);
 
-			model.addAttribute("pages", pageService.getSearchPostgreSQL(q));
-
+			final int current = Math.max(p, 1);
+			final SearchResults results = pageService.search(q, (current - 1) * SEARCH_PAGE_SIZE, SEARCH_PAGE_SIZE);
+			model.addAttribute("results", results);
+			model.addAttribute("current", current);
+			model.addAttribute("pageCount", (results.total() + SEARCH_PAGE_SIZE - 1) / SEARCH_PAGE_SIZE);
 		}
 
 		return "search";

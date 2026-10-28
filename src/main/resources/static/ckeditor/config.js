@@ -35,4 +35,8 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+	// Store "é" and "’" as characters, not as "&eacute;" and "&rsquo;" (only &amp; &lt; &gt; &nbsp;
+	// stay entities), so the database search and excerpts see the words as they are written.
+	config.entities = false;
 };

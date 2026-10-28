@@ -457,7 +457,7 @@ main {
 }
 
 /* Turning pages */
-.turn {
+.turn, .pager {
 	display: flex;
 	justify-content: space-between;
 	gap: 1rem;
@@ -467,21 +467,21 @@ main {
 	font-size: 0.9rem;
 }
 
-.turn a {
+.turn a, .pager a {
 	text-decoration: none;
 	display: flex;
 	flex-direction: column;
 	max-width: 48%;
 }
 
-.turn a span {
+.turn a span, .pager a span {
 	font-size: 0.7rem;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	color: var(--muted);
 }
 
-.turn .next {
+.turn .next, .pager .next {
 	margin-left: auto;
 	text-align: right;
 }
@@ -797,13 +797,42 @@ html:has(a[rel=prev]:hover, a[rel=prev]:focus) .sheet {
 }
 
 /* Search results, statistics */
+.result-count {
+	color: var(--muted);
+	font-style: italic;
+}
+
+.results {
+	list-style: none;
+	padding: 0;
+}
+
 .results li {
-	padding: 0.25rem 0;
+	padding: 0.8rem 0;
 	border-bottom: 1px solid var(--rule);
 }
 
 .results li a {
 	text-decoration: none;
+	font-size: 1.1rem;
+}
+
+.results li a:hover {
+	text-decoration: underline;
+}
+
+.excerpt {
+	margin: 0.3rem 0 0;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
+	overflow-wrap: break-word;
+}
+
+.excerpt mark {
+	background: var(--tint);
+	color: var(--ink);
+	font-weight: 700;
+	padding: 0 0.1em;
 }
 
 table.stats {

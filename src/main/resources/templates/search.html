@@ -10,15 +10,21 @@
 				<h2 th:text="${'„' + param.q + '“'}"></h2>
 				<hr class="ornament">
 			</header>
-			<th:block th:switch="${pages}">
-				<div th:case="${null}">
-					<p>Keng Säite fonnt.</p>
-				</div>
-				<div th:case="*">
-					<ul class="results">
-						<li th:each="page : ${pages}"><a th:href="@{/page/{p}(p=${page.name})}" th:text="${page.title}"></a></li>
-					</ul>
-				</div>
+			<p th:if="${results == null or results.total() == 0}">Keng Säite fonnt.</p>
+			<th:block th:if="${results != null and results.total() > 0}">
+				<p class="result-count">
+					<th:block th:text="${results.total() == 1 ? '1 Säit fonnt' : results.total() + ' Säite fonnt'}"></th:block><th:block th:if="${pageCount > 1}" th:text="${' · Säit ' + current + ' vun ' + pageCount}"></th:block>
+				</p>
+				<ol class="results">
+					<li th:each="hit : ${results.hits()}">
+						<a th:href="@{/page/{p}(p=${hit.name()})}" th:text="${hit.title()}"></a>
+						<p class="excerpt" th:utext="${hit.excerpt()}"></p>
+					</li>
+				</ol>
+				<nav class="pager" aria-label="Resultater bliederen" th:if="${pageCount > 1}">
+					<a class="previous" rel="prev" th:if="${current > 1}" th:href="@{/sich(q=${param.q},p=${current - 1})}"><span>← Virdrun</span>Säit [[${current - 1}]]</a>
+					<a class="next" rel="next" th:if="${current < pageCount}" th:href="@{/sich(q=${param.q},p=${current + 1})}"><span>Duerno →</span>Säit [[${current + 1}]]</a>
+				</nav>
 			</th:block>
 		</article>
 	</div>

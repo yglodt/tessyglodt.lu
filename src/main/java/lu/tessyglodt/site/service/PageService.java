@@ -14,12 +14,15 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 
 import lu.tessyglodt.site.Utils;
 import lu.tessyglodt.site.data.NearbyPage;
 import lu.tessyglodt.site.data.Page;
 import lu.tessyglodt.site.data.PageMapper;
 import lu.tessyglodt.site.data.PageNeighbours;
+import lu.tessyglodt.site.data.SearchHit;
+import lu.tessyglodt.site.data.SearchResults;
 
 @Component
 public class PageService {
@@ -27,6 +30,10 @@ public class PageService {
 	final static Logger						logger			= LoggerFactory.getLogger(PageService.class);
 
 	private final Random					randomGenerator	= new Random();
+
+	// ts_headline marks the hits with these two control characters, which can't occur in the texts,
+	// so the excerpt can be escaped as a whole before they become <mark> tags
+	private static final String				HEADLINE_OPTIONS	= "MaxFragments=2, MaxWords=45, MinWords=30, FragmentDelimiter=\" … \", StartSel=\u0002, StopSel=\u0003";
 
 	private final JdbcTemplate				jdbcTemplate;
 
@@ -156,21 +163,27 @@ public class PageService {
 		return o;
 	}
 
-	public List<Map<String, Object>> getSearchPostgreSQL(final String q) {
-		/*
-		 * http://blog.lostpropertyhq.com/postgres-full-text-search-is-good-
-		 * enough /
-		 * http://stackoverflow.com/questions/10027996/postgres-fulltext-index
-		 */
-		final String sql = "select "
-				+ "id, name, title "
-				+ "from (select "
-				+ "p.id as id, p.name as name, p.title as title, to_tsvector(unaccent(p.content)) "
-				+ "as document from page p where p.published) p_search "
-				+ "where p_search.document @@ websearch_to_tsquery(unaccent(?))";
+	// Full-text search over page.search (title weighted above text, see tools/search/search-index.sql),
+	// best matches first, with excerpts around the hits for the requested slice only
+	public SearchResults search(final String q, final int offset, final int limit) {
+		final String sql = "select name, title, total, "
+				+ "ts_headline('public.english_unaccent', regexp_replace(regexp_replace(content, '<[^>]+>', ' ', 'g'), '\\s+', ' ', 'g'), q, ?) as excerpt "
+				+ "from (select name, title, content, q, ts_rank(search, q) as rank, count(*) over () as total "
+				+ "from page, websearch_to_tsquery('public.english_unaccent', ?) q "
+				+ "where published and search @@ q "
+				+ "order by rank desc, title limit ? offset ?) hits "
+				+ "order by rank desc, title";
+		final int[] total = { 0 };
+		final List<SearchHit> hits = jdbcTemplate.query(sql, (rs, rowNum) -> {
+			total[0] = rs.getInt("total");
+			return new SearchHit(rs.getString("name"), rs.getString("title"), excerptHtml(rs.getString("excerpt")));
+		}, HEADLINE_OPTIONS, q, limit, offset);
+		return new SearchResults(hits, total[0]);
+	}
 
-		return jdbcTemplate.queryForList(sql, q);
-
+	private static String excerptHtml(final String headline) {
+		return HtmlUtils.htmlEscape(HtmlUtils.htmlUnescape(headline).strip(), "UTF-8")
+				.replace("\u0002", "<mark>").replace("\u0003", "</mark>");
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
