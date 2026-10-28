@@ -9,15 +9,16 @@ Spring Boot 4.1 web application (Java 25, in production and for development) for
 ## Build and Development Commands
 
 ```bash
+./dev.sh                                            # Local dev in Docker: Postgres 18 + the app with hot reload on port 8080
 mvn clean package                                   # Build JAR (target/tessyglodt.jar), minify CSS, strip HTML whitespace
-mvn spring-boot:run -Dspring-boot.run.profiles=dev  # Run locally on port 8080 against the local DB
+mvn spring-boot:run -Dspring-boot.run.profiles=dev  # Run on the host instead, against the Docker DB
 mvn test                                            # Run all tests (there are none yet)
 ```
 
 - **Always run locally with the `dev` profile** (`application-dev.properties`: Postgres on port 5433, DEBUG logging). Without it the app connects to port 5432 and fails with `role "tessyglodt" does not exist`. VS Code: use the "Application (dev)" launch config in `.vscode/launch.json`.
 - Local admin login: `admin` / `password`.
 - **javac crash workaround:** when the code has compile errors, in-process javac on JDK 25 may crash with `Cannot load from object array because "this.hashes" is null` instead of reporting them. Run `mvn compile -Dmaven.compiler.fork=true` to see the real errors.
-- The local dev app normally runs from VS Code on **port 8080**. Devtools reloads it on changes, including template and static-file edits, so check changes there first.
+- **Local dev runs in Docker** (`compose.yaml`, dev only; production has its own setup): `./dev.sh` starts the `db` and `app` containers, `./dev.sh psql`, `./dev.sh import FILE`, `./dev.sh stop`. The `app` container (`maven:3-eclipse-temurin-25`, source mounted at `/workspace`) runs `./dev.sh container`: `mvn spring-boot:run` with devtools, plus a loop that recompiles when a `.java` file or the pom changes, so devtools restarts the app. Templates and static files are read straight from `src/` (`SPRING_THYMELEAF_PREFIX`, `SPRING_WEB_RESOURCES_STATIC_LOCATIONS` in `compose.yaml`), so they show without a rebuild. The container's `target/` and `~/.m2` are Docker volumes, so it doesn't share build output with the host. The app listens for a debugger on port 5005: VS Code launch config "Attach to app in Docker" (`.vscode/launch.json`), from the host or from inside the container. `.devcontainer/devcontainer.json` ("Dev Containers: Reopen in Container") opens VS Code inside the same container; `tessyglodt.lu.code-workspace` is the workspace file, with the recommended extensions. Check changes on **port 8080** first. The app can also run from VS Code on the host ("Application (dev)"), against the Docker DB on 5433; stop the `app` container first, both use port 8080.
 - Don't `mvn clean` underneath the running app (devtools restarts on half-built classes). To test a full packaged build, run a separate instance: `java -jar target/tessyglodt.jar --spring.profiles.active=dev --server.port=8081`.
 - `localhost` serves the unminified `style.css`; open the site via `127.0.0.1` to get `s.min.css` as in production.
 
@@ -49,7 +50,7 @@ mvn test                                            # Run all tests (there are n
 
 - **Direct JDBC** via Spring's `JdbcTemplate` — no JPA/Hibernate. Connection pool: HikariCP (via `spring-boot-starter-jdbc`).
 - **PostgreSQL** with a custom `slugify()` database function used for URL matching of cantons/districts.
-- Full-text search: `to_tsvector(unaccent(content)) @@ websearch_to_tsquery(unaccent(?))` — `websearch_to_tsquery` so arbitrary user input (multiple words, `&`, `(`) doesn't raise tsquery syntax errors.
+- Full-text search (`PageService.search()`): stored generated column `page.search` (title weight A, text without tags weight B) with a GIN index, built with the text search config `public.english_unaccent` (english with `unaccent` before stemming); set up in the database (local and production) by hand; the definition is in any `pg_dump`. Postgres recomputes the column on every insert/update, so the app never writes it. Query: `search @@ websearch_to_tsquery('public.english_unaccent', ?)` — `websearch_to_tsquery` so arbitrary user input (multiple words, `&`, `(`, `"phrase"`) doesn't raise tsquery syntax errors. Ordered by `ts_rank`, 20 per page (`/sich?q=…&p=2`), excerpts from `ts_headline` for the shown page only. `ts_headline` marks hits with the control characters `\u0002`/`\u0003`, so Java can unescape entities, HTML-escape the excerpt and only then turn the markers into `<mark>`. No prefix matching (`kierch:*`) for now: compound words like *Kierchtuerm* aren't found by `Kierch`.
 - The `orders` table exists in the DB but is no longer used by the code.
 - No schema files in the repo; a local `pg_dump` is the reference.
 
@@ -71,7 +72,7 @@ Mutations (`insert`, `update`) evict both caches. `getPageByProperty` evicts `ac
 
 ### URL Routes (Luxembourgish)
 
-- `/sich` — search
+- `/sich` — search, with excerpts and paging (`p`)
 - `/kaart` — map
 - `/apropos` — about
 - `/auteur` — author
@@ -128,8 +129,7 @@ Runs in Docker next to its database. The server builds the app image itself from
 - **No tests.** A few integration tests (home, page, search, 404, hidden page, admin login) would catch most regressions.
 - **HTML:** Thymeleaf's auto-generated CSRF input ends in `/>` (harmless).
 - **Social posting:** Facebook posting exists (see above). The Twitter integration was removed (X API is pay-per-use since Feb 2026: ~$0.20 per post with a link; twitter4j used the retired v1.1 endpoint). If re-added, use X API v2 (`POST /2/tweets`) or Bluesky/Mastodon (free).
-- **Punctuation clean-up of the page texts (in progress, Oct 2026):** a one-off normalisation of apostrophes, quotation marks („…“), dashes, dots and spaces in `page.content`. `tools/punctuation/fix-punctuation.sh` only writes a before/after report and SQL files to `target/`; nothing has been applied to any database yet. Status, decisions taken and how to apply: `tools/punctuation/README.md`.
-- **Search performance:** `to_tsvector` is computed per query over all pages; fine at ~560 pages, add a stored tsvector column + GIN index if it grows.
+- **Punctuation clean-up of the page texts (in progress, Oct 2026):** a one-off normalisation of apostrophes, quotation marks („…“), dashes, dots and spaces in `page.content`, which also writes entities as characters (`&eacute;` → `é`) and removes Word/LibreOffice leftovers and dead `%(link0)` links. The search results with excerpts wait for it: entities split words for `to_tsvector`. `tools/punctuation/fix-punctuation.sh` only writes a before/after report and SQL files to `target/`; applied to the local database on 28 Oct 2026, not yet to production. Status, decisions taken and how to apply: `tools/punctuation/README.md`.
 
 ## Migration Assessments
 
@@ -164,28 +164,14 @@ Other concerns: SQLite is single-writer (concurrent writes block), BigDecimal pr
 
 **Recommendation: Stay with Thymeleaf unless there's a strong reason to change.** If modernizing, htmx is the clear winner — incremental migration, no npm/webpack, keeps server-side rendering.
 
-## Local Database Setup (Postgres.app on macOS)
+## Local Database
 
-The local server for this project listens on **port 5433** (a different Postgres instance runs on 5432).
+Postgres 18 (`postgres:18-alpine`, as in production) in the `db` container of `compose.yaml`, data in the Docker volume `db`. Inside Docker it is `db:5432`; on the host it is published on **127.0.0.1:5433** (5432 is taken by another project's Postgres.app), which `application-dev.properties` and the `tools/` scripts use (user, password and database: `tessyglodt`). `DB_PORT=… ./dev.sh` publishes it on another port.
 
-Restoring a `pg_dump` backup:
+Loading a `pg_dump` (replaces the local database; owner and privileges from the dump are ignored):
 ```bash
-# Add Postgres.app CLI tools to PATH (add to ~/.zshrc for permanence)
-export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
-export PGPORT=5433
-
-# Create role and database (the dump's objects are owned by "tessyglodt")
-psql -d postgres -c "CREATE ROLE tessyglodt WITH LOGIN PASSWORD 'tessyglodt';"
-createdb -O tessyglodt tessyglodt
-
-# Restore custom format (-Fc, .dump)
-pg_restore --no-privileges -d tessyglodt /path/to/backup.dump
-
-# Restore plain SQL format (.sql)
-psql -d tessyglodt < /path/to/backup.sql
-
-# If the backup was made by a different user
-pg_restore --no-owner --no-privileges -d tessyglodt /path/to/backup.dump
+./dev.sh import /path/to/backup.dump   # custom format (-Fc)
+./dev.sh import /path/to/backup.sql    # plain SQL
 ```
 
-Don't keep backup dumps in the project folder unignored — `*.dump` is not in `.gitignore`.
+`*.dump` is git-ignored, but keep backups out of the project folder anyway: the repo is public.

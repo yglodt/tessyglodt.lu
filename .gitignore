@@ -8,3 +8,5 @@ tools/book/.venv/
 tools/punctuation/.venv/
 tools/book/fonts/
 .playwright-mcp/
+*.dump
+.DS_Store

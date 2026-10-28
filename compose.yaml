@@ -1,0 +1,46 @@
+# Local development only: Postgres 18 and the app with hot reload. Start with ./dev.sh
+name: tessyglodt-dev
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: tessyglodt
+      POSTGRES_PASSWORD: tessyglodt
+      POSTGRES_DB: tessyglodt
+    ports:
+      # same port as before, so application-dev.properties, psql and tools/ work unchanged
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    volumes:
+      - db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "tessyglodt", "-d", "tessyglodt"]
+      interval: 2s
+      retries: 30
+
+  app:
+    image: maven:3-eclipse-temurin-25
+    working_dir: /workspace
+    command: ./dev.sh container
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tessyglodt
+      # templates and static files are read straight from src/, so edits show without a rebuild
+      SPRING_THYMELEAF_PREFIX: file:/workspace/src/main/resources/templates/
+      SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/workspace/src/main/resources/static/
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5005:5005"   # Java debugger
+    volumes:
+      - .:/workspace
+      # the container builds into its own target/, so it doesn't clash with builds on the host
+      - target:/workspace/target
+      - m2:/root/.m2
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db:
+  target:
+  m2:

@@ -3,6 +3,14 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "Attach to app in Docker",
+			"request": "attach",
+			"hostName": "localhost",
+			"port": 5005,
+			"projectName": "lu.tessyglodt.site"
+		},
+		{
+			"type": "java",
 			"name": "Application (dev)",
 			"request": "launch",
 			"mainClass": "lu.tessyglodt.site.Application",

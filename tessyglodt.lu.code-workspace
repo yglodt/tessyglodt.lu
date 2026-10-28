@@ -1,0 +1,16 @@
+{
+	// Open with "File > Open Workspace from File". The app itself runs in Docker (./dev.sh);
+	// debug it with "Attach to app in Docker", or use "Dev Containers: Reopen in Container"
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"extensions": {
+		"recommendations": [
+			"vscjava.vscode-java-pack",
+			"ms-vscode-remote.remote-containers",
+			"ms-azuretools.vscode-containers"
+		]
+	}
+}

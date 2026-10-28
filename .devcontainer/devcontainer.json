@@ -1,0 +1,14 @@
+{
+	// VS Code "Reopen in Container": attaches to the app container from compose.yaml, which
+	// already runs the app with hot reload; the DB starts along with it
+	"name": "tessyglodt.lu",
+	"dockerComposeFile": "../compose.yaml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": ["vscjava.vscode-java-pack"]
+		}
+	}
+}
