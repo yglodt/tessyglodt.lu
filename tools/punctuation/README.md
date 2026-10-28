@@ -11,15 +11,11 @@ No word and no spelling changes, and apart from the leftovers no tag and no attr
 
 ## Status (28 October 2026)
 
-**Applied to the local database** on 28 October (562 texts, none skipped), **not yet to
-production.** CKEditor now saves characters instead of entities
-(`config.entities = false` in `static/ckeditor/config.js`). Checksum over all texts
-(`select md5(string_agg(content, '' order by id)) from page`): `f2353f5e…` before,
-`941dfe56…` after. A production database that shows the first value gets exactly the local result.
-Next steps:
-
-1. Look at the result on the local site (restart the app first: it caches the texts).
-2. Take a backup of the production database, check its checksum, then apply there.
+**Applied** to the local database and to production on 28 October (562 texts, none skipped).
+Checksum over all texts (`select md5(string_agg(content, '' order by id)) from page`):
+`f2353f5e…` before, `941dfe56…` after, the same in both. CKEditor now saves characters instead of
+entities (`config.entities = false` in `static/ckeditor/config.js`). Still open: whether to do the
+page titles. New texts can bring the old problems back; the script can be run again.
 
 ## Decisions taken
 

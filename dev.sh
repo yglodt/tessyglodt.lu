@@ -2,6 +2,7 @@
 # Local development in Docker: Postgres 18 and the app with hot reload on http://localhost:8080
 #
 #   ./dev.sh              start the DB and the app (Ctrl-C stops the app, the DB keeps running)
+#   ./dev.sh db           start only the DB (for tools/ on the host, or the app run from VS Code)
 #   ./dev.sh import FILE  replace the database with a pg_dump (custom format .dump, or plain .sql)
 #   ./dev.sh psql         psql in the database
 #   ./dev.sh stop         stop everything (the data stays in the "db" volume)
@@ -16,6 +17,9 @@ case "${1:-up}" in
 up)
 	docker compose up -d --wait db
 	exec docker compose up app
+	;;
+db)
+	docker compose up -d --wait db
 	;;
 import)
 	[ -f "$2" ] || { echo "Usage: $0 import FILE"; exit 1; }
@@ -53,7 +57,7 @@ container)
 	exec mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 	;;
 *)
-	sed -n '2,7p' "$0"
+	sed -n '2,8p' "$0"
 	exit 1
 	;;
 esac
