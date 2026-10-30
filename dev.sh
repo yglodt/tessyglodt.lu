@@ -53,8 +53,8 @@ container)
 			fi
 		done
 	) &
-	# debugger port 5005: "Attach to app in Docker" in .vscode/launch.json
-	exec mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+	# debugger port 5017: "Attach to app in Docker" in .vscode/launch.json
+	exec mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017"
 	;;
 *)
 	sed -n '2,8p' "$0"

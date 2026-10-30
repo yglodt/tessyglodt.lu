@@ -30,7 +30,7 @@ services:
       SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/workspace/src/main/resources/static/
     ports:
       - "127.0.0.1:8017:8017"   # server.port in application-dev.properties
-      - "127.0.0.1:5005:5005"   # Java debugger
+      - "127.0.0.1:5017:5017"   # Java debugger
     volumes:
       - .:/workspace
       # the container builds into its own target/, so it doesn't clash with builds on the host

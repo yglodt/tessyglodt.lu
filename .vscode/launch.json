@@ -6,7 +6,7 @@
 			"name": "Attach to app in Docker",
 			"request": "attach",
 			"hostName": "localhost",
-			"port": 5005,
+			"port": 5017,
 			"projectName": "lu.tessyglodt.site"
 		},
 		{
