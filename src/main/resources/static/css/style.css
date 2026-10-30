@@ -821,11 +821,19 @@ html:has(a[rel=prev]:hover, a[rel=prev]:focus) .sheet {
 	text-decoration: underline;
 }
 
+/* a passage quoted from the text: set in from a thin rule, ellipses where text was left out */
 .excerpt {
-	margin: 0.3rem 0 0;
-	font-size: 0.9rem;
+	margin: 0.4rem 0 0;
+	padding-left: 0.9rem;
+	border-left: 2px solid var(--rule);
+	font-size: 0.85rem;
+	line-height: 1.6;
 	color: var(--ink-soft);
 	overflow-wrap: break-word;
+}
+
+.excerpt .gap {
+	color: var(--muted);
 }
 
 .excerpt mark {

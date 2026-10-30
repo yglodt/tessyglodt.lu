@@ -31,9 +31,11 @@ public class PageService {
 
 	private final Random					randomGenerator	= new Random();
 
-	// ts_headline marks the hits with these two control characters, which can't occur in the texts,
-	// so the excerpt can be escaped as a whole before they become <mark> tags
-	private static final String				HEADLINE_OPTIONS	= "MaxFragments=2, MaxWords=45, MinWords=30, FragmentDelimiter=\" … \", StartSel=\u0002, StopSel=\u0003";
+	// ts_headline marks the hits and the gaps between fragments with control characters, which can't
+	// occur in the texts, so the excerpt can be escaped as a whole before they become HTML
+	private static final String				HEADLINE_OPTIONS	= "MaxFragments=2, MaxWords=45, MinWords=30, FragmentDelimiter=\u0004, StartSel=\u0002, StopSel=\u0003";
+
+	private static final String				ELLIPSIS			= "<span class=\"gap\">…</span>";
 
 	private final JdbcTemplate				jdbcTemplate;
 
@@ -166,24 +168,33 @@ public class PageService {
 	// Full-text search over page.search (title weighted above text, see tools/search/search-index.sql),
 	// best matches first, with excerpts around the hits for the requested slice only
 	public SearchResults search(final String q, final int offset, final int limit) {
-		final String sql = "select name, title, total, "
-				+ "ts_headline('public.english_unaccent', regexp_replace(regexp_replace(content, '<[^>]+>', ' ', 'g'), '\\s+', ' ', 'g'), q, ?) as excerpt "
+		final String sql = "select name, title, total, plain, "
+				+ "ts_headline('public.english_unaccent', plain, q, ?) as excerpt "
 				+ "from (select name, title, content, q, ts_rank(search, q) as rank, count(*) over () as total "
 				+ "from page, websearch_to_tsquery('public.english_unaccent', ?) q "
 				+ "where published and search @@ q "
-				+ "order by rank desc, title limit ? offset ?) hits "
+				+ "order by rank desc, title limit ? offset ?) hits, "
+				+ "lateral (select trim(regexp_replace(regexp_replace(content, '<[^>]+>', ' ', 'g'), '\\s+', ' ', 'g')) as plain) t "
 				+ "order by rank desc, title";
 		final int[] total = { 0 };
 		final List<SearchHit> hits = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			total[0] = rs.getInt("total");
-			return new SearchHit(rs.getString("name"), rs.getString("title"), excerptHtml(rs.getString("excerpt")));
+			return new SearchHit(rs.getString("name"), rs.getString("title"), excerptHtml(rs.getString("excerpt"), rs.getString("plain")));
 		}, HEADLINE_OPTIONS, q, limit, offset);
 		return new SearchResults(hits, total[0]);
 	}
 
-	private static String excerptHtml(final String headline) {
-		return HtmlUtils.htmlEscape(HtmlUtils.htmlUnescape(headline).strip(), "UTF-8")
-				.replace("\u0002", "<mark>").replace("\u0003", "</mark>");
+	// The excerpt as HTML, with an ellipsis wherever text was left out: before it unless it starts the
+	// text, between the fragments, and after it unless it ends the text
+	private static String excerptHtml(final String headline, final String plain) {
+		final String excerpt = headline.strip();
+		final String bare = excerpt.replaceAll("[\u0002\u0003]", "");
+		final String[] fragments = bare.split("\u0004");
+		final String html = HtmlUtils.htmlEscape(HtmlUtils.htmlUnescape(excerpt), "UTF-8")
+				.replace("\u0002", "<mark>").replace("\u0003", "</mark>")
+				.replaceAll("\\s*\u0004\\s*", " " + ELLIPSIS + " ");
+		return (plain.startsWith(fragments[0].strip()) ? "" : ELLIPSIS + " ") + html
+				+ (plain.endsWith(fragments[fragments.length - 1].strip()) ? "" : " " + ELLIPSIS);
 	}
 
 	@Cacheable(value = "page", key = "#root.methodName + #p0")
