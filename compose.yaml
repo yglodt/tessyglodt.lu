@@ -9,8 +9,8 @@ services:
       POSTGRES_PASSWORD: tessyglodt
       POSTGRES_DB: tessyglodt
     ports:
-      # same port as before, so application-dev.properties, psql and tools/ work unchanged
-      - "127.0.0.1:${DB_PORT:-5433}:5432"
+      # not 5432, which kids.cloud's Postgres.app uses; application-dev.properties and tools/ expect 5417
+      - "127.0.0.1:${DB_PORT:-5417}:5432"
     volumes:
       - db:/var/lib/postgresql
     healthcheck:
@@ -29,7 +29,7 @@ services:
       SPRING_THYMELEAF_PREFIX: file:/workspace/src/main/resources/templates/
       SPRING_WEB_RESOURCES_STATIC_LOCATIONS: file:/workspace/src/main/resources/static/
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8017:8017"   # server.port in application-dev.properties
       - "127.0.0.1:5005:5005"   # Java debugger
     volumes:
       - .:/workspace

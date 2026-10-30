@@ -3,7 +3,7 @@ cover, clickable two-column index with page numbers, PDF outline, one article pe
 and the About and Author pages at the end.
 
 Reads the pages from the local database (PGHOST/PGPORT/PGDATABASE/PGUSER/PGPASSWORD, defaults
-to the dev DB on port 5433) and the about/author text from the Thymeleaf templates.
+to the dev DB on port 5417) and the about/author text from the Thymeleaf templates.
 
 	tools/book/make-book.sh [output.pdf]   # default: target/kierchtuermspromenaden.pdf
 
@@ -55,7 +55,7 @@ INK = HexColor("#222222")
 # --- data -----------------------------------------------------------------------------------
 
 env = os.environ.get
-conn = psycopg2.connect(host=env("PGHOST", "localhost"), port=env("PGPORT", "5433"), dbname=env("PGDATABASE", "tessyglodt"),
+conn = psycopg2.connect(host=env("PGHOST", "localhost"), port=env("PGPORT", "5417"), dbname=env("PGDATABASE", "tessyglodt"),
 	user=env("PGUSER", "tessyglodt"), password=env("PGPASSWORD", "tessyglodt"))
 cur = conn.cursor()
 cur.execute("""

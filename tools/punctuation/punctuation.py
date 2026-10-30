@@ -662,7 +662,7 @@ def write_report(path, pages, total):
 		"translation tool), so they led nowhere. The link goes, the text stays. Link them again by hand if needed.</p>")
 	for name, title, _, _, res in pages:
 		if res.broken:
-			w.append("<h3><a href='http://localhost:8080/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
+			w.append("<h3><a href='http://localhost:8017/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
 			w.append("<div class=c><p>%s</p></div>" % " · ".join(html.escape(s) or "<i>(no text)</i>" for s in res.broken))
 
 	w.append("<h2 id=unpaired>Quotation marks that don’t pair up</h2>")
@@ -670,7 +670,7 @@ def write_report(path, pages, total):
 		"The mark that doesn’t fit is red.</p>")
 	for name, title, _, _, res in pages:
 		if res.unpaired:
-			w.append("<h3><a href='http://localhost:8080/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
+			w.append("<h3><a href='http://localhost:8017/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
 			for s, problems in res.unpaired:
 				why = "; ".join(sorted({reason for _, reason in problems}))
 				w.append("<div class=c><p>%s</p><p class=why>%s</p></div>" % (marked(s, problems), why))
@@ -680,7 +680,7 @@ def write_report(path, pages, total):
 		for name, title, _, _, res in pages:
 			found = [c for c in res.checks if c[0] == key]
 			if found:
-				w.append("<h3><a href='http://localhost:8080/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
+				w.append("<h3><a href='http://localhost:8017/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
 				for _, s, a, b in found:
 					w.append("<div class=c><p>%s</p></div>" % excerpt(s, a, b))
 
@@ -693,7 +693,7 @@ def write_report(path, pages, total):
 	w.append("</p>")
 	for name, title, _, _, res in pages:
 		if res.changes:
-			w.append("<section><h3><a href='http://localhost:8080/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
+			w.append("<section><h3><a href='http://localhost:8017/page/%s'>%s</a></h3>" % (html.escape(name), html.escape(title)))
 			for c in res.changes:
 				a, b = diff_html(c.before, c.after)
 				w.append("<div class=c data-rules='%s'><p>%s</p><p>%s</p></div>" % (" ".join(c.rules), a, b))
@@ -718,7 +718,7 @@ def write_sql(path, rows):
 
 def main():
 	env = os.environ.get
-	conn = psycopg2.connect(host=env("PGHOST", "localhost"), port=env("PGPORT", "5433"), dbname=env("PGDATABASE", "tessyglodt"),
+	conn = psycopg2.connect(host=env("PGHOST", "localhost"), port=env("PGPORT", "5417"), dbname=env("PGDATABASE", "tessyglodt"),
 		user=env("PGUSER", "tessyglodt"), password=env("PGPASSWORD", "tessyglodt"))
 	cur = conn.cursor()
 	cur.execute("select id, name, title, content from page where content is not null order by lower(title), name")

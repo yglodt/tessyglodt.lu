@@ -1,5 +1,5 @@
 #!/bin/sh
-# Local development in Docker: Postgres 18 and the app with hot reload on http://localhost:8080
+# Local development in Docker: Postgres 18 and the app with hot reload on http://localhost:8017
 #
 #   ./dev.sh              start the DB and the app (Ctrl-C stops the app, the DB keeps running)
 #   ./dev.sh db           start only the DB (for tools/ on the host, or the app run from VS Code)
