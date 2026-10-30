@@ -12,5 +12,8 @@
 			"ms-vscode-remote.remote-containers",
 			"ms-azuretools.vscode-containers"
 		]
+	},
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
 	}
 }
